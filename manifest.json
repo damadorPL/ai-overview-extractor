@@ -14,7 +14,7 @@
       "matches": [
         "*://www.google.com/search*"
       ],
-      "js": ["content.js"],
+      "js": ["turndown.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }
