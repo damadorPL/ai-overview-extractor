@@ -78,7 +78,6 @@ ai-overview-extractor/
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
 └── docs/             # Dokumentacja dodatkowa
-    ├── chrome-web-store-checklist.md
     ├── chrome-web-store-description.md
     ├── chrome-web-store-privacy-justifications.md
     └── privacy-policy.md
