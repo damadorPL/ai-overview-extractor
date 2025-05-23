@@ -94,9 +94,9 @@ AI Overview Extractor nie zbiera, nie przechowuje ani nie przesyła żadnych dan
 
 ## Wersja i changelog
 
-**Aktualna wersja: 1.0.1**
+**Aktualna wersja: 1.0.2**
 
-### v1.0.1
+### v1.0.2
 - Ulepszona stabilność wykrywania AI Overview
 - Poprawki w czyszczeniu URL-i źródeł
 - Optymalizacja wydajności
