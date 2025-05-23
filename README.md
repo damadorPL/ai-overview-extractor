@@ -49,9 +49,11 @@ Rozszerzenie automatycznie wykrywa AI Overview na stronach wyników Google i umo
 ## 🎯 Użytkowanie
 
 1. **Wyszukaj** coś w Google (np. "cukrzyca")
-2. **Poczekaj** aż pojawi się AI Overview  
-3. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
-4. **Skopiuj** treść lub pobierz jako plik
+2. **Poczekaj** aż pojawi się AI Overview
+3. **Klikinj przycisk pokaż więcej**
+4. **Kliknij** Pokaż wszystko
+5. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
+6. **Skopiuj** treść lub pobierz jako plik
 
 ## 📁 Struktura plików
 
