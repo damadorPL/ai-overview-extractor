@@ -179,19 +179,7 @@ class AIOverviewExtractor {
         cleaned = cleaned.replace(/Generatywna AI ma charakter eksperymentalny.*$/gs, '');
         cleaned = cleaned.replace(/Dziękujemy.*Zamknij$/gs, '');
         
-        const contentStart = cleaned.indexOf('Kindergeld (niemiecki zasiłek rodzinny)');
-        if (contentStart !== -1) {
-            cleaned = cleaned.substring(contentStart);
-        }
-        
-        const linksStart = cleaned.indexOf('Kindergeld Pozyskiwanie Odzyskiwanie Zwrot -');
-        if (linksStart !== -1) {
-            cleaned = cleaned.substring(0, linksStart);
-        }
-        
-        cleaned = cleaned
-            .replace(/\s+/g, ' ')
-            .trim();
+        cleaned = cleaned.replace(/\s+/g, ' ').trim();
         
         return cleaned;
     }
@@ -199,15 +187,14 @@ class AIOverviewExtractor {
     formatAsMarkdown(text) {
         let markdown = text;
         
-        markdown = markdown.replace(/Wysokość Kindergeld:/g, '\n## Wysokość Kindergeld\n');
-        markdown = markdown.replace(/Warunki, aby otrzymać Kindergeld:/g, '\n## Warunki, aby otrzymać Kindergeld\n');
-        markdown = markdown.replace(/Pomoc w uzyskaniu Kindergeld:/g, '\n## Pomoc w uzyskaniu Kindergeld\n');
-        markdown = markdown.replace(/Dodatkowe informacje:/g, '\n## Dodatkowe informacje\n');
+        // Próba bardziej uniwersalnego formatowania nagłówków sekcji
+        // Zakładamy, że nagłówki kończą się dwukropkiem i są na początku linii lub po kropce
+        markdown = markdown.replace(/(\. |\n)([A-ZĄĆĘŁŃÓŚŹŻ].*?:)/g, '$1## $2\n');
         
         markdown = markdown.replace(/(\. )([A-ZĄĆĘŁŃÓŚŹŻ])/g, '.\n\n- $2');
         markdown = markdown.replace(/\n{3,}/g, '\n\n');
         
-        markdown = `# AI Overview: Kindergeld\n\n${markdown.trim()}\n`;
+        markdown = `# AI Overview\n\n${markdown.trim()}\n`;
         
         return markdown;
     }
