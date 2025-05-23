@@ -79,7 +79,7 @@ ai-overview-extractor/
     ├── chrome-web-store-checklist.md
     ├── chrome-web-store-description.md
     ├── chrome-web-store-privacy-justifications.md
-    └── privacy-policy.html
+    └── privacy-policy.md
 ```
 
 ## ⚙️ Wymagania
