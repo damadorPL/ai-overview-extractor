@@ -6,13 +6,13 @@
   
   "permissions": [
     "activeTab",
-    "*://www.google.com/*",
+    "*://www.google.com/*"
   ],
   
   "content_scripts": [
     {
       "matches": [
-        "*://www.google.com/search*",
+        "*://www.google.com/search*"
       ],
       "js": ["content.js"],
       "css": ["styles.css"],
@@ -32,5 +32,5 @@
   ],
   
   "author": "Roman Rozenberger",
-  "homepage_url": "https://github.com/romek_rozen/ai_overviews_scraper"
+  "homepage_url": "https://github.com/romek-rozen/ai-overview-extractor"
 }
