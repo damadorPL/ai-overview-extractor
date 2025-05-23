@@ -8,13 +8,15 @@ Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliw
 
 ## 🚀 Funkcje
 
-- ✅ **Automatyczne wykrywanie** AI Overview na Google Search
-- 📋 **Ekstrakcja treści** do formatu Markdown
-- 🔗 **Wyciąganie źródeł** z oczyszczonymi URLami  
-- 🧹 **Usuwanie błędów** i komunikatów systemowych
+- ✅ **Automatyczne wykrywanie** AI Overview na Google Search (kontener `#m-x-content`)
+- 📋 **Ekstrakcja treści** do formatu Markdown z użyciem biblioteki TurndownService
+- 🧹 **Zaawansowane czyszczenie** - usuwa elementy MSC, ukryte elementy i błędy systemowe
+- 🔍 **Automatyczne wyciąganie** słowa kluczowego z wyszukiwania
+- 🔗 **Wyciąganie źródeł** z oczyszczonymi URLami Google
 - 💾 **Kopiowanie** do schowka jednym klikiem
-- 📥 **Pobieranie** jako plik .md
-- 🎨 **Czytelny interfejs** z podglądem
+- 📥 **Pobieranie** jako plik .md z timestampem
+- 🎨 **Czytelny interfejs** z podglądem i powiadomieniami
+- 🔄 **Obserwator DOM** - automatyczne dodawanie przycisku przy nowych wynikach
 
 ## 📦 Instalacja
 
@@ -47,8 +49,9 @@ Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliw
 ```
 ai-overview-extractor/
 ├── manifest.json      # Konfiguracja wtyczki
-├── content.js         # Główny skrypt
-├── styles.css         # Style interfejsu
+├── content.js         # Główny skrypt z klasą AIOverviewExtractor
+├── turndown.js        # Biblioteka konwersji HTML→Markdown
+├── styles.css         # Style interfejsu użytkownika
 ├── README.md          # Ta dokumentacja
 └── icons/            # Ikony wtyczki
     ├── icon-16.png
@@ -62,6 +65,7 @@ ai-overview-extractor/
 - **Firefox** 58+ (Firefox Quantum)
 - **Strona**: `google.com/search`
 - **Język**: Działa z polskim interfejsem Google
+- **Uprawnienia**: `activeTab`, `*://www.google.com/*`
 
 ## 🔧 Konfiguracja
 
@@ -78,21 +82,48 @@ Aby dodać inne domeny Google, edytuj sekcję `matches` w `manifest.json`:
 ]
 ```
 
+## 🔍 Jak działa
+
+### Wykrywanie AI Overview
+- Szuka kontenera `#m-x-content` na stronie
+- Używa `MutationObserver` do monitorowania zmian DOM
+- Automatycznie dodaje przycisk gdy znajdzie kontener
+
+### Ekstrakcja treści
+- Usuwa elementy z `data-subtree="msc"` (elementy MSC)
+- Usuwa elementy z `style="display:none"` (ukryte elementy)
+- Usuwa kontener źródeł przed konwersją
+- Konwertuje HTML na Markdown używając TurndownService
+
+### Wyciąganie źródeł
+- Znajduje kontener źródeł `div[style="height: 100%;"]`
+- Ekstraktuje linki z widocznej listy `ul[class]`
+- Czyści URL-e Google (usuwa `/url?` wrappery)
+- Filtruje duplikaty i nieprawidłowe linki
+
 ## 🐛 Rozwiązywanie problemów
 
 ### Przycisk nie pojawia się
 - Sprawdź czy na stronie rzeczywiście jest AI Overview
 - Otwórz konsolę (F12) i poszukaj logów `[AI Overview Extractor]`
-- Odśwież stronę
+- Sprawdź czy istnieje element `#m-x-content`
+- Odśwież stronę i poczekaj na pełne załadowanie
 
 ### Brak treści w markdown
 - AI Overview może nie być w pełni załadowane
 - Spróbuj ponownie po kilku sekundach
-- Sprawdź logi w konsoli
+- Sprawdź logi w konsoli - powinny pokazać proces ekstrakcji
+- Sprawdź czy nie ma błędów JavaScript
 
 ### Błąd kopiowania
 - Sprawdź czy przeglądarka ma uprawnienia do schowka
 - Spróbuj pobrać plik zamiast kopiować
+- Sprawdź czy strona jest serwowana przez HTTPS
+
+### Problemy z źródłami
+- Sprawdź w konsoli logi dotyczące znalezionych linków
+- Niektóre źródła mogą być filtrowane (Google, support itp.)
+- URL-e są automatycznie czyszczone z wrapperów Google
 
 ## 🔄 Aktualizacje
 
@@ -106,27 +137,35 @@ Aby zaktualizować wtyczkę:
 
 ### v1.0.0
 - ✨ Pierwsza wersja
-- 📋 Ekstrakcja AI Overview do Markdown
-- 🔗 Wyciąganie źródeł z linkami
-- 💾 Kopiowanie i pobieranie
-- 🎨 Interfejs użytkownika
+- 📋 Ekstrakcja AI Overview do Markdown z TurndownService
+- 🔗 Wyciąganie źródeł z czyszczeniem URL-i Google
+- 🧹 Zaawansowane filtrowanie treści (MSC, ukryte elementy)
+- 💾 Kopiowanie i pobieranie z timestampem
+- 🎨 Interfejs użytkownika z powiadomieniami
+- 🔄 Obserwator DOM dla dynamicznych zmian
 
 ## 🤝 Współpraca
 
 Projekt jest open source! Możesz:
-- 🐛 **Zgłaszać błędy** przez Issues
+- 🐛 **Zgłaszać błędy** przez Issues na GitHub
 - 💡 **Proponować funkcje** 
 - 🔧 **Wysyłać Pull Requesty**
 - ⭐ **Oznaczać gwiazdką** jeśli podoba Ci się projekt
+
+**GitHub:** https://github.com/romek-rozen/ai-overview-extractor
+
+## 👨‍💻 Autor
+
+**Roman Rozenberger**
+- GitHub: https://github.com/romek-rozen
+- Www: https://rozenberger.com
 
 ## 📄 Licencja
 
 MIT License - możesz używać, modyfikować i dystrybuować za darmo.
 
-## 🙋‍♂️ Autor
-
-Stworzono z ❤️ dla społeczności SEO i marketingu cyfrowego.
-
 ---
 
 **Przydatne? Zostaw ⭐ i podziel się z innymi!**
+
+Stworzono z ❤️ dla społeczności SEO i marketingu cyfrowego.
