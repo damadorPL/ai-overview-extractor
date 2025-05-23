@@ -4,6 +4,8 @@
 
 Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliwia wyeksportowanie treści wraz ze źródłami do czytelnego formatu Markdown.
 
+![Demonstracja działania wtyczki](ai-overviews-extractor.gif)
+
 ## 🚀 Funkcje
 
 - ✅ **Automatyczne wykrywanie** AI Overview na Google Search
