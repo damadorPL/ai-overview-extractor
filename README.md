@@ -37,7 +37,7 @@ Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliw
 
 ## 🎯 Użytkowanie
 
-1. **Wyszukaj** coś w Google (np. "kindergeld pomoc")
+1. **Wyszukaj** coś w Google (np. "cukrzyca")
 2. **Poczekaj** aż pojawi się AI Overview  
 3. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
 4. **Skopiuj** treść lub pobierz jako plik
@@ -59,15 +59,14 @@ ai-overview-extractor/
 
 ## ⚙️ Wymagania
 
-- **Firefox** 57+ (Firefox Quantum)
-- **Strona**: `google.com/search` lub `google.pl/search`
+- **Firefox** 58+ (Firefox Quantum)
+- **Strona**: `google.com/search`
 - **Język**: Działa z polskim interfejsem Google
 
 ## 🔧 Konfiguracja
 
 Wtyczka działa automatycznie na:
 - `*://www.google.com/search*`
-- `*://www.google.pl/search*`
 
 Aby dodać inne domeny Google, edytuj sekcję `matches` w `manifest.json`:
 
