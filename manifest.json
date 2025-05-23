@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "AI Overview Extractor",
+  "version": "1.0",
+  "description": "Ekstraktuje Google AI Overview do formatu Markdown",
+  
+  "permissions": [
+    "activeTab",
+    "clipboardWrite"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["*://www.google.com/search*", "*://www.google.pl/search*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  
+  "web_accessible_resources": ["icon.png"],
+  
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
