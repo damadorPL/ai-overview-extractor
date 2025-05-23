@@ -71,9 +71,9 @@ Rozszerzenie jest zgodne z:
 * **Zasadami Chrome Web Store** \- minimalne uprawnienia, jeden cel
 ## 12\. Kontakt
 W przypadku pytań dotyczących prywatności:
-* **Email:** \[WYMAGANY ADRES EMAIL\]
+* **Email:** roman@rozenberger.com
 * **GitHub:** <https://github.com/romek-rozen/ai-overview-extractor>
-* **Deweloper:** Roman Rozenberger
+* **Autor:** Roman Rozenberger
 ## 13\. Podsumowanie
 **AI Overview Extractor to narzędzie skupione na prywatności:**
 * Zero zbierania danych osobowych
@@ -83,5 +83,5 @@ W przypadku pytań dotyczących prywatności:
 * Jeden, jasno zdefiniowany cel
 ---
 **AI Overview Extractor v1.0.2** 
- Deweloper: Roman Rozenberger 
+ Autor: Roman Rozenberger 
  Ostatnia aktualizacja polityki: 23 maja 2025
