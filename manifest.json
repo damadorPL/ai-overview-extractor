@@ -1,11 +1,14 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "AI Overview Extractor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Ekstraktuje treść AI Overview z Google Search do formatu Markdown",
   
   "permissions": [
-    "activeTab",
+    "activeTab"
+  ],
+  
+  "host_permissions": [
     "*://www.google.com/*"
   ],
   
@@ -14,7 +17,7 @@
       "matches": [
         "*://www.google.com/search*"
       ],
-      "js": ["turndown.js", "content.js"],
+      "js": ["src/turndown.js", "src/content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }
@@ -24,25 +27,17 @@
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
-    "96": "icons/icon-96.png"
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
   },
   
   "web_accessible_resources": [
-    "icons/*"
-  ],
-
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "ai-overview-extractor@rozenberger.com",
-      "strict_min_version": "58.0"
+    {
+      "resources": ["icons/*"],
+      "matches": ["*://www.google.com/*"]
     }
-  },
+  ],
   
   "author": "Roman Rozenberger",
-  "homepage_url": "https://github.com/romek-rozen/ai-overview-extractor",
-  
-  "developer": {
-    "name": "Roman Rozenberger",
-    "url": "https://github.com/romek-rozen"
-  }
+  "homepage_url": "https://github.com/romek-rozen/ai-overview-extractor"
 }

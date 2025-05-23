@@ -1,10 +1,10 @@
-# AI Overview Extractor - Firefox Extension
+# AI Overview Extractor - Browser Extension
 
 🔍 **Ekstraktuj treść AI Overview z Google Search do formatu Markdown**
 
-Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliwia wyeksportowanie treści wraz ze źródłami do czytelnego formatu Markdown.
+Rozszerzenie automatycznie wykrywa AI Overview na stronach wyników Google i umożliwia wyeksportowanie treści wraz ze źródłami do czytelnego formatu Markdown.
 
-![Demonstracja działania wtyczki](ai-overviews-extractor.gif)
+![Demonstracja działania wtyczki](./images/ai-overviews-extractor.gif)
 
 ## 🚀 Funkcje
 
@@ -20,20 +20,29 @@ Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliw
 
 ## 📦 Instalacja
 
-### Metoda 1: Instalacja z plików źródłowych
+### Metoda 1: Chrome/Chromium - Tryb deweloperski
+
+1. **Pobierz pliki** - skopiuj wszystkie pliki do folderu `ai-overview-extractor/`
+2. **Otwórz Chrome** i przejdź do `chrome://extensions/`
+3. **Włącz** "Tryb dewelopera" (przełącznik w prawym górnym rogu)
+4. **Kliknij** "Wczytaj rozpakowane rozszerzenie"
+5. **Wybierz** folder `ai-overview-extractor/`
+6. **Gotowe!** Rozszerzenie zostanie załadowane
+
+### Metoda 2: Firefox - Tryb deweloperski
 
 1. **Pobierz pliki** - skopiuj wszystkie pliki do folderu `ai-overview-extractor/`
 2. **Otwórz Firefox** i przejdź do `about:debugging`
 3. **Kliknij** "Ten Firefox" w menu po lewej
 4. **Kliknij** "Wczytaj tymczasowy dodatek..."
-5. **Wybierz** plik `manifest.json` z folderu wtyczki
-6. **Gotowe!** Wtyczka zostanie załadowana
+5. **Wybierz** plik `manifest.json` z folderu rozszerzenia
+6. **Gotowe!** Rozszerzenie zostanie załadowane
 
-### Metoda 2: Tryb deweloperski (stały)
+### Metoda 3: Firefox - Instalacja stała
 
 1. Wejdź na `about:config` w Firefox
 2. Znajdź `xpinstall.signatures.required` i ustaw na `false`
-3. Spakuj folder wtyczki do pliku `.zip`
+3. Spakuj folder rozszerzenia do pliku `.zip`
 4. Zmień rozszerzenie na `.xpi`
 5. Przeciągnij plik `.xpi` do Firefox
 
@@ -48,37 +57,58 @@ Wtyczka automatycznie wykrywa AI Overview na stronach wyników Google i umożliw
 
 ```
 ai-overview-extractor/
-├── manifest.json      # Konfiguracja wtyczki
-├── content.js         # Główny skrypt z klasą AIOverviewExtractor
-├── turndown.js        # Biblioteka konwersji HTML→Markdown
+├── manifest.json      # Konfiguracja rozszerzenia (Manifest V3)
 ├── styles.css         # Style interfejsu użytkownika
 ├── README.md          # Ta dokumentacja
-└── icons/            # Ikony wtyczki
-    ├── icon-16.png
-    ├── icon-32.png  
-    ├── icon-48.png
-    └── icon-96.png
+├── LICENCE            # Licencja MIT
+├── .gitignore         # Pliki ignorowane przez Git
+├── src/              # Pliki źródłowe
+│   ├── content.js     # Główny skrypt z klasą AIOverviewExtractor
+│   └── turndown.js    # Biblioteka konwersji HTML→Markdown
+├── icons/            # Ikony rozszerzenia
+│   ├── icon-16.png
+│   ├── icon-32.png  
+│   ├── icon-48.png
+│   ├── icon-96.png
+│   └── icon-128.png
+├── images/           # Obrazy dokumentacji
+│   ├── ai-overviews-extractor.gif
+│   ├── ai-overview-extractor-001.jpg
+│   └── ai_overviews_extractor_logo.png
+└── docs/             # Dokumentacja dodatkowa
+    ├── chrome-web-store-checklist.md
+    ├── chrome-web-store-description.md
+    ├── chrome-web-store-privacy-justifications.md
+    └── privacy-policy.html
 ```
 
 ## ⚙️ Wymagania
 
-- **Firefox** 58+ (Firefox Quantum)
+- **Chrome/Chromium** (najnowsza wersja) lub **Firefox** 58+ (Firefox Quantum)
+- **Manifest V3** - nowoczesny standard rozszerzeń
 - **Strona**: `google.com/search`
 - **Język**: Działa z polskim interfejsem Google
-- **Uprawnienia**: `activeTab`, `*://www.google.com/*`
+- **Uprawnienia**: `activeTab`, `host_permissions: *://www.google.com/*`
 
 ## 🔧 Konfiguracja
 
-Wtyczka działa automatycznie na:
+Rozszerzenie działa automatycznie na:
 - `*://www.google.com/search*`
 
-Aby dodać inne domeny Google, edytuj sekcję `matches` w `manifest.json`:
+Aby dodać inne domeny Google, edytuj sekcję `content_scripts.matches` w `manifest.json`:
 
 ```json
-"matches": [
-  "*://www.google.com/search*",
-  "*://www.google.pl/search*",
-  "*://www.google.de/search*"
+"content_scripts": [
+  {
+    "matches": [
+      "*://www.google.com/search*",
+      "*://www.google.pl/search*",
+      "*://www.google.de/search*"
+    ],
+    "js": ["src/turndown.js", "src/content.js"],
+    "css": ["styles.css"],
+    "run_at": "document_end"
+  }
 ]
 ```
 
@@ -127,13 +157,31 @@ Aby dodać inne domeny Google, edytuj sekcję `matches` w `manifest.json`:
 
 ## 🔄 Aktualizacje
 
-Aby zaktualizować wtyczkę:
+Aby zaktualizować rozszerzenie:
+
+**Chrome/Chromium:**
 1. Pobierz nowe pliki
-2. Zastąp stare pliki w folderze wtyczki  
+2. Zastąp stare pliki w folderze rozszerzenia
+3. Wejdź na `chrome://extensions/`
+4. Kliknij "Przeładuj" przy rozszerzeniu
+
+**Firefox:**
+1. Pobierz nowe pliki
+2. Zastąp stare pliki w folderze rozszerzenia
 3. Wejdź na `about:debugging`
-4. Kliknij "Przeładuj" przy wtyczce
+4. Kliknij "Przeładuj" przy rozszerzeniu
 
 ## 📝 Changelog
+
+### v1.0.2 (aktualna)
+- 🔧 Poprawki stabilności i kompatybilności
+- 📱 Wsparcie dla Manifest V3
+- 🌐 Kompatybilność z Chrome i Firefox
+
+### v1.0.1
+- 🐛 Poprawki błędów w ekstrakcji źródeł
+- ⚡ Optymalizacja wydajności
+- 🔍 Ulepszone wykrywanie AI Overview
 
 ### v1.0.0
 - ✨ Pierwsza wersja
