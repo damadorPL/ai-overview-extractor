@@ -2,26 +2,35 @@
   "manifest_version": 2,
   "name": "AI Overview Extractor",
   "version": "1.0",
-  "description": "Ekstraktuje Google AI Overview do formatu Markdown",
+  "description": "Ekstraktuje treść AI Overview z Google Search do formatu Markdown",
   
   "permissions": [
     "activeTab",
-    "clipboardWrite"
+    "*://www.google.com/*",
   ],
   
   "content_scripts": [
     {
-      "matches": ["*://www.google.com/search*", "*://www.google.pl/search*"],
+      "matches": [
+        "*://www.google.com/search*",
+      ],
       "js": ["content.js"],
-      "css": ["styles.css"]
+      "css": ["styles.css"],
+      "run_at": "document_end"
     }
   ],
   
-  "web_accessible_resources": ["icon.png"],
-  
   "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
-  }
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  },
+  
+  "web_accessible_resources": [
+    "icons/*"
+  ],
+  
+  "author": "Roman Rozenberger",
+  "homepage_url": "https://github.com/romek_rozen/ai_overviews_scraper"
 }
