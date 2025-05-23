@@ -59,34 +59,43 @@ class AIOverviewExtractor {
 
     extractContent(container) {
         console.log('[AI Overview Extractor] Ekstraktuję treść z:', container);
-        
-        const rawText = container.textContent || container.innerText || '';
-        console.log('[AI Overview Extractor] Surowy tekst:', rawText.substring(0, 200) + '...');
-        
-        let cleaned = this.cleanText(rawText);
-        return cleaned;
+
+        const sourcesElement = container.querySelector('div[style="height: 100%;"]');
+        let rawHTML = container.innerHTML;
+
+        if (sourcesElement) {
+            const sourcesOuterHTML = sourcesElement.outerHTML;
+            const sourcesIndex = rawHTML.indexOf(sourcesOuterHTML);
+            if (sourcesIndex !== -1) {
+                rawHTML = rawHTML.substring(0, sourcesIndex);
+            }
+        }
+
+        console.log('[AI Overview Extractor] Surowy HTML (po usunięciu źródeł):', rawHTML.substring(0, 200) + '...');
+
+        return rawHTML;
     }
 
     extractSources(container) {
         console.log('[AI Overview Extractor] Ekstraktuję źródła z:', container);
-        
-        const sourcesContainer = container.querySelector('div[style="height:100%"]');
-        
+
+        const sourcesContainer = container.querySelector('div[style="height: 100%;"]');
+
         if (!sourcesContainer) {
-            console.log('[AI Overview Extractor] Nie znaleziono kontenera źródeł [style="height:100%"]');
+            console.log('[AI Overview Extractor] Nie znaleziono kontenera źródeł [style="height: 100%;"]');
             return [];
         }
-        
+
         console.log('[AI Overview Extractor] Znaleziono kontener źródeł:', sourcesContainer);
-        
+
         const links = sourcesContainer.querySelectorAll('a[href]');
         const sources = [];
-        
+
         console.log(`[AI Overview Extractor] Znaleziono ${links.length} linków w kontenerze źródeł`);
-        
+
         links.forEach((link, index) => {
             const href = link.getAttribute('href');
-            
+
             let text = link.textContent.trim();
             if (!text) {
                 text = link.innerText?.trim() || '';
@@ -103,15 +112,15 @@ class AIOverviewExtractor {
                     }
                 }
             }
-            
-            if (href && 
-                !href.includes('google.com/search') && 
-                !href.includes('support.google.com') && 
+
+            if (href &&
+                !href.includes('google.com/search') &&
+                !href.includes('support.google.com') &&
                 !href.startsWith('#') &&
                 text.length > 3) {
-                
+
                 const cleanUrl = this.cleanGoogleUrl(href);
-                
+
                 let title = text;
                 if (!title || title.length < 3) {
                     try {
@@ -121,23 +130,23 @@ class AIOverviewExtractor {
                         title = 'Unknown Source';
                     }
                 }
-                
+
                 title = title.split('\n')[0].trim();
                 if (title.length > 100) {
                     title = title.substring(0, 100) + '...';
                 }
-                
+
                 sources.push({
                     title: title,
                     url: cleanUrl
                 });
             }
         });
-        
-        const uniqueSources = sources.filter((source, index, self) => 
+
+        const uniqueSources = sources.filter((source, index, self) =>
             index === self.findIndex(s => s.url === source.url)
         );
-        
+
         console.log('[AI Overview Extractor] Unikalne źródła:', uniqueSources);
         return uniqueSources;
     }
@@ -156,46 +165,44 @@ class AIOverviewExtractor {
 
     createMarkdown(content, sources) {
         console.log('[AI Overview Extractor] Tworzę markdown z treścią i źródłami:', sources);
-        
-        let markdown = this.formatAsMarkdown(content);
-        
+
+        // Użyj Turndown do konwersji HTML na Markdown
+        const turndownService = new TurndownService();
+
+        // Dodaj regułę, aby ignorować obrazy
+        turndownService.addRule('ignoreImages', {
+            filter: 'img',
+            replacement: function (content, node) {
+                return '';
+            }
+        });
+
+        // Dodaj regułę, aby ignorować linki w sekcji źródeł
+        turndownService.addRule('ignoreSourceLinks', {
+            filter: function (node) {
+                // Sprawdź, czy węzeł jest linkiem i czy jest potomkiem elementu z klasą LLtSOc
+                return node.nodeName === 'A' && node.closest('.LLtSOc');
+            },
+            replacement: function (content, node) {
+                return ''; // Zastąp link pustym ciągiem
+            }
+        });
+
+        let markdown = turndownService.turndown(content);
+
+        // Dodaj główny nagłówek
+        markdown = `# AI Overview\n\n${markdown.trim()}\n`;
+
         if (sources && sources.length > 0) {
             console.log(`[AI Overview Extractor] Dodaję ${sources.length} źródeł do markdown`);
             markdown += '\n## Źródła\n\n';
             sources.forEach((source, index) => {
-                markdown += `${index + 1}. [${source.title}](${source.url})\n`;
+                markdown += `${index + 1}. [**${source.title}**](${source.url})\n`;
             });
         } else {
             console.log('[AI Overview Extractor] Brak źródeł do dodania');
         }
-        
-        return markdown;
-    }
 
-    cleanText(text) {
-        let cleaned = text;
-        
-        cleaned = cleaned.replace(/Przegląd od AI nie jest dostępny.*?Więcej informacji/gs, '');
-        cleaned = cleaned.replace(/Generatywna AI ma charakter eksperymentalny.*$/gs, '');
-        cleaned = cleaned.replace(/Dziękujemy.*Zamknij$/gs, '');
-        
-        cleaned = cleaned.replace(/\s+/g, ' ').trim();
-        
-        return cleaned;
-    }
-
-    formatAsMarkdown(text) {
-        let markdown = text;
-        
-        // Próba bardziej uniwersalnego formatowania nagłówków sekcji
-        // Zakładamy, że nagłówki kończą się dwukropkiem i są na początku linii lub po kropce
-        markdown = markdown.replace(/(\. |\n)([A-ZĄĆĘŁŃÓŚŹŻ].*?:)/g, '$1## $2\n');
-        
-        markdown = markdown.replace(/(\. )([A-ZĄĆĘŁŃÓŚŹŻ])/g, '.\n\n- $2');
-        markdown = markdown.replace(/\n{3,}/g, '\n\n');
-        
-        markdown = `# AI Overview\n\n${markdown.trim()}\n`;
-        
         return markdown;
     }
 
