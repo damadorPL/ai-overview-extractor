@@ -60,18 +60,36 @@ class AIOverviewExtractor {
     extractContent(container) {
         console.log('[AI Overview Extractor] Ekstraktuję treść z:', container);
 
-        const sourcesElement = container.querySelector('div[style="height: 100%;"]');
         let rawHTML = container.innerHTML;
 
+        // Najpierw usuń elementy z data-subtree="msc"
+        const mscElements = container.querySelectorAll('div[data-subtree="msc"]');
+        console.log(`[AI Overview Extractor] Znaleziono ${mscElements.length} elementów z data-subtree="msc"`);
+        
+        mscElements.forEach((element, index) => {
+            const elementHTML = element.outerHTML;
+            rawHTML = rawHTML.replace(elementHTML, '');
+            console.log(`[AI Overview Extractor] Usunięto element MSC ${index + 1}`);
+        });
+
+        // Potem usuń sourcesElement
+        const sourcesElement = container.querySelector('div[style="height: 100%;"]');
         if (sourcesElement) {
             const sourcesOuterHTML = sourcesElement.outerHTML;
-            const sourcesIndex = rawHTML.indexOf(sourcesOuterHTML);
-            if (sourcesIndex !== -1) {
-                rawHTML = rawHTML.substring(0, sourcesIndex);
-            }
+            rawHTML = rawHTML.replace(sourcesOuterHTML, '');
         }
 
-        console.log('[AI Overview Extractor] Surowy HTML (po usunięciu źródeł):', rawHTML.substring(0, 200) + '...');
+        // Na końcu usuń wszystkie elementy z style="display:none"
+        const hiddenElements = container.querySelectorAll('[style*="display:none"], [style*="display: none"]');
+        console.log(`[AI Overview Extractor] Znaleziono ${hiddenElements.length} ukrytych elementów`);
+        
+        hiddenElements.forEach((element, index) => {
+            const elementHTML = element.outerHTML;
+            rawHTML = rawHTML.replace(elementHTML, '');
+            console.log(`[AI Overview Extractor] Usunięto ukryty element ${index + 1}`);
+        });
+
+        console.log('[AI Overview Extractor] Surowy HTML (po usunięciu MSC, źródeł i ukrytych elementów):', rawHTML.substring(0, 200) + '...');
 
         return rawHTML;
     }
@@ -88,10 +106,11 @@ class AIOverviewExtractor {
 
         console.log('[AI Overview Extractor] Znaleziono kontener źródeł:', sourcesContainer);
 
-        const links = sourcesContainer.querySelectorAll('a[href]');
+        const visibleSourceList = sourcesContainer.querySelector('ul[class]'); // Wybierz pierwszy ul, który ma atrybut class
+        const links = visibleSourceList ? visibleSourceList.querySelectorAll('a[href]') : [];
         const sources = [];
 
-        console.log(`[AI Overview Extractor] Znaleziono ${links.length} linków w kontenerze źródeł`);
+        console.log(`[AI Overview Extractor] Znaleziono ${links.length} linków w widocznej liście źródeł`);
 
         links.forEach((link, index) => {
             const href = link.getAttribute('href');
@@ -166,6 +185,9 @@ class AIOverviewExtractor {
     createMarkdown(content, sources) {
         console.log('[AI Overview Extractor] Tworzę markdown z treścią i źródłami:', sources);
 
+        // Wyciągnij słowo kluczowe z URL
+        const searchQuery = this.extractSearchQuery();
+
         // Użyj Turndown do konwersji HTML na Markdown
         const turndownService = new TurndownService();
 
@@ -190,8 +212,12 @@ class AIOverviewExtractor {
 
         let markdown = turndownService.turndown(content);
 
-        // Dodaj główny nagłówek
-        markdown = `# AI Overview\n\n${markdown.trim()}\n`;
+        // Dodaj główny nagłówek z słowem kluczowym
+        let header = '# AI Overview';
+        if (searchQuery) {
+            header += `\n\n**Wyszukiwane hasło:** ${searchQuery}`;
+        }
+        markdown = `${header}\n\n${markdown.trim()}\n`;
 
         if (sources && sources.length > 0) {
             console.log(`[AI Overview Extractor] Dodaję ${sources.length} źródeł do markdown`);
@@ -204,6 +230,22 @@ class AIOverviewExtractor {
         }
 
         return markdown;
+    }
+
+    extractSearchQuery() {
+        try {
+            const url = new URL(window.location.href);
+            const query = url.searchParams.get('q');
+            if (query) {
+                // Dekoduj URL i zamień + na spacje
+                const decodedQuery = decodeURIComponent(query.replace(/\+/g, ' '));
+                console.log('[AI Overview Extractor] Znalezione słowo kluczowe:', decodedQuery);
+                return decodedQuery;
+            }
+        } catch (e) {
+            console.log('[AI Overview Extractor] Błąd przy wyciąganiu słowa kluczowego:', e);
+        }
+        return null;
     }
 
     showPreview(markdown) {
