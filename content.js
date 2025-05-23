@@ -216,28 +216,55 @@ class AIOverviewExtractor {
         const overlay = document.createElement('div');
         overlay.className = 'ai-extractor-overlay';
         
-        overlay.innerHTML = `
-            <div class="ai-extractor-modal">
-                <div class="ai-extractor-header">
-                    <h3>AI Overview - Markdown</h3>
-                    <button class="ai-extractor-close">❌ Zamknij</button>
-                </div>
-                <textarea class="ai-extractor-textarea" readonly>${markdown}</textarea>
-                <div class="ai-extractor-footer">
-                    <button class="ai-extractor-copy">📋 Kopiuj</button>
-                    <button class="ai-extractor-download">💾 Pobierz</button>
-                </div>
-            </div>
-        `;
-
+        // Stwórz elementy bezpiecznie bez innerHTML
+        const modal = document.createElement('div');
+        modal.className = 'ai-extractor-modal';
+        
+        const header = document.createElement('div');
+        header.className = 'ai-extractor-header';
+        
+        const title = document.createElement('h3');
+        title.textContent = 'AI Overview - Markdown';
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'ai-extractor-close';
+        closeBtn.textContent = '❌ Zamknij';
+        
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+        
+        const textarea = document.createElement('textarea');
+        textarea.className = 'ai-extractor-textarea';
+        textarea.readOnly = true;
+        textarea.value = markdown;
+        
+        const footer = document.createElement('div');
+        footer.className = 'ai-extractor-footer';
+        
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'ai-extractor-copy';
+        copyBtn.textContent = '📋 Kopiuj';
+        
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'ai-extractor-download';
+        downloadBtn.textContent = '💾 Pobierz';
+        
+        footer.appendChild(copyBtn);
+        footer.appendChild(downloadBtn);
+        
+        modal.appendChild(header);
+        modal.appendChild(textarea);
+        modal.appendChild(footer);
+        
+        overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
         // Event listeners
-        overlay.querySelector('.ai-extractor-close').addEventListener('click', () => {
+        closeBtn.addEventListener('click', () => {
             document.body.removeChild(overlay);
         });
 
-        overlay.querySelector('.ai-extractor-copy').addEventListener('click', () => {
+        copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(markdown).then(() => {
                 this.showNotification('✅ Skopiowano do schowka!');
             }).catch(() => {
@@ -245,7 +272,7 @@ class AIOverviewExtractor {
             });
         });
 
-        overlay.querySelector('.ai-extractor-download').addEventListener('click', () => {
+        downloadBtn.addEventListener('click', () => {
             this.downloadMarkdown(markdown);
         });
 
