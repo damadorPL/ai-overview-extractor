@@ -4,7 +4,10 @@
 
 Rozszerzenie automatycznie wykrywa AI Overview na stronach wyników Google i umożliwia wyeksportowanie treści wraz ze źródłami do czytelnego formatu Markdown.
 
+Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
+
 ![Demonstracja działania wtyczki](./images/ai-overviews-extractor.gif)
+
 
 ## 🚀 Funkcje
 
