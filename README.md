@@ -73,7 +73,65 @@ Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extra
 https://your-api.com/ai-overview-webhook
 https://example.com/webhook-endpoint
 https://api.your-domain.com/receive-ai-data
+http://localhost:5678/webhook/ai-overview-extractor  # n8n lokalnie
 ```
+
+## 🔗 Integracja z n8n
+
+Wtyczka jest w pełni kompatybilna z n8n i zawiera gotowy template workflow do kompleksowej automatyzacji!
+
+### 🚀 Gotowy Template n8n
+
+W folderze `workflowk_templates/` znajdziesz gotowy workflow `AI_Overviews_Extractor_Plugin.json` który zawiera:
+
+#### 📋 Funkcje workflow:
+1. **Webhook endpoint** - automatyczny odbiór danych z wtyczki
+2. **Przetwarzanie HTML→Markdown** - konwersja treści
+3. **Zapis do Google Sheets** - automatyczne zapisywanie wyników
+4. **AI Guidelines Generator** - LLM generuje wytyczne SEO na podstawie AI Overview
+5. **Automatyzacja** - scheduler co 15 minut + manual trigger
+6. **Analiza stron** - pobieranie i analiza treści z URL
+
+#### 🛠️ Instalacja template:
+
+1. **W n8n przejdź do:** `Templates` → `Import from JSON`
+2. **Załaduj plik:** `workflowk_templates/AI_Overviews_Extractor_Plugin.json`
+3. **Skonfiguruj węzły:**
+   - Google Sheets (połączenie z OAuth)
+   - OpenRouter Chat Model (klucz API)
+   - Ustaw URL Google Sheets w węzłach
+4. **Aktywuj workflow**
+5. **Skopiuj webhook URL** (z węzła Webhook)
+
+#### ⚙️ Konfiguracja w wtyczce:
+
+1. **Webhook URL:** `http://localhost:5678/webhook/ai-overview-extractor`
+2. **Przetestuj połączenie** - powinno zwrócić status 200
+3. **Zapisz konfigurację**
+
+#### 📊 Co robi workflow:
+
+- **Odbiera dane** z wtyczki (słowo kluczowe, markdown, HTML, źródła)
+- **Zapisuje do arkusza** wszystkie dane z AI Overview
+- **Analizuje strony** z Google Sheets (kolumna `myURL`)
+- **Generuje wytyczne SEO** używając AI (porównuje treść strony z AI Overview)
+- **Aktualizuje arkusz** z wygenerowanymi wytycznymi
+- **Automatyczne uruchamianie** co 15 minut dla nowych zadań
+
+#### 🎯 Korzyści:
+
+- **Pełna automatyzacja** - od ekstrakcji do analizy
+- **Baza wiedzy** - wszystkie AI Overview w jednym miejscu  
+- **SEO insights** - AI wytyczne co dodać na stronę
+- **Skalowalność** - batch processing wielu URL
+- **Monitoring** - śledzenie zmian w AI Overview
+
+### 🔧 Wymagania dla n8n:
+
+- **n8n v1.0+** (lokalnie lub w chmurze)
+- **Google Sheets API** (dla zapisywania danych)
+- **OpenRouter API** (dla AI guidelines) lub inny LLM provider
+- **Webhook endpoint** aktywny na porcie 5678
 
 ## 📁 Struktura plików
 
@@ -99,6 +157,8 @@ ai-overview-extractor/
 │   ├── ai-overviews-extractor.gif
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
+├── workflowk_templates/  # Gotowe template n8n workflow
+│   └── AI_Overviews_Extractor_Plugin.json  # Kompleksowy workflow n8n
 └── docs/             # Dokumentacja publikacji i prawna
     ├── chrome-web-store-description.md         # Opis dla Chrome Web Store
     ├── chrome-web-store-privacy-justifications.md # Uzasadnienia prywatności Chrome

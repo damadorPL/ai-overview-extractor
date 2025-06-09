@@ -166,10 +166,64 @@ const data = {
 await extractor.webhookManager.sendToWebhook(data);
 ```
 
+## 🔗 **Integracja n8n** (NOWOŚĆ!)
+
+### **Template workflow** (`workflowk_templates/AI_Overviews_Extractor_Plugin.json`)
+Kompletny n8n workflow do automatyzacji AI Overview:
+
+#### **Architektura workflow:**
+```
+Webhook → Data Processing → Google Sheets → AI Analysis → Guidelines
+```
+
+#### **Główne węzły:**
+1. **Webhook** - endpoint `/ai-overview-extractor` (port 5678)
+2. **data** (Set) - ekstrakcja z payload: `searchQuery`, `htmlContent`, `sources`
+3. **Markdown** - konwersja HTML→Markdown
+4. **updateRows** (Google Sheets) - zapis AI Overview
+5. **Basic LLM Chain** - AI generuje wytyczne SEO
+6. **Schedule Trigger** - automatyka co 15 minut
+
+#### **Payload mapping:**
+```javascript
+// Z webhook do Google Sheets:
+{
+  key: `${searchQuery} ${extractedAt}`,
+  extractedAt: timestamp,
+  searchQuery: query,
+  sources: formatted_sources,
+  markdown: converted_content
+}
+```
+
+#### **AI Prompt (wytyczne SEO):**
+```
+System: "Alice analizuje AI Overview vs treść strony"
+Input: searchQuery + htmlContent + aiOverview
+Output: "Co dodać na stronę aby znaleźć się w AI Overview"
+```
+
+#### **Google Sheets struktura:**
+```
+extractedAt | searchQuery | sources | markdown | myURL | task | guidelines | key | row_number
+```
+
+#### **Automatyzacja flow:**
+1. **Webhook flow:** Plugin → n8n → Google Sheets (natychmiastowy)
+2. **Batch flow:** Google Sheets → Page Analysis → AI Guidelines (co 15 min)
+3. **Filtering:** Tylko rekordy z `task="create guidelines"` i `myURL`
+
+#### **Konfiguracja webhook w plugin:**
+```javascript
+webhookUrl: "http://localhost:5678/webhook/ai-overview-extractor"
+testPayload: { test: true, timestamp: ISO_string, message: "Test..." }
+```
+
 ## 🚀 **Wersjonowanie**
-- **v1.0.2** - Aktualna wersja z webhook'ami
+- **v1.0.3** - Aktualna z webhook'ami + n8n template
 - **Manifest V3** - Nowoczesny standard rozszerzeń
 - **Chrome + Firefox** - Wsparcie cross-browser
+- **n8n integration** - Gotowy workflow template
 
 ---
 *Plik stworzony dla AI/LLM w celu oszczędzenia tokenów przy analizie kodu.*
