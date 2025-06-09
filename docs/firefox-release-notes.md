@@ -1,39 +1,54 @@
-# Uwagi do wydania v1.0.3 - dla użytkowników
+# Release Notes v1.0.4 - for users
 
-## 🚀 Nowości w wersji 1.0.3
+## 🚀 What's new in version 1.0.4
 
-### Webhook'i - automatyzacja workflow
-• **Nowa funkcja:** Automatyczne wysyłanie ekstraktowanych danych do zewnętrznych systemów
-• **Konfiguracja:** Łatwe ustawienie URL webhook'a w interfejsie rozszerzenia
-• **Test połączenia:** Sprawdzenie czy webhook działa przed zapisaniem
-• **Bezpieczeństwo:** Wymaganie HTTPS (oprócz localhost do testów)
+### English Translation - Global Accessibility
+• **New feature:** Complete interface translation to English
+• **User interface:** All buttons, messages and notifications in English
+• **Documentation:** Fully translated README and user guides
+• **Global reach:** Extension now accessible to international users
 
-### Ulepszona jakość treści
-• **Czysta treść:** Automatyczne usuwanie elementów CSS i JavaScript z ekstraktowanej treści
-• **Lepsze formatowanie:** Usunięcie niepotrzebnych atrybutów Google z linków
-• **Szybsza praca:** Optymalizacje wydajności dla większych treści AI Overview
+### Technical improvements
+• **Code cleanup:** Improved console messages and developer logs
+• **Comments:** All code comments updated for better maintainability
+• **Standards:** Consistent English terminology throughout codebase
 
-### Dla deweloperów i automatyzacji
-• **JSON API:** Standardowy format danych wysyłanych przez webhook'i
-• **Metadane:** Timestamp, wersja rozszerzenia, User Agent w każdym webhook'u
-• **Error handling:** Informacje o błędach połączenia z timeout 5 sekund
+## 🌍 Previous version (v1.0.3)
 
-## 🔒 Prywatność i bezpieczeństwo
-• **Opcjonalność:** Webhook'i są domyślnie wyłączone - musisz je świadomie skonfigurować
-• **Lokalne przechowywanie:** Konfiguracja webhook'a zapisana tylko w twojej przeglądarce
-• **Transparentność:** Jasne informacje o tym, jakie dane są wysyłane
-• **Kontrola użytkownika:** Pełna kontrola nad tym, gdzie i kiedy wysyłać dane
+## 🚀 What's new in version 1.0.3
 
-## ⚡ Kompatybilność
-• **Pełna zgodność wsteczna:** Wszystkie poprzednie funkcje działają bez zmian
-• **Firefox Manifest V3:** Kompatybilność z najnowszymi standardami
-• **Bez breaking changes:** Aktualizacja nie wpłynie na obecny sposób użytkowania
+### Webhooks - workflow automation
+• **New feature:** Automatic sending of extracted data to external systems
+• **Configuration:** Easy webhook URL setup in extension interface
+• **Connection test:** Check if webhook works before saving
+• **Security:** HTTPS requirement (except localhost for testing)
+
+### Improved content quality
+• **Clean content:** Automatic removal of CSS and JavaScript elements from extracted content
+• **Better formatting:** Removal of unnecessary Google attributes from links
+• **Faster performance:** Performance optimizations for larger AI Overview content
+
+### For developers and automation
+• **JSON API:** Standard format for data sent through webhooks
+• **Metadata:** Timestamp, extension version, User Agent in every webhook
+• **Error handling:** Connection error information with 5-second timeout
+
+## 🔒 Privacy and security
+• **Optional:** Webhooks are disabled by default - you must consciously configure them
+• **Local storage:** Webhook configuration saved only in your browser
+• **Transparency:** Clear information about what data is sent
+• **User control:** Full control over where and when to send data
+
+## ⚡ Compatibility
+• **Full backward compatibility:** All previous features work without changes
+• **Firefox Manifest V3:** Compatibility with latest standards
+• **No breaking changes:** Update won't affect current usage
 
 ---
 
-**Jak używać webhook'ów:**
-1. Kliknij przycisk "Ekstraktuj do Markdown" przy AI Overview
-2. W modal'u kliknij "Konfiguracja webhook'ów"
-3. Wpisz URL swojego API i kliknij "Test"
-4. Po pomyślnym teście kliknij "Zapisz"
-5. Od teraz dane będą automatycznie wysyłane do twojego systemu!
+**How to use webhooks:**
+1. Click "Extract to Markdown" button next to AI Overview
+2. In modal click "Webhook Configuration"
+3. Enter your API URL and click "Test"
+4. After successful test click "Save"
+5. From now data will be automatically sent to your system!

@@ -1,18 +1,18 @@
 class WebhookManager {
     constructor() {
         this.storageKey = 'ai-overview-webhook-url';
-        this.timeout = 5000; // 5 sekund timeout
+        this.timeout = 5000; // 5 seconds timeout
     }
 
     /**
-     * Zapisuje URL webhook'a w localStorage
-     * @param {string} webhookUrl - URL webhook'a
-     * @returns {boolean} - czy operacja się powiodła
+     * Saves webhook URL to localStorage
+     * @param {string} webhookUrl - Webhook URL
+     * @returns {boolean} - whether operation succeeded
      */
     async saveWebhookUrl(webhookUrl) {
         try {
             if (!this.isValidWebhookUrl(webhookUrl)) {
-                console.error('[Webhook Manager] Nieprawidłowy URL webhook:', webhookUrl);
+                console.error('[Webhook Manager] Invalid webhook URL:', webhookUrl);
                 return false;
             }
 
@@ -194,7 +194,7 @@ class WebhookManager {
                 googleSearchUrl: window.location.href,
                 extractedAt: now,
                 userAgent: navigator.userAgent,
-                extensionVersion: '1.0.2'
+                extensionVersion: '1.0.4'
             }
         };
     }

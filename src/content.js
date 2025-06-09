@@ -5,12 +5,12 @@ class AIOverviewExtractor {
     }
 
     init() {
-        console.log('[AI Overview Extractor] Inicjalizuję...');
+        console.log('[AI Overview Extractor] Initializing...');
         
-        // Sprawdź od razu czy jest kontener
+        // Check immediately if container exists
         this.checkAndAddButton();
         
-        // Obserwuj zmiany w DOM
+        // Observe DOM changes
         this.observeDOM();
     }
 
@@ -24,18 +24,18 @@ class AIOverviewExtractor {
             subtree: true
         });
         
-        console.log('[AI Overview Extractor] Observer DOM uruchomiony');
+        console.log('[AI Overview Extractor] DOM Observer started');
     }
 
     checkAndAddButton() {
-        // Sprawdź czy przycisk już istnieje
+        // Check if button already exists
         if (document.querySelector('.ai-extractor-button')) return;
         
-        // Szukaj #m-x-content
+        // Look for #m-x-content
         const container = document.querySelector('#m-x-content');
         
         if (container) {
-            console.log('[AI Overview Extractor] Znaleziono #m-x-content, dodaję przycisk');
+            console.log('[AI Overview Extractor] Found #m-x-content, adding button');
             this.addButton(container);
         }
     }
@@ -43,19 +43,19 @@ class AIOverviewExtractor {
     addButton(container) {
         const button = document.createElement('button');
         button.className = 'ai-extractor-button';
-        button.innerHTML = '📋 Ekstraktuj do Markdown';
+        button.innerHTML = '📋 Extract to Markdown';
         
         button.addEventListener('click', () => {
-            console.log('[AI Overview Extractor] Kliknięto przycisk ekstrakcji');
+            console.log('[AI Overview Extractor] Extraction button clicked');
             const content = this.extractContent(container);
             const sources = this.extractSources(container);
             const markdown = this.createMarkdown(content, sources);
             this.showPreview(markdown);
         });
 
-        // Dodaj przycisk nad kontenerem
+        // Add button above container
         container.parentNode.insertBefore(button, container);
-        console.log('[AI Overview Extractor] Przycisk dodany');
+        console.log('[AI Overview Extractor] Button added');
     }
 
     extractContent(container) {
@@ -266,21 +266,21 @@ class AIOverviewExtractor {
 
         let markdown = turndownService.turndown(content);
 
-        // Dodaj główny nagłówek z słowem kluczowym
+        // Add main header with search keyword
         let header = '# AI Overview';
         if (searchQuery) {
-            header += `\n\n**Wyszukiwane hasło:** ${searchQuery}`;
+            header += `\n\n**Search Query:** ${searchQuery}`;
         }
         markdown = `${header}\n\n${markdown.trim()}\n`;
 
         if (sources && sources.length > 0) {
-            console.log(`[AI Overview Extractor] Dodaję ${sources.length} źródeł do markdown`);
-            markdown += '\n## Źródła\n\n';
+            console.log(`[AI Overview Extractor] Adding ${sources.length} sources to markdown`);
+            markdown += '\n## Sources\n\n';
             sources.forEach((source, index) => {
                 markdown += `${index + 1}. [**${source.title}**](${source.url})\n`;
             });
         } else {
-            console.log('[AI Overview Extractor] Brak źródeł do dodania');
+            console.log('[AI Overview Extractor] No sources to add');
         }
 
         return markdown;
@@ -318,7 +318,7 @@ class AIOverviewExtractor {
         
         const closeBtn = document.createElement('button');
         closeBtn.className = 'ai-extractor-close';
-        closeBtn.textContent = '❌ Zamknij';
+        closeBtn.textContent = '❌ Close';
         
         header.appendChild(title);
         header.appendChild(closeBtn);

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "AI Overview Extractor",
-  "version": "1.0.3",
-  "description": "Ekstraktuje treść AI Overview z Google Search do formatu Markdown",
+  "version": "1.0.4",
+  "description": "Extract AI Overview content from Google Search to Markdown format",
   
   "browser_specific_settings": {
     "gecko": {

@@ -1,188 +1,188 @@
 # AI Overview Extractor - Browser Extension
 
-🔍 **Ekstraktuj treść AI Overview z Google Search do formatu Markdown**
+🔍 **Extract AI Overview content from Google Search to Markdown format**
 
-Rozszerzenie automatycznie wykrywa AI Overview na stronach wyników Google i umożliwia wyeksportowanie treści wraz ze źródłami do czytelnego formatu Markdown.
+Extension automatically detects AI Overview on Google results pages and enables exporting content along with sources to readable Markdown format.
 
 Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
 
-![Demonstracja działania wtyczki](./images/ai-overviews-extractor.gif)
+![Extension demo](./images/ai-overviews-extractor.gif)
 
 
-## 🚀 Funkcje
+## 🚀 Features
 
-- ✅ **Automatyczne wykrywanie** AI Overview na Google Search (kontener `#m-x-content`)
-- 📋 **Ekstrakcja treści** do formatu Markdown z użyciem biblioteki TurndownService
-- 🧹 **Zaawansowane czyszczenie** - usuwa elementy MSC, CSS, JavaScript i ukryte elementy
-- 🔍 **Automatyczne wyciąganie** słowa kluczowego z wyszukiwania
-- 🔗 **Wyciąganie źródeł** z oczyszczonymi URLami Google
-- 💾 **Kopiowanie** do schowka jednym klikiem
-- 📥 **Pobieranie** jako plik .md z timestampem
-- 🚀 **Webhook'i** - automatyczne wysyłanie danych do zewnętrznych API
-- ⚙️ **Konfiguracja webhook'ów** - łatwe ustawienie URL i testowanie połączenia
-- 🎨 **Czytelny interfejs** z podglądem i powiadomieniami
-- 🔄 **Obserwator DOM** - automatyczne dodawanie przycisku przy nowych wynikach
+- ✅ **Automatic detection** of AI Overview on Google Search (`#m-x-content` container)
+- 📋 **Content extraction** to Markdown format using TurndownService library
+- 🧹 **Advanced cleaning** - removes MSC elements, CSS, JavaScript and hidden elements
+- 🔍 **Automatic extraction** of search keyword from query
+- 🔗 **Source extraction** with cleaned Google URLs
+- 💾 **Copy** to clipboard with one click
+- 📥 **Download** as .md file with timestamp
+- 🚀 **Webhooks** - automatic sending of data to external APIs
+- ⚙️ **Webhook configuration** - easy URL setup and connection testing
+- 🎨 **Clean interface** with preview and notifications
+- 🔄 **DOM Observer** - automatic button addition for new results
 
-## 📦 Instalacja
+## 📦 Installation
 
-### Metoda 1: Chrome/Chromium - Tryb deweloperski
+### Method 1: Chrome/Chromium - Developer Mode
 
-1. **Pobierz pliki** - skopiuj wszystkie pliki do folderu `ai-overview-extractor/`
-2. **Otwórz Chrome** i przejdź do `chrome://extensions/`
-3. **Włącz** "Tryb dewelopera" (przełącznik w prawym górnym rogu)
-4. **Kliknij** "Wczytaj rozpakowane rozszerzenie"
-5. **Wybierz** folder `ai-overview-extractor/`
-6. **Gotowe!** Rozszerzenie zostanie załadowane
+1. **Download files** - copy all files to `ai-overview-extractor/` folder
+2. **Open Chrome** and navigate to `chrome://extensions/`
+3. **Enable** "Developer mode" (toggle in top right corner)
+4. **Click** "Load unpacked extension"
+5. **Select** `ai-overview-extractor/` folder
+6. **Done!** Extension will be loaded
 
-### Metoda 2: Firefox - Tryb deweloperski
+### Method 2: Firefox - Developer Mode
 
-1. **Pobierz pliki** - skopiuj wszystkie pliki do folderu `ai-overview-extractor/`
-2. **Otwórz Firefox** i przejdź do `about:debugging`
-3. **Kliknij** "Ten Firefox" w menu po lewej
-4. **Kliknij** "Wczytaj tymczasowy dodatek..."
-5. **Wybierz** plik `manifest.json` z folderu rozszerzenia
-6. **Gotowe!** Rozszerzenie zostanie załadowane
+1. **Download files** - copy all files to `ai-overview-extractor/` folder
+2. **Open Firefox** and navigate to `about:debugging`
+3. **Click** "This Firefox" in left menu
+4. **Click** "Load Temporary Add-on..."
+5. **Select** `manifest.json` file from extension folder
+6. **Done!** Extension will be loaded
 
-### Metoda 3: Firefox - Instalacja stała
+### Method 3: Firefox - Permanent Installation
 
-1. Wejdź na `about:config` w Firefox
-2. Znajdź `xpinstall.signatures.required` i ustaw na `false`
-3. Spakuj folder rozszerzenia do pliku `.zip`
-4. Zmień rozszerzenie na `.xpi`
-5. Przeciągnij plik `.xpi` do Firefox
+1. Go to `about:config` in Firefox
+2. Find `xpinstall.signatures.required` and set to `false`
+3. Pack extension folder to `.zip` file
+4. Change extension to `.xpi`
+5. Drag `.xpi` file to Firefox
 
-## 🎯 Użytkowanie
+## 🎯 Usage
 
-### Podstawowa ekstrakcja
-1. **Wyszukaj** coś w Google (np. "cukrzyca")
-2. **Poczekaj** aż pojawi się AI Overview
-3. **Klikinj przycisk pokaż więcej**
-4. **Kliknij** Pokaż wszystko
-5. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
-6. **Skopiuj** treść lub pobierz jako plik
+### Basic extraction
+1. **Search** for something on Google (e.g. "diabetes")
+2. **Wait** for AI Overview to appear
+3. **Click** "Show more" button
+4. **Click** "Show all"
+5. **Click** "📋 Extract to Markdown" button
+6. **Copy** content or download as file
 
-### Konfiguracja webhook'ów
-1. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
-2. **W sekcji "🔗 Konfiguracja Webhook"** wpisz URL swojego API
-3. **Przetestuj połączenie** przyciskiem "🧪 Test"
-4. **Zapisz konfigurację** przyciskiem "💾 Zapisz"
-5. **Wyślij dane** przyciskiem "🚀 Wyślij webhook"
+### Webhook configuration
+1. **Click** "📋 Extract to Markdown" button
+2. **In "🔗 Webhook Configuration" section** enter your API URL
+3. **Test connection** with "🧪 Test" button
+4. **Save configuration** with "💾 Save" button
+5. **Send data** with "🚀 Send webhook" button
 
-### Przykład webhook URL
+### Example webhook URLs
 ```
 https://your-api.com/ai-overview-webhook
 https://example.com/webhook-endpoint
 https://api.your-domain.com/receive-ai-data
-http://localhost:5678/webhook/ai-overview-extractor  # n8n lokalnie
+http://localhost:5678/webhook/ai-overview-extractor  # n8n locally
 ```
 
-## 🔗 Integracja z n8n
+## 🔗 n8n Integration
 
-Wtyczka jest w pełni kompatybilna z n8n i zawiera gotowy template workflow do kompleksowej automatyzacji!
+The extension is fully compatible with n8n and includes a ready-made template workflow for comprehensive automation!
 
-### 🚀 Gotowy Template n8n
+### 🚀 Ready n8n Template
 
-W folderze `workflows_templates/` znajdziesz gotowy workflow `AI_Overviews_Extractor_Plugin.json` który zawiera:
+In the `workflows_templates/` folder you'll find ready workflow `AI_Overviews_Extractor_Plugin.json` which contains:
 
-#### 📋 Funkcje workflow:
-1. **Webhook endpoint** - automatyczny odbiór danych z wtyczki
-2. **Przetwarzanie HTML→Markdown** - konwersja treści
-3. **Zapis do Google Sheets** - automatyczne zapisywanie wyników
-4. **AI Guidelines Generator** - LLM generuje wytyczne SEO na podstawie AI Overview
-5. **Automatyzacja** - scheduler co 15 minut + manual trigger
-6. **Analiza stron** - pobieranie i analiza treści z URL
+#### 📋 Workflow features:
+1. **Webhook endpoint** - automatic data reception from extension
+2. **HTML→Markdown processing** - content conversion
+3. **Google Sheets saving** - automatic results storage
+4. **AI Guidelines Generator** - LLM generates SEO guidelines based on AI Overview
+5. **Automation** - scheduler every 15 minutes + manual trigger
+6. **Page analysis** - fetching and analyzing content from URLs
 
-#### 🛠️ Instalacja template:
+#### 🛠️ Template installation:
 
-1. **W n8n przejdź do:** `Templates` → `Import from JSON`
-2. **Załaduj plik:** `workflows_templates/AI_Overviews_Extractor_Plugin.json`
-3. **Skonfiguruj węzły:**
-   - Google Sheets (połączenie z OAuth)
-   - OpenRouter Chat Model (klucz API)
-   - Ustaw URL Google Sheets w węzłach
-4. **Aktywuj workflow**
-5. **Skopiuj webhook URL** (z węzła Webhook)
+1. **In n8n go to:** `Templates` → `Import from JSON`
+2. **Load file:** `workflows_templates/AI_Overviews_Extractor_Plugin.json`
+3. **Configure nodes:**
+   - Google Sheets (OAuth connection)
+   - OpenRouter Chat Model (API key)
+   - Set Google Sheets URL in nodes
+4. **Activate workflow**
+5. **Copy webhook URL** (from Webhook node)
 
-#### ⚙️ Konfiguracja w wtyczce:
+#### ⚙️ Extension configuration:
 
 1. **Webhook URL:** `http://localhost:5678/webhook/ai-overview-extractor`
-2. **Przetestuj połączenie** - powinno zwrócić status 200
-3. **Zapisz konfigurację**
+2. **Test connection** - should return status 200
+3. **Save configuration**
 
-#### 📊 Co robi workflow:
+#### 📊 What the workflow does:
 
-- **Odbiera dane** z wtyczki (słowo kluczowe, markdown, HTML, źródła)
-- **Zapisuje do arkusza** wszystkie dane z AI Overview
-- **Analizuje strony** z Google Sheets (kolumna `myURL`)
-- **Generuje wytyczne SEO** używając AI (porównuje treść strony z AI Overview)
-- **Aktualizuje arkusz** z wygenerowanymi wytycznymi
-- **Automatyczne uruchamianie** co 15 minut dla nowych zadań
+- **Receives data** from extension (keyword, markdown, HTML, sources)
+- **Saves to sheet** all AI Overview data
+- **Analyzes pages** from Google Sheets (`myURL` column)
+- **Generates SEO guidelines** using AI (compares page content with AI Overview)
+- **Updates sheet** with generated guidelines
+- **Automatic execution** every 15 minutes for new tasks
 
-#### 🎯 Korzyści:
+#### 🎯 Benefits:
 
-- **Pełna automatyzacja** - od ekstrakcji do analizy
-- **Baza wiedzy** - wszystkie AI Overview w jednym miejscu  
-- **SEO insights** - AI wytyczne co dodać na stronę
-- **Skalowalność** - batch processing wielu URL
-- **Monitoring** - śledzenie zmian w AI Overview
+- **Full automation** - from extraction to analysis
+- **Knowledge base** - all AI Overviews in one place  
+- **SEO insights** - AI guidelines on what to add to page
+- **Scalability** - batch processing of multiple URLs
+- **Monitoring** - tracking changes in AI Overview
 
-### 🔧 Wymagania dla n8n:
+### 🔧 n8n Requirements:
 
-- **n8n v1.95.3+** (lokalnie lub w chmurze)
-- **Google Sheets API** (dla zapisywania danych)
-- **OpenRouter API** (dla AI guidelines) lub inny LLM provider
-- **Webhook endpoint** aktywny na porcie 5678
+- **n8n v1.95.3+** (locally or in cloud)
+- **Google Sheets API** (for data saving)
+- **OpenRouter API** (for AI guidelines) or other LLM provider
+- **Webhook endpoint** active on port 5678
 
-## 📁 Struktura plików
+## 📁 File Structure
 
 ```
 ai-overview-extractor/
-├── manifest.json      # Konfiguracja rozszerzenia (Manifest V3)
-├── styles.css         # Style interfejsu użytkownika
-├── README.md          # Ta dokumentacja
-├── LICENCE            # Licencja MIT
-├── .gitignore         # Pliki ignorowane przez Git
-├── AI_SUMMARY.md      # Dokumentacja techniczna dla AI/LLM
-├── src/              # Pliki źródłowe
-│   ├── content.js        # Główny skrypt z klasą AIOverviewExtractor
-│   ├── webhook-manager.js # Zarządzanie webhook'ami i POST requests
-│   └── turndown.js       # Biblioteka konwersji HTML→Markdown
-├── icons/            # Ikony rozszerzenia
+├── manifest.json      # Extension configuration (Manifest V3)
+├── styles.css         # User interface styles
+├── README.md          # This documentation
+├── LICENCE            # MIT License
+├── .gitignore         # Files ignored by Git
+├── AI_SUMMARY.md      # Technical documentation for AI/LLM
+├── src/              # Source files
+│   ├── content.js        # Main script with AIOverviewExtractor class
+│   ├── webhook-manager.js # Webhook management and POST requests
+│   └── turndown.js       # HTML→Markdown conversion library
+├── icons/            # Extension icons
 │   ├── icon-16.png
 │   ├── icon-32.png  
 │   ├── icon-48.png
 │   ├── icon-96.png
 │   └── icon-128.png
-├── images/           # Obrazy dokumentacji
+├── images/           # Documentation images
 │   ├── ai-overviews-extractor.gif
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
-├── workflows_templates/  # Gotowe template n8n workflow
-│   └── AI_Overviews_Extractor_Plugin.json  # Kompleksowy workflow n8n
-└── docs/             # Dokumentacja publikacji i prawna
-    ├── chrome-web-store-description.md         # Opis dla Chrome Web Store
-    ├── chrome-web-store-privacy-justifications.md # Uzasadnienia prywatności Chrome
-    ├── chrome-web-store-permission-justifications.md # Uzasadnienia uprawnień Chrome
-    ├── chrome-web-store-appeal-response.md     # Odpowiedź na odrzucenie Chrome Store
-    ├── firefox-release-notes.md                # Uwagi do wydania Firefox Add-ons
-    ├── firefox-reviewer-notes.md               # Uwagi dla recenzentów Firefox
-    └── privacy-policy.md                       # Polityka prywatności
+├── workflows_templates/  # Ready n8n workflow template
+│   └── AI_Overviews_Extractor_Plugin.json  # Comprehensive n8n workflow
+└── docs/             # Publication and legal documentation
+    ├── chrome-web-store-description.md         # Chrome Web Store description
+    ├── chrome-web-store-privacy-justifications.md # Chrome privacy justifications
+    ├── chrome-web-store-permission-justifications.md # Chrome permission justifications
+    ├── chrome-web-store-appeal-response.md     # Chrome Store rejection response
+    ├── firefox-release-notes.md                # Firefox Add-ons release notes
+    ├── firefox-reviewer-notes.md               # Firefox reviewer notes
+    └── privacy-policy.md                       # Privacy policy
 ```
 
-## ⚙️ Wymagania
+## ⚙️ Requirements
 
-- **Chrome/Chromium** (najnowsza wersja) lub **Firefox** 58+ (Firefox Quantum)
-- **Manifest V3** - nowoczesny standard rozszerzeń
-- **Strona**: `google.com/search`
-- **Język**: Działa z polskim interfejsem Google
-- **Uprawnienia**: `activeTab`, `host_permissions: *://www.google.com/*`
+- **Chrome/Chromium** (latest version) or **Firefox** 58+ (Firefox Quantum)
+- **Manifest V3** - modern extension standard
+- **Page**: `google.com/search`
+- **Language**: Works with Google interface in any language
+- **Permissions**: `activeTab`, `host_permissions: *://www.google.com/*`
 
-## 🔧 Konfiguracja
+## 🔧 Configuration
 
-Rozszerzenie działa automatycznie na:
+Extension works automatically on:
 - `*://www.google.com/search*`
 
-Aby dodać inne domeny Google, edytuj sekcję `content_scripts.matches` w `manifest.json`:
+To add other Google domains, edit `content_scripts.matches` section in `manifest.json`:
 
 ```json
 "content_scripts": [
@@ -199,145 +199,151 @@ Aby dodać inne domeny Google, edytuj sekcję `content_scripts.matches` w `manif
 ]
 ```
 
-## 🔍 Jak działa
+## 🔍 How it works
 
-### Wykrywanie AI Overview
-- Szuka kontenera `#m-x-content` na stronie
-- Używa `MutationObserver` do monitorowania zmian DOM
-- Automatycznie dodaje przycisk gdy znajdzie kontener
+### AI Overview Detection
+- Looks for `#m-x-content` container on page
+- Uses `MutationObserver` to monitor DOM changes
+- Automatically adds button when container is found
 
-### Ekstrakcja treści
-- Usuwa elementy z `data-subtree="msc"` (elementy MSC)
-- Usuwa elementy z `style="display:none"` (ukryte elementy)
-- Usuwa kontener źródeł przed konwersją
-- Konwertuje HTML na Markdown używając TurndownService
+### Content Extraction
+- Removes elements with `data-subtree="msc"` (MSC elements)
+- Removes elements with `style="display:none"` (hidden elements)
+- Removes sources container before conversion
+- Converts HTML to Markdown using TurndownService
 
-### Wyciąganie źródeł
-- Znajduje kontener źródeł `div[style="height: 100%;"]`
-- Ekstraktuje linki z widocznej listy `ul[class]`
-- Czyści URL-e Google (usuwa `/url?` wrappery)
-- Filtruje duplikaty i nieprawidłowe linki
+### Source Extraction
+- Finds sources container `div[style="height: 100%;"]`
+- Extracts links from visible list `ul[class]`
+- Cleans Google URLs (removes `/url?` wrappers)
+- Filters duplicates and invalid links
 
-### Webhook'i (NOWOŚĆ!)
-- **Automatyczne wysyłanie** danych do zewnętrznych API metodą POST
-- **Konfiguracja w UI** - łatwe ustawienie URL webhook'a
-- **Test połączenia** - sprawdzanie czy webhook działa
-- **Bezpieczne przechowywanie** - URL zapisywany w chrome.storage
-- **Kompletny payload** - słowo kluczowe, markdown, HTML i źródła
-- **Obsługa błędów** - timeout 5s i informacyjne komunikaty
+### Webhooks (NEW!)
+- **Automatic sending** of data to external APIs via POST method
+- **UI configuration** - easy webhook URL setup
+- **Connection testing** - check if webhook works
+- **Secure storage** - URL saved in chrome.storage
+- **Complete payload** - keyword, markdown, HTML and sources
+- **Error handling** - 5s timeout and informative messages
 
-#### Format danych webhook'a:
+#### Webhook data format:
 ```json
 {
   "timestamp": "2025-01-06T12:30:00Z",
-  "searchQuery": "słowo kluczowe",
+  "searchQuery": "search keyword",
   "aiOverview": {
-    "content": "markdown treść",
-    "htmlContent": "oczyszczony HTML"
+    "content": "markdown content",
+    "htmlContent": "cleaned HTML"
   },
   "sources": [
-    {"title": "Tytuł", "url": "https://url.com"}
+    {"title": "Title", "url": "https://url.com"}
   ],
   "metadata": {
     "googleSearchUrl": "https://google.com/search?q=...",
     "extractedAt": "2025-01-06T12:30:00Z",
     "userAgent": "Mozilla/5.0...",
-    "extensionVersion": "1.0.2"
+    "extensionVersion": "1.0.4"
   }
 }
 ```
 
-## 🐛 Rozwiązywanie problemów
+## 🐛 Troubleshooting
 
-### Przycisk nie pojawia się
-- Sprawdź czy na stronie rzeczywiście jest AI Overview
-- Otwórz konsolę (F12) i poszukaj logów `[AI Overview Extractor]`
-- Sprawdź czy istnieje element `#m-x-content`
-- Odśwież stronę i poczekaj na pełne załadowanie
+### Button doesn't appear
+- Check if AI Overview is actually on the page
+- Open console (F12) and look for `[AI Overview Extractor]` logs
+- Check if `#m-x-content` element exists
+- Refresh page and wait for full loading
 
-### Brak treści w markdown
-- AI Overview może nie być w pełni załadowane
-- Spróbuj ponownie po kilku sekundach
-- Sprawdź logi w konsoli - powinny pokazać proces ekstrakcji
-- Sprawdź czy nie ma błędów JavaScript
+### No content in markdown
+- AI Overview may not be fully loaded
+- Try again after a few seconds
+- Check console logs - they should show extraction process
+- Check for JavaScript errors
 
-### Błąd kopiowania
-- Sprawdź czy przeglądarka ma uprawnienia do schowka
-- Spróbuj pobrać plik zamiast kopiować
-- Sprawdź czy strona jest serwowana przez HTTPS
+### Copy error
+- Check if browser has clipboard permissions
+- Try downloading file instead of copying
+- Check if page is served over HTTPS
 
-### Problemy z źródłami
-- Sprawdź w konsoli logi dotyczące znalezionych linków
-- Niektóre źródła mogą być filtrowane (Google, support itp.)
-- URL-e są automatycznie czyszczone z wrapperów Google
+### Source issues
+- Check console logs about found links
+- Some sources may be filtered (Google, support etc.)
+- URLs are automatically cleaned from Google wrappers
 
-## 🔄 Aktualizacje
+## 🔄 Updates
 
-Aby zaktualizować rozszerzenie:
+To update the extension:
 
 **Chrome/Chromium:**
-1. Pobierz nowe pliki
-2. Zastąp stare pliki w folderze rozszerzenia
-3. Wejdź na `chrome://extensions/`
-4. Kliknij "Przeładuj" przy rozszerzeniu
+1. Download new files
+2. Replace old files in extension folder
+3. Go to `chrome://extensions/`
+4. Click "Reload" on the extension
 
 **Firefox:**
-1. Pobierz nowe pliki
-2. Zastąp stare pliki w folderze rozszerzenia
-3. Wejdź na `about:debugging`
-4. Kliknij "Przeładuj" przy rozszerzeniu
+1. Download new files
+2. Replace old files in extension folder
+3. Go to `about:debugging`
+4. Click "Reload" on the extension
 
 ## 📝 Changelog
 
-### v1.0.3 (aktualna) 
-- 🚀 **NOWOŚĆ: Webhook'i** - automatyczne wysyłanie danych do zewnętrznych API
-- ⚙️ **Konfiguracja webhook'ów** - UI do ustawiania URL i testowania
-- 🧹 **Ulepszone czyszczenie** - usuwanie CSS, JavaScript i inline stylów
-- 💾 **Chrome Storage** - bezpieczne przechowywanie konfiguracji
-- 🔒 **Walidacja HTTPS** - bezpieczeństwo webhook'ów
-- ⏱️ **Timeout handling** - obsługa błędów i timeout'ów (5s)
+### v1.0.4 (current)
+- 🌍 **English translation** - complete interface and documentation translation
+- 🎨 **UI improvements** - updated button text and user messages
+- 📝 **Documentation** - fully translated README and user guides
+- 🔧 **Code cleanup** - improved console messages and comments
+
+### v1.0.3
+- 🚀 **NEW: Webhooks** - automatic data sending to external APIs
+- ⚙️ **Webhook configuration** - UI for URL setup and testing
+- 🧹 **Improved cleaning** - removal of CSS, JavaScript and inline styles
+- 💾 **Chrome Storage** - secure configuration storage
+- 🔒 **HTTPS validation** - webhook security
+- ⏱️ **Timeout handling** - error handling and timeouts (5s)
 
 ### v1.0.2
-- 🔧 Poprawki stabilności i kompatybilności
-- 📱 Wsparcie dla Manifest V3
-- 🌐 Kompatybilność z Chrome i Firefox
+- 🔧 Stability and compatibility fixes
+- 📱 Manifest V3 support
+- 🌐 Chrome and Firefox compatibility
 
 ### v1.0.1
-- 🐛 Poprawki błędów w ekstrakcji źródeł
-- ⚡ Optymalizacja wydajności
-- 🔍 Ulepszone wykrywanie AI Overview
+- 🐛 Source extraction bug fixes
+- ⚡ Performance optimizations
+- 🔍 Improved AI Overview detection
 
 ### v1.0.0
-- ✨ Pierwsza wersja
-- 📋 Ekstrakcja AI Overview do Markdown z TurndownService
-- 🔗 Wyciąganie źródeł z czyszczeniem URL-i Google
-- 🧹 Zaawansowane filtrowanie treści (MSC, ukryte elementy)
-- 💾 Kopiowanie i pobieranie z timestampem
-- 🎨 Interfejs użytkownika z powiadomieniami
-- 🔄 Obserwator DOM dla dynamicznych zmian
+- ✨ First version
+- 📋 AI Overview extraction to Markdown with TurndownService
+- 🔗 Source extraction with Google URL cleaning
+- 🧹 Advanced content filtering (MSC, hidden elements)
+- 💾 Copy and download with timestamp
+- 🎨 User interface with notifications
+- 🔄 DOM observer for dynamic changes
 
-## 🤝 Współpraca
+## 🤝 Contributing
 
-Projekt jest open source! Możesz:
-- 🐛 **Zgłaszać błędy** przez Issues na GitHub
-- 💡 **Proponować funkcje** 
-- 🔧 **Wysyłać Pull Requesty**
-- ⭐ **Oznaczać gwiazdką** jeśli podoba Ci się projekt
+Project is open source! You can:
+- 🐛 **Report bugs** via Issues on GitHub
+- 💡 **Suggest features** 
+- 🔧 **Send Pull Requests**
+- ⭐ **Star** if you like the project
 
 **GitHub:** https://github.com/romek-rozen/ai-overview-extractor
 
-## 👨‍💻 Autor
+## 👨‍💻 Author
 
 **Roman Rozenberger**
 - GitHub: https://github.com/romek-rozen
-- Www: https://rozenberger.com
+- Website: https://rozenberger.com
 
-## 📄 Licencja
+## 📄 License
 
-MIT License - możesz używać, modyfikować i dystrybuować za darmo.
+MIT License - you can use, modify and distribute for free.
 
 ---
 
-**Przydatne? Zostaw ⭐ i podziel się z innymi!**
+**Useful? Leave a ⭐ and share with others!**
 
-Stworzono z ❤️ dla społeczności SEO i marketingu cyfrowego.
+Created with ❤️ for SEO and digital marketing community.
