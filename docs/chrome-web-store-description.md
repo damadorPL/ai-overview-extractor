@@ -15,7 +15,9 @@ Automatycznie wykrywaj i ekstraktuj treść AI Overview z wyników wyszukiwania 
 📋 **Konwersja do Markdown** - Przekształca treść HTML w czytelny format Markdown z zachowaniem struktury
 🔗 **Ekstrakcja źródeł** - Automatycznie wyciąga i czyści linki do źródeł z usuniętymi wrapperami Google
 💾 **Kopiowanie i pobieranie** - Jednym klikiem skopiuj do schowka lub pobierz jako plik .md
-🧹 **Inteligentne czyszczenie** - Usuwa niepotrzebne elementy systemowe i ukryte treści
+🚀 **Webhook'i** - Automatyczne wysyłanie danych do zewnętrznych API i systemów automatyzacji
+⚙️ **Konfiguracja webhook'ów** - Łatwe ustawienie URL i testowanie połączenia
+🧹 **Zaawansowane czyszczenie** - Usuwa CSS, JavaScript i niepotrzebne elementy systemowe
 ⚡ **Działanie w czasie rzeczywistym** - Obserwuje zmiany na stronie i automatycznie dodaje przycisk
 🎨 **Przyjazny interfejs** - Czytelny design z powiadomieniami o statusie operacji
 
@@ -94,7 +96,15 @@ AI Overview Extractor nie zbiera, nie przechowuje ani nie przesyła żadnych dan
 
 ## Wersja i changelog
 
-**Aktualna wersja: 1.0.2**
+**Aktualna wersja: 1.0.3**
+
+### v1.0.3 (NOWOŚĆ!)
+- 🚀 **Webhook'i** - automatyczne wysyłanie danych do zewnętrznych API
+- ⚙️ **Konfiguracja webhook'ów** - UI do ustawiania URL i testowania połączenia
+- 🧹 **Ulepszone czyszczenie** - usuwanie CSS, JavaScript i inline stylów
+- 💾 **Chrome Storage** - bezpieczne przechowywanie konfiguracji
+- 🔒 **Walidacja HTTPS** - wymaganie bezpiecznych połączeń
+- ⏱️ **Timeout handling** - obsługa błędów i timeout'ów (5s)
 
 ### v1.0.2
 - Ulepszona stabilność wykrywania AI Overview

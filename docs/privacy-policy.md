@@ -1,7 +1,7 @@
 # Polityka Prywatności
 ## AI Overview Extractor - Rozszerzenie Chrome
-**Ostatnia aktualizacja:** 23 maja 2025 
-**Wersja rozszerzenia:** 1.0.2
+**Ostatnia aktualizacja:** 6 czerwca 2025 
+**Wersja rozszerzenia:** 1.0.3
 ## 1\. Wprowadzenie
  AI Overview Extractor to rozszerzenie przeglądarki Chrome zaprojektowane wyłącznie do ekstraktowania treści AI Overview z Google Search i konwersji jej do formatu Markdown. Niniejsza polityka prywatności wyjaśnia, jak rozszerzenie przetwarza dane i chroni prywatność użytkowników.
 ## 2\. Zbieranie danych
@@ -25,11 +25,30 @@ Rozszerzenie przetwarza wyłącznie:
 * Po zamknięciu karty wszystkie dane są automatycznie usuwane
 * Nie ma lokalnej bazy danych ani plików konfiguracyjnych
 ## 5\. Komunikacja sieciowa
-Rozszerzenie:
+Rozszerzenie domyślnie:
 * Nie nawiązuje połączeń z zewnętrznymi serwerami
 * Nie wysyła danych do deweloperów
 * Nie komunikuje się z usługami analitycznymi
 * Działa wyłącznie w kontekście strony Google Search
+
+### Webhook'i (funkcja opcjonalna)
+**Od wersji 1.0.3** rozszerzenie oferuje opcjonalną funkcję webhook'ów:
+* **Wymaga świadomej konfiguracji** - funkcja jest wyłączona domyślnie
+* **Kontrola użytkownika** - użytkownik sam decyduje czy i gdzie wysyłać dane
+* **Przejrzystość** - jasne informacje o wysyłanych danych
+* **Bezpieczeństwo** - wymaganie HTTPS dla webhook'ów
+* **Brak śledzenia** - rozszerzenie nie monitoruje używania webhook'ów
+
+**Dane wysyłane przez webhook'i (tylko jeśli skonfigurowane):**
+* Treść AI Overview w formacie Markdown i HTML
+* Lista źródeł z AI Overview
+* Słowo kluczowe wyszukiwania
+* URL strony Google Search
+* Timestamp ekstrakcji
+* Wersja rozszerzenia
+* User Agent przeglądarki
+
+**Ważne:** Webhook'i wysyłają dane do serwerów konfigurowanych przez użytkownika. Rozszerzenie nie kontroluje ani nie monitoruje tych serwerów.
 ## 6\. Uprawnienia i ich użycie
 ### activeTab
 Używane wyłącznie do:
@@ -41,6 +60,13 @@ Umożliwia działanie rozszerzenia na stronach Google Search:
 * Ograniczone wyłącznie do domeny google.com
 * Nie daje dostępu do innych stron internetowych
 * Minimalizuje powierzchnię ataku
+
+### storage
+**Nowe w wersji 1.0.3** - używane wyłącznie do:
+* Przechowywania URL webhook'a (jeśli skonfigurowany przez użytkownika)
+* Lokalne przechowywanie w chrome.storage.local
+* Brak synchronizacji z innymi urządzeniami
+* Dane nie są wysyłane do deweloperów
 ## 7\. Bezpieczeństwo
 * Kod rozszerzenia działa w izolowanym środowisku przeglądarki
 * Brak połączeń z zewnętrznymi serwerami
@@ -82,6 +108,6 @@ W przypadku pytań dotyczących prywatności:
 * Minimalne uprawnienia
 * Jeden, jasno zdefiniowany cel
 ---
-**AI Overview Extractor v1.0.2** 
+**AI Overview Extractor v1.0.3** 
  Autor: Roman Rozenberger 
- Ostatnia aktualizacja polityki: 23 maja 2025
+ Ostatnia aktualizacja polityki: 6 czerwca 2025

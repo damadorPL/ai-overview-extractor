@@ -5,7 +5,8 @@
   "description": "Ekstraktuje treść AI Overview z Google Search do formatu Markdown",
   
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   
   "host_permissions": [
@@ -17,7 +18,7 @@
       "matches": [
         "*://www.google.com/search*"
       ],
-      "js": ["src/turndown.js", "src/content.js"],
+      "js": ["src/turndown.js", "src/webhook-manager.js", "src/content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }

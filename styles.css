@@ -39,6 +39,7 @@
     justify-content: center;
     align-items: center;
     z-index: 10001;
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
 }
 
@@ -163,6 +164,95 @@
     transform: translateX(0);
 }
 
+/* Przycisk webhook */
+.ai-extractor-webhook {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: #FF9800;
+    color: white;
+}
+
+.ai-extractor-webhook:hover {
+    background: #F57C00;
+    transform: translateY(-1px);
+}
+
+.ai-extractor-webhook:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Sekcja webhook'ów */
+.ai-extractor-webhook-section {
+    padding: 20px 24px;
+    background: #fafafa;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ai-extractor-webhook-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: border-color 0.2s;
+}
+
+.ai-extractor-webhook-input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.ai-extractor-webhook-input::placeholder {
+    color: #999;
+}
+
+.ai-extractor-test-webhook,
+.ai-extractor-save-webhook {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 60px;
+}
+
+.ai-extractor-test-webhook {
+    background: #007bff;
+    color: white;
+}
+
+.ai-extractor-test-webhook:hover {
+    background: #0056b3;
+}
+
+.ai-extractor-save-webhook {
+    background: #28a745;
+    color: white;
+}
+
+.ai-extractor-save-webhook:hover {
+    background: #1e7e34;
+}
+
+.ai-extractor-webhook-status {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
 /* Responsywność */
 @media (max-width: 768px) {
     .ai-extractor-modal {
@@ -181,7 +271,23 @@
     }
     
     .ai-extractor-copy,
-    .ai-extractor-download {
+    .ai-extractor-download,
+    .ai-extractor-webhook {
         width: 100%;
+    }
+    
+    .ai-extractor-webhook-section {
+        padding: 15px 20px;
+    }
+    
+    .ai-extractor-webhook-section > div {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .ai-extractor-test-webhook,
+    .ai-extractor-save-webhook {
+        width: 100%;
+        padding: 10px;
     }
 }

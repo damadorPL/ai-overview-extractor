@@ -13,11 +13,13 @@ Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extra
 
 - ✅ **Automatyczne wykrywanie** AI Overview na Google Search (kontener `#m-x-content`)
 - 📋 **Ekstrakcja treści** do formatu Markdown z użyciem biblioteki TurndownService
-- 🧹 **Zaawansowane czyszczenie** - usuwa elementy MSC, ukryte elementy i błędy systemowe
+- 🧹 **Zaawansowane czyszczenie** - usuwa elementy MSC, CSS, JavaScript i ukryte elementy
 - 🔍 **Automatyczne wyciąganie** słowa kluczowego z wyszukiwania
 - 🔗 **Wyciąganie źródeł** z oczyszczonymi URLami Google
 - 💾 **Kopiowanie** do schowka jednym klikiem
 - 📥 **Pobieranie** jako plik .md z timestampem
+- 🚀 **Webhook'i** - automatyczne wysyłanie danych do zewnętrznych API
+- ⚙️ **Konfiguracja webhook'ów** - łatwe ustawienie URL i testowanie połączenia
 - 🎨 **Czytelny interfejs** z podglądem i powiadomieniami
 - 🔄 **Obserwator DOM** - automatyczne dodawanie przycisku przy nowych wynikach
 
@@ -51,12 +53,27 @@ Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extra
 
 ## 🎯 Użytkowanie
 
+### Podstawowa ekstrakcja
 1. **Wyszukaj** coś w Google (np. "cukrzyca")
 2. **Poczekaj** aż pojawi się AI Overview
 3. **Klikinj przycisk pokaż więcej**
 4. **Kliknij** Pokaż wszystko
 5. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
 6. **Skopiuj** treść lub pobierz jako plik
+
+### Konfiguracja webhook'ów
+1. **Kliknij** przycisk "📋 Ekstraktuj do Markdown"
+2. **W sekcji "🔗 Konfiguracja Webhook"** wpisz URL swojego API
+3. **Przetestuj połączenie** przyciskiem "🧪 Test"
+4. **Zapisz konfigurację** przyciskiem "💾 Zapisz"
+5. **Wyślij dane** przyciskiem "🚀 Wyślij webhook"
+
+### Przykład webhook URL
+```
+https://your-api.com/ai-overview-webhook
+https://zapier.com/hooks/catch/123456/abcdef
+https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+```
 
 ## 📁 Struktura plików
 
@@ -68,8 +85,9 @@ ai-overview-extractor/
 ├── LICENCE            # Licencja MIT
 ├── .gitignore         # Pliki ignorowane przez Git
 ├── src/              # Pliki źródłowe
-│   ├── content.js     # Główny skrypt z klasą AIOverviewExtractor
-│   └── turndown.js    # Biblioteka konwersji HTML→Markdown
+│   ├── content.js        # Główny skrypt z klasą AIOverviewExtractor
+│   ├── webhook-manager.js # Zarządzanie webhook'ami i POST requests
+│   └── turndown.js       # Biblioteka konwersji HTML→Markdown
 ├── icons/            # Ikony rozszerzenia
 │   ├── icon-16.png
 │   ├── icon-32.png  
@@ -135,6 +153,35 @@ Aby dodać inne domeny Google, edytuj sekcję `content_scripts.matches` w `manif
 - Czyści URL-e Google (usuwa `/url?` wrappery)
 - Filtruje duplikaty i nieprawidłowe linki
 
+### Webhook'i (NOWOŚĆ!)
+- **Automatyczne wysyłanie** danych do zewnętrznych API metodą POST
+- **Konfiguracja w UI** - łatwe ustawienie URL webhook'a
+- **Test połączenia** - sprawdzanie czy webhook działa
+- **Bezpieczne przechowywanie** - URL zapisywany w chrome.storage
+- **Kompletny payload** - słowo kluczowe, markdown, HTML i źródła
+- **Obsługa błędów** - timeout 5s i informacyjne komunikaty
+
+#### Format danych webhook'a:
+```json
+{
+  "timestamp": "2025-01-06T12:30:00Z",
+  "searchQuery": "słowo kluczowe",
+  "aiOverview": {
+    "content": "markdown treść",
+    "htmlContent": "oczyszczony HTML"
+  },
+  "sources": [
+    {"title": "Tytuł", "url": "https://url.com"}
+  ],
+  "metadata": {
+    "googleSearchUrl": "https://google.com/search?q=...",
+    "extractedAt": "2025-01-06T12:30:00Z",
+    "userAgent": "Mozilla/5.0...",
+    "extensionVersion": "1.0.2"
+  }
+}
+```
+
 ## 🐛 Rozwiązywanie problemów
 
 ### Przycisk nie pojawia się
@@ -177,7 +224,15 @@ Aby zaktualizować rozszerzenie:
 
 ## 📝 Changelog
 
-### v1.0.2 (aktualna)
+### v1.0.3 (aktualna) 
+- 🚀 **NOWOŚĆ: Webhook'i** - automatyczne wysyłanie danych do zewnętrznych API
+- ⚙️ **Konfiguracja webhook'ów** - UI do ustawiania URL i testowania
+- 🧹 **Ulepszone czyszczenie** - usuwanie CSS, JavaScript i inline stylów
+- 💾 **Chrome Storage** - bezpieczne przechowywanie konfiguracji
+- 🔒 **Walidacja HTTPS** - bezpieczeństwo webhook'ów
+- ⏱️ **Timeout handling** - obsługa błędów i timeout'ów (5s)
+
+### v1.0.2
 - 🔧 Poprawki stabilności i kompatybilności
 - 📱 Wsparcie dla Manifest V3
 - 🌐 Kompatybilność z Chrome i Firefox

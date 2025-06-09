@@ -1,5 +1,6 @@
 class AIOverviewExtractor {
     constructor() {
+        this.webhookManager = new WebhookManager();
         this.init();
     }
 
@@ -60,38 +61,91 @@ class AIOverviewExtractor {
     extractContent(container) {
         console.log('[AI Overview Extractor] Ekstraktuję treść z:', container);
 
-        let rawHTML = container.innerHTML;
+        // Stwórz kopię kontenera do manipulacji
+        const clonedContainer = container.cloneNode(true);
 
-        // Najpierw usuń elementy z data-subtree="msc"
-        const mscElements = container.querySelectorAll('div[data-subtree="msc"]');
+        // Usuń elementy z data-subtree="msc"
+        const mscElements = clonedContainer.querySelectorAll('div[data-subtree="msc"]');
         console.log(`[AI Overview Extractor] Znaleziono ${mscElements.length} elementów z data-subtree="msc"`);
-        
         mscElements.forEach((element, index) => {
-            const elementHTML = element.outerHTML;
-            rawHTML = rawHTML.replace(elementHTML, '');
+            element.remove();
             console.log(`[AI Overview Extractor] Usunięto element MSC ${index + 1}`);
         });
 
-        // Potem usuń sourcesElement
-        const sourcesElement = container.querySelector('div[style="height: 100%;"]');
+        // Usuń sekcję źródeł
+        const sourcesElement = clonedContainer.querySelector('div[style="height: 100%;"]');
         if (sourcesElement) {
-            const sourcesOuterHTML = sourcesElement.outerHTML;
-            rawHTML = rawHTML.replace(sourcesOuterHTML, '');
+            sourcesElement.remove();
+            console.log('[AI Overview Extractor] Usunięto sekcję źródeł');
         }
 
-        // Na końcu usuń wszystkie elementy z style="display:none"
-        const hiddenElements = container.querySelectorAll('[style*="display:none"], [style*="display: none"]');
+        // Usuń wszystkie elementy z style="display:none"
+        const hiddenElements = clonedContainer.querySelectorAll('[style*="display:none"], [style*="display: none"]');
         console.log(`[AI Overview Extractor] Znaleziono ${hiddenElements.length} ukrytych elementów`);
-        
         hiddenElements.forEach((element, index) => {
-            const elementHTML = element.outerHTML;
-            rawHTML = rawHTML.replace(elementHTML, '');
+            element.remove();
             console.log(`[AI Overview Extractor] Usunięto ukryty element ${index + 1}`);
         });
 
-        console.log('[AI Overview Extractor] Surowy HTML (po usunięciu MSC, źródeł i ukrytych elementów):', rawHTML.substring(0, 200) + '...');
+        // Usuń wszystkie elementy <style>
+        const styleElements = clonedContainer.querySelectorAll('style');
+        console.log(`[AI Overview Extractor] Znaleziono ${styleElements.length} elementów <style>`);
+        styleElements.forEach((element, index) => {
+            element.remove();
+            console.log(`[AI Overview Extractor] Usunięto element <style> ${index + 1}`);
+        });
 
-        return rawHTML;
+        // Usuń wszystkie elementy <script>
+        const scriptElements = clonedContainer.querySelectorAll('script');
+        console.log(`[AI Overview Extractor] Znaleziono ${scriptElements.length} elementów <script>`);
+        scriptElements.forEach((element, index) => {
+            element.remove();
+            console.log(`[AI Overview Extractor] Usunięto element <script> ${index + 1}`);
+        });
+
+        // Usuń wszystkie atrybuty style z elementów
+        const elementsWithStyle = clonedContainer.querySelectorAll('[style]');
+        console.log(`[AI Overview Extractor] Znaleziono ${elementsWithStyle.length} elementów z atrybutem style`);
+        elementsWithStyle.forEach((element) => {
+            element.removeAttribute('style');
+        });
+
+        // Usuń wszystkie atrybuty class (często zawierają losowe identyfikatory)
+        const elementsWithClass = clonedContainer.querySelectorAll('[class]');
+        elementsWithClass.forEach((element) => {
+            element.removeAttribute('class');
+        });
+
+        // Usuń inne niepotrzebne atrybuty
+        const unwantedAttributes = ['data-ved', 'data-async-token', 'data-async-context', 'data-subtree', 'role', 'aria-level', 'jscontroller', 'jsaction', 'jsmodel', 'jsname'];
+        clonedContainer.querySelectorAll('*').forEach((element) => {
+            unwantedAttributes.forEach((attr) => {
+                if (element.hasAttribute(attr)) {
+                    element.removeAttribute(attr);
+                }
+            });
+        });
+
+        let cleanHTML = clonedContainer.innerHTML;
+
+        // Usuń inline JavaScript (wzorce jak "(function(){...})()" itp.)
+        cleanHTML = cleanHTML.replace(/\(function\(\)[^}]*\{[^}]*\}\)\(\);?/g, '');
+        cleanHTML = cleanHTML.replace(/javascript:[^"']*/g, '');
+        cleanHTML = cleanHTML.replace(/on\w+\s*=\s*["'][^"']*["']/g, '');
+
+        // Usuń pozostałe fragmenty JS
+        cleanHTML = cleanHTML.replace(/\(function\(\)\{[^}]*\}\)\(\);/g, '');
+        cleanHTML = cleanHTML.replace(/var\s+\w+\s*=\s*[^;]*;/g, '');
+        cleanHTML = cleanHTML.replace(/function\s*\([^)]*\)\s*\{[^}]*\}/g, '');
+
+        // Usuń puste linie i nadmierne białe znaki
+        cleanHTML = cleanHTML.replace(/^\s*[\r\n]/gm, '');
+        cleanHTML = cleanHTML.replace(/\s{2,}/g, ' ');
+        cleanHTML = cleanHTML.trim();
+
+        console.log('[AI Overview Extractor] Oczyszczony HTML:', cleanHTML.substring(0, 200) + '...');
+
+        return cleanHTML;
     }
 
     extractSources(container) {
@@ -248,7 +302,7 @@ class AIOverviewExtractor {
         return null;
     }
 
-    showPreview(markdown) {
+    async showPreview(markdown) {
         const overlay = document.createElement('div');
         overlay.className = 'ai-extractor-overlay';
         
@@ -274,6 +328,9 @@ class AIOverviewExtractor {
         textarea.readOnly = true;
         textarea.value = markdown;
         
+        // Sekcja webhook'ów
+        const webhookSection = await this.createWebhookSection();
+        
         const footer = document.createElement('div');
         footer.className = 'ai-extractor-footer';
         
@@ -285,11 +342,17 @@ class AIOverviewExtractor {
         downloadBtn.className = 'ai-extractor-download';
         downloadBtn.textContent = '💾 Pobierz';
         
+        const webhookBtn = document.createElement('button');
+        webhookBtn.className = 'ai-extractor-webhook';
+        webhookBtn.textContent = '🚀 Wyślij webhook';
+        
         footer.appendChild(copyBtn);
         footer.appendChild(downloadBtn);
+        footer.appendChild(webhookBtn);
         
         modal.appendChild(header);
         modal.appendChild(textarea);
+        modal.appendChild(webhookSection);
         modal.appendChild(footer);
         
         overlay.appendChild(modal);
@@ -312,6 +375,10 @@ class AIOverviewExtractor {
             this.downloadMarkdown(markdown);
         });
 
+        webhookBtn.addEventListener('click', () => {
+            this.handleWebhookSend(markdown);
+        });
+
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 document.body.removeChild(overlay);
@@ -331,6 +398,155 @@ class AIOverviewExtractor {
         URL.revokeObjectURL(url);
         
         this.showNotification('✅ Plik pobrany!');
+    }
+
+    async createWebhookSection() {
+        const section = document.createElement('div');
+        section.className = 'ai-extractor-webhook-section';
+        
+        const webhookTitle = document.createElement('h4');
+        webhookTitle.textContent = '🔗 Konfiguracja Webhook';
+        webhookTitle.style.margin = '10px 0 5px 0';
+        webhookTitle.style.fontSize = '14px';
+        
+        const webhookContainer = document.createElement('div');
+        webhookContainer.style.display = 'flex';
+        webhookContainer.style.gap = '10px';
+        webhookContainer.style.alignItems = 'center';
+        
+        const webhookInput = document.createElement('input');
+        webhookInput.type = 'url';
+        webhookInput.placeholder = 'https://your-webhook-url.com/endpoint';
+        webhookInput.className = 'ai-extractor-webhook-input';
+        webhookInput.style.flex = '1';
+        webhookInput.style.padding = '8px';
+        webhookInput.style.border = '1px solid #ddd';
+        webhookInput.style.borderRadius = '4px';
+        webhookInput.style.fontSize = '12px';
+        
+        // Wczytaj zapisany URL
+        const savedUrl = await this.webhookManager.getWebhookUrl();
+        if (savedUrl) {
+            webhookInput.value = savedUrl;
+        }
+        
+        const testBtn = document.createElement('button');
+        testBtn.textContent = '🧪 Test';
+        testBtn.className = 'ai-extractor-test-webhook';
+        testBtn.style.padding = '8px 12px';
+        testBtn.style.fontSize = '12px';
+        testBtn.style.border = '1px solid #007bff';
+        testBtn.style.backgroundColor = '#007bff';
+        testBtn.style.color = 'white';
+        testBtn.style.borderRadius = '4px';
+        testBtn.style.cursor = 'pointer';
+        
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = '💾 Zapisz';
+        saveBtn.className = 'ai-extractor-save-webhook';
+        saveBtn.style.padding = '8px 12px';
+        saveBtn.style.fontSize = '12px';
+        saveBtn.style.border = '1px solid #28a745';
+        saveBtn.style.backgroundColor = '#28a745';
+        saveBtn.style.color = 'white';
+        saveBtn.style.borderRadius = '4px';
+        saveBtn.style.cursor = 'pointer';
+        
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'ai-extractor-webhook-status';
+        statusDiv.style.marginTop = '5px';
+        statusDiv.style.fontSize = '12px';
+        
+        // Pokaż status
+        const isConfigured = await this.webhookManager.isConfigured();
+        statusDiv.textContent = isConfigured ? '✅ Webhook skonfigurowany' : '⚠️ Webhook nie skonfigurowany';
+        statusDiv.style.color = isConfigured ? '#28a745' : '#ffc107';
+        
+        // Event listeners
+        saveBtn.addEventListener('click', async () => {
+            const url = webhookInput.value.trim();
+            if (!url) {
+                statusDiv.textContent = '❌ Wprowadź URL webhook';
+                statusDiv.style.color = '#dc3545';
+                return;
+            }
+            
+            const saved = await this.webhookManager.saveWebhookUrl(url);
+            if (saved) {
+                statusDiv.textContent = '✅ Webhook zapisany';
+                statusDiv.style.color = '#28a745';
+                this.showNotification('✅ URL webhook zapisany!');
+            } else {
+                statusDiv.textContent = '❌ Błąd zapisywania webhook';
+                statusDiv.style.color = '#dc3545';
+                this.showNotification('❌ Błąd zapisywania URL webhook');
+            }
+        });
+        
+        testBtn.addEventListener('click', async () => {
+            const url = webhookInput.value.trim();
+            if (!url) {
+                statusDiv.textContent = '❌ Wprowadź URL webhook do testu';
+                statusDiv.style.color = '#dc3545';
+                return;
+            }
+            
+            statusDiv.textContent = '🔄 Testowanie...';
+            statusDiv.style.color = '#007bff';
+            
+            const result = await this.webhookManager.testWebhook(url);
+            if (result.success) {
+                statusDiv.textContent = '✅ Test połączenia udany';
+                statusDiv.style.color = '#28a745';
+                this.showNotification('✅ Webhook działa poprawnie!');
+            } else {
+                statusDiv.textContent = `❌ Test nieudany: ${result.error}`;
+                statusDiv.style.color = '#dc3545';
+                this.showNotification('❌ Test webhook nieudany');
+            }
+        });
+        
+        webhookContainer.appendChild(webhookInput);
+        webhookContainer.appendChild(testBtn);
+        webhookContainer.appendChild(saveBtn);
+        
+        section.appendChild(webhookTitle);
+        section.appendChild(webhookContainer);
+        section.appendChild(statusDiv);
+        
+        return section;
+    }
+
+    async handleWebhookSend(markdown) {
+        console.log('[AI Overview Extractor] Obsługuję wysyłanie webhook');
+        
+        // Przygotuj dane
+        const container = document.querySelector('#m-x-content');
+        if (!container) {
+            this.showNotification('❌ Nie można znaleźć kontenera AI Overview');
+            return;
+        }
+        
+        const htmlContent = this.extractContent(container);
+        const sources = this.extractSources(container);
+        const searchQuery = this.extractSearchQuery();
+        
+        const data = {
+            searchQuery: searchQuery,
+            content: markdown,
+            htmlContent: htmlContent,
+            sources: sources
+        };
+        
+        // Wyślij do webhook
+        const result = await this.webhookManager.sendToWebhook(data);
+        
+        if (result.success) {
+            this.showNotification('✅ Dane wysłane do webhook!');
+        } else {
+            this.showNotification(`❌ Błąd webhook: ${result.error}`);
+            console.error('[AI Overview Extractor] Błąd webhook:', result.error);
+        }
     }
 
     showNotification(message) {

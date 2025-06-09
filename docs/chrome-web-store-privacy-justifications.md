@@ -24,6 +24,18 @@ Rozszerzenie jest specjalnie zaprojektowane do pracy wyłącznie z Google Search
 
 **Minimalizacja uprawnień:** Używamy najwęższego możliwego zakresu - tylko google.com, nie wszystkie strony internetowe.
 
+## Uzasadnienie uprawnień storage
+
+**Dlaczego potrzebujemy uprawnienia storage (NOWE w v1.0.3):**
+Rozszerzenie używa chrome.storage.local do przechowywania konfiguracji webhook'ów:
+
+1. **Konfiguracja webhook'ów** - Przechowuje URL webhook'a skonfigurowany przez użytkownika
+2. **Brak synchronizacji** - Używamy storage.local (nie sync) dla zwiększenia prywatności
+3. **Minimalne dane** - Przechowujemy tylko URL webhook'a, żadnych danych osobowych
+4. **Kontrola użytkownika** - Webhook jest funkcją opcjonalną, wyłączoną domyślnie
+
+**Bezpieczeństwo:** Dane są przechowywane lokalnie w przeglądarce i nie są synchronizowane z innymi urządzeniami ani wysyłane do deweloperów.
+
 ## Uzasadnienie użycia kodu zdalnego (turndown.js)
 
 **Dlaczego używamy biblioteki turndown.js:**
@@ -60,8 +72,15 @@ AI Overview Extractor **NIE ZBIERA, NIE PRZECHOWUJE ANI NIE PRZESYŁA** żadnych
 ### Przetwarzanie danych
 - Rozszerzenie przetwarza wyłącznie treść AI Overview widoczną na stronie Google Search
 - Wszystkie operacje wykonywane są lokalnie w przeglądarce użytkownika
-- Żadne dane nie są wysyłane do zewnętrznych serwerów
-- Nie ma komunikacji sieciowej poza standardowym działaniem strony Google
+- **Webhook'i (NOWE w v1.0.3)**: Opcjonalnie może wysyłać dane do serwerów konfigurowanych przez użytkownika
+- Brak komunikacji sieciowej do deweloperów lub usług analitycznych
+
+**Dane wysyłane przez webhook'i (tylko jeśli skonfigurowane przez użytkownika):**
+- Treść AI Overview (Markdown i HTML)
+- Lista źródeł z linkami
+- Słowo kluczowe wyszukiwania
+- URL strony Google Search
+- Timestamp i metadane techniczne
 
 ### Przechowywanie danych
 - Rozszerzenie nie przechowuje żadnych danych na stałe
@@ -89,5 +108,5 @@ O wszelkich zmianach w polityce prywatności użytkownicy będą informowani pop
 
 ---
 
-**Data ostatniej aktualizacji:** 23 maja 2025
-**Wersja rozszerzenia:** 1.0.2
+**Data ostatniej aktualizacji:** 6 czerwca 2025
+**Wersja rozszerzenia:** 1.0.3
