@@ -128,7 +128,7 @@ W folderze `workflows_templates/` znajdziesz gotowy workflow `AI_Overviews_Extra
 
 ### 🔧 Wymagania dla n8n:
 
-- **n8n v1.0+** (lokalnie lub w chmurze)
+- **n8n v1.95.3+** (lokalnie lub w chmurze)
 - **Google Sheets API** (dla zapisywania danych)
 - **OpenRouter API** (dla AI guidelines) lub inny LLM provider
 - **Webhook endpoint** aktywny na porcie 5678
