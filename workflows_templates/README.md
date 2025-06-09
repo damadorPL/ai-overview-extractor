@@ -30,7 +30,7 @@ Wtyczka → Webhook → Przetwarzanie → Google Sheets → AI Analiza → Wytyc
 ### Krok 2: Konfiguracja Google Sheets
 1. **Utwórz Google Sheet** z kolumnami:
    ```
-   extractedAt | searchQuery | sources | markdown | myURL | task | guidelines | key | row_number
+   extractedAt | searchQuery | sources | markdown | myURL | task | guidelines | key
    ```
 2. **W n8n dodaj Google Sheets credential:**
    - Przejdź do: `Settings` → `Credentials` → `Add credential`
@@ -51,7 +51,7 @@ Wtyczka → Webhook → Przetwarzanie → Google Sheets → AI Analiza → Wytyc
 4. **Przypisz credential** do węzła `OpenRouter Chat Model`
 
 ### Krok 4: Aktywacja
-1. **Ustaw webhook URL** - skopiuj z węzła `Webhook`
+1. **Ustaw webhook URL** - skopiuj z węzła `Webhook`, pamiętaj o metodzie **POST**!
 2. **Aktywuj workflow** - przełącznik w prawym górnym rogu
 3. **Test webhook** - powinien odpowiadać na porcie 5678
 

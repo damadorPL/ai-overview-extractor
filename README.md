@@ -82,7 +82,7 @@ Wtyczka jest w pełni kompatybilna z n8n i zawiera gotowy template workflow do k
 
 ### 🚀 Gotowy Template n8n
 
-W folderze `workflowk_templates/` znajdziesz gotowy workflow `AI_Overviews_Extractor_Plugin.json` który zawiera:
+W folderze `workflows_templates/` znajdziesz gotowy workflow `AI_Overviews_Extractor_Plugin.json` który zawiera:
 
 #### 📋 Funkcje workflow:
 1. **Webhook endpoint** - automatyczny odbiór danych z wtyczki
@@ -95,7 +95,7 @@ W folderze `workflowk_templates/` znajdziesz gotowy workflow `AI_Overviews_Extra
 #### 🛠️ Instalacja template:
 
 1. **W n8n przejdź do:** `Templates` → `Import from JSON`
-2. **Załaduj plik:** `workflowk_templates/AI_Overviews_Extractor_Plugin.json`
+2. **Załaduj plik:** `workflows_templates/AI_Overviews_Extractor_Plugin.json`
 3. **Skonfiguruj węzły:**
    - Google Sheets (połączenie z OAuth)
    - OpenRouter Chat Model (klucz API)
@@ -157,7 +157,7 @@ ai-overview-extractor/
 │   ├── ai-overviews-extractor.gif
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
-├── workflowk_templates/  # Gotowe template n8n workflow
+├── workflows_templates/  # Gotowe template n8n workflow
 │   └── AI_Overviews_Extractor_Plugin.json  # Kompleksowy workflow n8n
 └── docs/             # Dokumentacja publikacji i prawna
     ├── chrome-web-store-description.md         # Opis dla Chrome Web Store
