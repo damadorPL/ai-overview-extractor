@@ -142,7 +142,7 @@ ai-overview-extractor/
 ├── README.md          # This documentation
 ├── LICENCE            # MIT License
 ├── .gitignore         # Files ignored by Git
-├── AI_SUMMARY.md      # Technical documentation for AI/LLM
+├── AI_SUMMARY.md      # 🤖 CRITICAL: Technical documentation for AI/LLM systems - main project overview
 ├── src/              # Source files
 │   ├── content.js        # Main script with AIOverviewExtractor class
 │   ├── webhook-manager.js # Webhook management and POST requests
