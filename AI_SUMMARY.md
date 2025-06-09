@@ -1,22 +1,43 @@
-# AI Overview Extractor - Dokumentacja Techniczna dla AI
+# AI Overview Extractor - Technical Documentation for AI/LLM Systems
 
-## 🎯 **Cel rozszerzenia**
-Rozszerzenie Chrome/Firefox ekstraktuje treść **AI Overview** z Google Search i konwertuje do **Markdown** z możliwością wysyłania do **webhook'ów** via POST.
+## 🎯 **Extension Purpose**
+Chrome/Firefox extension that extracts **AI Overview** content from Google Search and converts to **Markdown** with ability to send to **webhooks** via POST requests.
 
-## 📁 **Architektura plików**
+## 📁 **File Architecture**
 ```
 ai-overview-extractor/
-├── manifest.json              # Manifest V3, uprawnienia: activeTab, storage
-├── styles.css                 # Style UI (modal, przyciski, notyfikacje)
-├── src/
-│   ├── content.js             # Główna klasa AIOverviewExtractor
-│   ├── webhook-manager.js     # Klasa WebhookManager (POST requests)
-│   └── turndown.js           # Biblioteka HTML→Markdown
-├── icons/                    # Ikony 16-128px
-└── docs/                     # Dokumentacja Chrome Web Store
+├── manifest.json              # Manifest V3, permissions: activeTab, storage
+├── styles.css                 # UI styles (modal, buttons, notifications)
+├── README.md                  # Main documentation (English)
+├── LICENCE                    # MIT License
+├── .gitignore                 # Git ignored files
+├── AI_SUMMARY.md              # 🤖 CRITICAL: Technical docs for AI/LLM systems
+├── src/                       # Source files
+│   ├── content.js             # Main AIOverviewExtractor class
+│   ├── webhook-manager.js     # WebhookManager class (POST requests)
+│   └── turndown.js           # HTML→Markdown conversion library
+├── icons/                     # Extension icons (16-128px)
+├── images/                    # Documentation images
+│   ├── ai-overviews-extractor.gif
+│   ├── ai-overview-extractor-001.jpg
+│   └── ai_overviews_extractor_logo.png
+├── workflows_templates/       # Ready n8n workflow templates
+│   ├── AI_Overviews_Extractor_Plugin.json
+│   └── README.md
+├── n8n-template-submission/   # n8n Template Store submission files
+│   ├── AI_Overviews_Extractor_Plugin.json
+│   ├── README.md
+│   ├── setup-instructions.md
+│   ├── template-description.md
+│   └── template-name.txt
+└── docs/                      # Publication and legal documentation
+    ├── chrome-web-store-description.md
+    ├── chrome-web-store-privacy-justifications.md
+    ├── firefox-release-notes.md
+    └── privacy-policy.md
 ```
 
-## 🏗️ **Główne klasy**
+## 🏗️ **Main Classes**
 
 ### **AIOverviewExtractor** (`src/content.js`)
 ```javascript
@@ -26,25 +47,25 @@ class AIOverviewExtractor {
         this.init();
     }
     
-    // Kluczowe metody:
-    checkAndAddButton()        // Szuka #m-x-content, dodaje przycisk
-    extractContent(container)  // Czyści HTML z CSS/JS
-    extractSources(container)  // Wyciąga linki źródeł
+    // Key methods:
+    checkAndAddButton()        // Searches for #m-x-content, adds button
+    extractContent(container)  // Cleans HTML from CSS/JS
+    extractSources(container)  // Extracts source links
     createMarkdown(content, sources) // HTML→Markdown via TurndownService
-    showPreview(markdown)      // Modal z podglądem i webhook UI
-    handleWebhookSend(markdown) // Integracja z WebhookManager
+    showPreview(markdown)      // Modal with preview and webhook UI
+    handleWebhookSend(markdown) // Integration with WebhookManager
 }
 ```
 
 ### **WebhookManager** (`src/webhook-manager.js`)
 ```javascript
 class WebhookManager {
-    // Kluczowe metody:
-    saveWebhookUrl(url)        // Zapisuje URL w chrome.storage
-    getWebhookUrl()           // Pobiera URL z storage
-    testWebhook(url)          // Test POST z payload testowym
-    sendToWebhook(data)       // Wysyła dane POST do webhook
-    makeRequest(url, payload) // fetch() z timeout 5s
+    // Key methods:
+    saveWebhookUrl(url)        // Saves URL in chrome.storage
+    getWebhookUrl()           // Gets URL from storage
+    testWebhook(url)          // Tests POST with test payload
+    sendToWebhook(data)       // Sends data POST to webhook
+    makeRequest(url, payload) // fetch() with 5s timeout
 }
 ```
 
@@ -60,14 +81,14 @@ Content-Type: application/json
 ```json
 {
   "timestamp": "2025-01-06T12:30:00Z",
-  "searchQuery": "słowo kluczowe",
+  "searchQuery": "search keyword",
   "aiOverview": {
-    "content": "markdown bez CSS/JS",
-    "htmlContent": "oczyszczony HTML"
+    "content": "markdown without CSS/JS",
+    "htmlContent": "cleaned HTML"
   },
   "sources": [
     {
-      "title": "Tytuł źródła",
+      "title": "Source title",
       "url": "https://clean-url.com"
     }
   ],
@@ -75,25 +96,25 @@ Content-Type: application/json
     "googleSearchUrl": "https://google.com/search?q=...",
     "extractedAt": "2025-01-06T12:30:00Z",
     "userAgent": "Mozilla/5.0...",
-    "extensionVersion": "1.0.2"
+    "extensionVersion": "1.0.4"
   }
 }
 ```
 
-## 🧩 **Kluczowe selektory DOM**
-- **AI Overview kontener:** `#m-x-content`
-- **Elementy MSC (do usunięcia):** `div[data-subtree="msc"]`
-- **Sekcja źródeł:** `div[style="height: 100%;"]`
-- **Lista źródeł:** `ul[class]` (pierwszy w kontenerze źródeł)
-- **Ukryte elementy:** `[style*="display:none"]`
+## 🧩 **Key DOM Selectors**
+- **AI Overview container:** `#m-x-content`
+- **MSC elements (to remove):** `div[data-subtree="msc"]`
+- **Sources section:** `div[style="height: 100%;"]`
+- **Sources list:** `ul[class]` (first in sources container)
+- **Hidden elements:** `[style*="display:none"]`
 
-## 🧹 **Czyszczenie treści** (`extractContent()`)
+## 🧹 **Content Cleaning** (`extractContent()`)
 
-### **Usuwane elementy:**
-- `<style>` i `<script>` tagi
-- Atrybuty: `style`, `class`, `data-ved`, `jscontroller`
+### **Removed elements:**
+- `<style>` and `<script>` tags
+- Attributes: `style`, `class`, `data-ved`, `jscontroller`
 - Inline JavaScript: `(function(){...})()`, `onclick=`
-- Fragmenty JS: zmienne, funkcje
+- JS fragments: variables, functions
 
 ### **Regex patterns:**
 ```javascript
@@ -102,61 +123,72 @@ cleanHTML.replace(/on\w+\s*=\s*["'][^"']*["']/g, '');
 cleanHTML.replace(/var\s+\w+\s*=\s*[^;]*;/g, '');
 ```
 
-## 🎨 **UI Komponenty**
+## 🎨 **UI Components**
 
-### **Modal struktura:**
+### **Modal structure:**
 ```
 .ai-extractor-overlay
 └── .ai-extractor-modal
-    ├── .ai-extractor-header (tytuł + ❌ zamknij)
-    ├── .ai-extractor-textarea (podgląd markdown)
-    ├── .ai-extractor-webhook-section (konfiguracja URL)
-    └── .ai-extractor-footer (📋 kopiuj, 💾 pobierz, 🚀 webhook)
+    ├── .ai-extractor-header (title + ❌ close)
+    ├── .ai-extractor-textarea (markdown preview)
+    ├── .ai-extractor-webhook-section (URL configuration)
+    └── .ai-extractor-footer (📋 copy, 💾 download, 🚀 webhook)
 ```
 
-### **Webhook konfiguracja UI:**
-- **Input URL:** `<input type="url" class="ai-extractor-webhook-input">`
-- **Test:** `🧪 Test` - wywołuje `testWebhook()`
-- **Zapisz:** `💾 Zapisz` - wywołuje `saveWebhookUrl()`
-- **Status:** Dynamiczny komunikat o stanie konfiguracji
+### **Webhook configuration UI:**
+- **URL Input:** `<input type="url" class="ai-extractor-webhook-input">`
+- **Test:** `🧪 Test` - calls `testWebhook()`
+- **Save:** `💾 Save` - calls `saveWebhookUrl()`
+- **Status:** Dynamic configuration status message
 
-## ⚙️ **Konfiguracja**
+### **UI Text (v1.0.4 - English):**
+- Main button: `"📋 Extract to Markdown"`
+- Modal buttons: `"📋 Copy"`, `"💾 Download"`, `"🚀 Send webhook"`
+- Webhook section: `"🔗 Webhook Configuration"`
+- Status messages: `"✅ Webhook configured"`, `"⚠️ Webhook not configured"`
+- Notifications: `"✅ Copied to clipboard!"`, `"✅ Data sent to webhook!"`
 
-### **Manifest.json kluczowe sekcje:**
+## ⚙️ **Configuration**
+
+### **Manifest.json key sections:**
 ```json
 {
   "manifest_version": 3,
+  "version": "1.0.4",
+  "name": "AI Overview Extractor",
   "permissions": ["activeTab", "storage"],
+  "host_permissions": ["*://www.google.com/*"],
   "content_scripts": [{
     "matches": ["*://www.google.com/search*"],
-    "js": ["src/turndown.js", "src/webhook-manager.js", "src/content.js"]
+    "js": ["src/turndown.js", "src/webhook-manager.js", "src/content.js"],
+    "css": ["styles.css"]
   }]
 }
 ```
 
 ### **Storage keys:**
-- `ai-overview-webhook-url` - URL webhook (string)
+- `ai-overview-webhook-url` - Webhook URL (string)
 
-## 🔄 **Flow wykonania**
-1. **Obserwator DOM** - wykrywa `#m-x-content`
-2. **Dodanie przycisku** - "📋 Ekstraktuj do Markdown"
-3. **Kliknięcie** → `extractContent()` + `extractSources()`
-4. **Konwersja** → `createMarkdown()` via TurndownService
-5. **Modal** → `showPreview()` z webhook UI
+## 🔄 **Execution Flow**
+1. **DOM Observer** - detects `#m-x-content`
+2. **Add button** - "📋 Extract to Markdown"
+3. **Click** → `extractContent()` + `extractSources()`
+4. **Conversion** → `createMarkdown()` via TurndownService
+5. **Modal** → `showPreview()` with webhook UI
 6. **Webhook** → `handleWebhookSend()` → POST request
 
-## 🛡️ **Bezpieczeństwo**
-- **HTTPS tylko** - webhook URL walidacja
-- **Timeout 5s** - AbortController w fetch()
-- **Sanityzacja** - usuwanie JS/CSS z treści
-- **Error handling** - try/catch z komunikatami
+## 🛡️ **Security**
+- **HTTPS only** - webhook URL validation
+- **5s timeout** - AbortController in fetch()
+- **Sanitization** - removing JS/CSS from content
+- **Error handling** - try/catch with messages
 
-## 📝 **Przykład użycia kodu**
+## 📝 **Code Usage Example**
 ```javascript
-// Inicjalizacja
+// Initialization
 const extractor = new AIOverviewExtractor();
 
-// Manualny webhook
+// Manual webhook
 const data = {
   searchQuery: "test",
   content: "markdown",
@@ -166,27 +198,27 @@ const data = {
 await extractor.webhookManager.sendToWebhook(data);
 ```
 
-## 🔗 **Integracja n8n** (NOWOŚĆ!)
+## 🔗 **n8n Integration** (FEATURED!)
 
-### **Template workflow** (`workflowk_templates/AI_Overviews_Extractor_Plugin.json`)
-Kompletny n8n workflow do automatyzacji AI Overview:
+### **Template workflow** (`workflows_templates/AI_Overviews_Extractor_Plugin.json`)
+Complete n8n workflow for AI Overview automation:
 
-#### **Architektura workflow:**
+#### **Workflow architecture:**
 ```
-Webhook → Data Processing → Google Sheets → AI Analysis → Guidelines
+Webhook → Data Processing → Google Sheets → AI Analysis → SEO Guidelines
 ```
 
-#### **Główne węzły:**
+#### **Main nodes:**
 1. **Webhook** - endpoint `/ai-overview-extractor` (port 5678)
-2. **data** (Set) - ekstrakcja z payload: `searchQuery`, `htmlContent`, `sources`
-3. **Markdown** - konwersja HTML→Markdown
-4. **updateRows** (Google Sheets) - zapis AI Overview
-5. **Basic LLM Chain** - AI generuje wytyczne SEO
-6. **Schedule Trigger** - automatyka co 15 minut
+2. **data** (Set) - payload extraction: `searchQuery`, `htmlContent`, `sources`
+3. **Markdown** - HTML→Markdown conversion
+4. **updateRows** (Google Sheets) - AI Overview storage
+5. **Basic LLM Chain** - AI generates SEO guidelines
+6. **Schedule Trigger** - automation every 15 minutes
 
 #### **Payload mapping:**
 ```javascript
-// Z webhook do Google Sheets:
+// From webhook to Google Sheets:
 {
   key: `${searchQuery} ${extractedAt}`,
   extractedAt: timestamp,
@@ -196,34 +228,79 @@ Webhook → Data Processing → Google Sheets → AI Analysis → Guidelines
 }
 ```
 
-#### **AI Prompt (wytyczne SEO):**
+#### **AI Prompt (SEO guidelines):**
 ```
-System: "Alice analizuje AI Overview vs treść strony"
+System: "Alice analyzes AI Overview vs page content"
 Input: searchQuery + htmlContent + aiOverview
-Output: "Co dodać na stronę aby znaleźć się w AI Overview"
+Output: "What to add to page to appear in AI Overview"
 ```
 
-#### **Google Sheets struktura:**
+#### **Google Sheets structure:**
 ```
 extractedAt | searchQuery | sources | markdown | myURL | task | guidelines | key | row_number
 ```
 
-#### **Automatyzacja flow:**
-1. **Webhook flow:** Plugin → n8n → Google Sheets (natychmiastowy)
-2. **Batch flow:** Google Sheets → Page Analysis → AI Guidelines (co 15 min)
-3. **Filtering:** Tylko rekordy z `task="create guidelines"` i `myURL`
+#### **Automation flows:**
+1. **Webhook flow:** Plugin → n8n → Google Sheets (immediate)
+2. **Batch flow:** Google Sheets → Page Analysis → AI Guidelines (every 15min)
+3. **Filtering:** Only records with `task="create guidelines"` and `myURL`
 
-#### **Konfiguracja webhook w plugin:**
+#### **Webhook configuration in plugin:**
 ```javascript
 webhookUrl: "http://localhost:5678/webhook/ai-overview-extractor"
 testPayload: { test: true, timestamp: ISO_string, message: "Test..." }
 ```
 
-## 🚀 **Wersjonowanie**
-- **v1.0.3** - Aktualna z webhook'ami + n8n template
-- **Manifest V3** - Nowoczesny standard rozszerzeń
-- **Chrome + Firefox** - Wsparcie cross-browser
-- **n8n integration** - Gotowy workflow template
+## 🌍 **Distribution & Installation**
+
+### **Official Firefox Add-on:**
+- **URL:** https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
+- **Auto-updates:** Yes (when installed from Mozilla Add-ons)
+- **Developer ID:** `ai-overview-extractor@rozenberger.com`
+
+### **GitHub Repository:**
+- **URL:** https://github.com/romek-rozen/ai-overview-extractor
+- **Installation:** Clone for developer mode
+- **Documentation:** Complete setup instructions
+
+### **Chrome Web Store:**
+- **Status:** Under review
+- **Auto-updates:** Yes (when approved)
+
+### **n8n Template Store:**
+- **Submission:** Ready (`n8n-template-submission/` folder)
+- **Template:** Complete workflow with setup instructions
+- **Integration:** Seamless with extension webhook functionality
+
+## 🚀 **Version History**
+- **v1.0.4** - Current: Complete English UI translation, documentation updates
+- **v1.0.3** - Webhooks + n8n template integration
+- **v1.0.2** - Stability fixes, Manifest V3 support
+- **v1.0.1** - Source extraction improvements, performance optimization
+- **v1.0.0** - Initial release with core functionality
+
+## 🔧 **Technical Specifications**
+- **Manifest V3** - Modern extension standard
+- **Cross-browser** - Chrome + Firefox support
+- **Dependencies:** TurndownService (HTML→Markdown)
+- **Storage:** Chrome Storage API for webhook URLs
+- **Permissions:** `activeTab`, `storage`, `*://www.google.com/*`
+- **Architecture:** Class-based, modular design
+- **Error handling:** Comprehensive try/catch with user feedback
+
+## 🎯 **Use Cases**
+1. **SEO Research** - Extract AI Overview content for competitive analysis
+2. **Content Strategy** - Understand what appears in AI Overview
+3. **n8n Automation** - Automated workflow processing with Google Sheets
+4. **API Integration** - Webhook connectivity for custom workflows
+5. **Documentation** - Markdown export for knowledge management
+
+## 🔄 **Integration Points**
+- **n8n workflows** - Direct webhook integration
+- **Google Sheets** - Automated data storage via n8n
+- **External APIs** - Custom webhook endpoints
+- **Zapier/Make** - Webhook automation platforms
+- **Custom systems** - POST endpoint integration
 
 ---
-*Plik stworzony dla AI/LLM w celu oszczędzenia tokenów przy analizie kodu.*
+*This file is optimized for AI/LLM systems to provide maximum context with minimal tokens when analyzing the codebase.*
