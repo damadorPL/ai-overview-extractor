@@ -84,6 +84,7 @@ ai-overview-extractor/
 ├── README.md          # Ta dokumentacja
 ├── LICENCE            # Licencja MIT
 ├── .gitignore         # Pliki ignorowane przez Git
+├── AI_SUMMARY.md      # Dokumentacja techniczna dla AI/LLM
 ├── src/              # Pliki źródłowe
 │   ├── content.js        # Główny skrypt z klasą AIOverviewExtractor
 │   ├── webhook-manager.js # Zarządzanie webhook'ami i POST requests
@@ -98,10 +99,14 @@ ai-overview-extractor/
 │   ├── ai-overviews-extractor.gif
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
-└── docs/             # Dokumentacja dodatkowa
-    ├── chrome-web-store-description.md
-    ├── chrome-web-store-privacy-justifications.md
-    └── privacy-policy.md
+└── docs/             # Dokumentacja publikacji i prawna
+    ├── chrome-web-store-description.md         # Opis dla Chrome Web Store
+    ├── chrome-web-store-privacy-justifications.md # Uzasadnienia prywatności Chrome
+    ├── chrome-web-store-permission-justifications.md # Uzasadnienia uprawnień Chrome
+    ├── chrome-web-store-appeal-response.md     # Odpowiedź na odrzucenie Chrome Store
+    ├── firefox-release-notes.md                # Uwagi do wydania Firefox Add-ons
+    ├── firefox-reviewer-notes.md               # Uwagi dla recenzentów Firefox
+    └── privacy-policy.md                       # Polityka prywatności
 ```
 
 ## ⚙️ Wymagania
