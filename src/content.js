@@ -336,15 +336,15 @@ class AIOverviewExtractor {
         
         const copyBtn = document.createElement('button');
         copyBtn.className = 'ai-extractor-copy';
-        copyBtn.textContent = '📋 Kopiuj';
+        copyBtn.textContent = '📋 Copy';
         
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'ai-extractor-download';
-        downloadBtn.textContent = '💾 Pobierz';
+        downloadBtn.textContent = '💾 Download';
         
         const webhookBtn = document.createElement('button');
         webhookBtn.className = 'ai-extractor-webhook';
-        webhookBtn.textContent = '🚀 Wyślij webhook';
+        webhookBtn.textContent = '🚀 Send webhook';
         
         footer.appendChild(copyBtn);
         footer.appendChild(downloadBtn);
@@ -365,9 +365,9 @@ class AIOverviewExtractor {
 
         copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(markdown).then(() => {
-                this.showNotification('✅ Skopiowano do schowka!');
+                this.showNotification('✅ Copied to clipboard!');
             }).catch(() => {
-                this.showNotification('❌ Błąd kopiowania');
+                this.showNotification('❌ Copy error');
             });
         });
 
@@ -397,7 +397,7 @@ class AIOverviewExtractor {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        this.showNotification('✅ Plik pobrany!');
+        this.showNotification('✅ File downloaded!');
     }
 
     async createWebhookSection() {
@@ -405,7 +405,7 @@ class AIOverviewExtractor {
         section.className = 'ai-extractor-webhook-section';
         
         const webhookTitle = document.createElement('h4');
-        webhookTitle.textContent = '🔗 Konfiguracja Webhook';
+        webhookTitle.textContent = '🔗 Webhook Configuration';
         webhookTitle.style.margin = '10px 0 5px 0';
         webhookTitle.style.fontSize = '14px';
         
@@ -442,7 +442,7 @@ class AIOverviewExtractor {
         testBtn.style.cursor = 'pointer';
         
         const saveBtn = document.createElement('button');
-        saveBtn.textContent = '💾 Zapisz';
+        saveBtn.textContent = '💾 Save';
         saveBtn.className = 'ai-extractor-save-webhook';
         saveBtn.style.padding = '8px 12px';
         saveBtn.style.fontSize = '12px';
@@ -459,50 +459,50 @@ class AIOverviewExtractor {
         
         // Pokaż status
         const isConfigured = await this.webhookManager.isConfigured();
-        statusDiv.textContent = isConfigured ? '✅ Webhook skonfigurowany' : '⚠️ Webhook nie skonfigurowany';
+        statusDiv.textContent = isConfigured ? '✅ Webhook configured' : '⚠️ Webhook not configured';
         statusDiv.style.color = isConfigured ? '#28a745' : '#ffc107';
         
         // Event listeners
         saveBtn.addEventListener('click', async () => {
             const url = webhookInput.value.trim();
             if (!url) {
-                statusDiv.textContent = '❌ Wprowadź URL webhook';
+                statusDiv.textContent = '❌ Enter webhook URL';
                 statusDiv.style.color = '#dc3545';
                 return;
             }
             
             const saved = await this.webhookManager.saveWebhookUrl(url);
             if (saved) {
-                statusDiv.textContent = '✅ Webhook zapisany';
+                statusDiv.textContent = '✅ Webhook saved';
                 statusDiv.style.color = '#28a745';
-                this.showNotification('✅ URL webhook zapisany!');
+                this.showNotification('✅ Webhook URL saved!');
             } else {
-                statusDiv.textContent = '❌ Błąd zapisywania webhook';
+                statusDiv.textContent = '❌ Error saving webhook';
                 statusDiv.style.color = '#dc3545';
-                this.showNotification('❌ Błąd zapisywania URL webhook');
+                this.showNotification('❌ Error saving webhook URL');
             }
         });
         
         testBtn.addEventListener('click', async () => {
             const url = webhookInput.value.trim();
             if (!url) {
-                statusDiv.textContent = '❌ Wprowadź URL webhook do testu';
+                statusDiv.textContent = '❌ Enter webhook URL to test';
                 statusDiv.style.color = '#dc3545';
                 return;
             }
             
-            statusDiv.textContent = '🔄 Testowanie...';
+            statusDiv.textContent = '🔄 Testing...';
             statusDiv.style.color = '#007bff';
             
             const result = await this.webhookManager.testWebhook(url);
             if (result.success) {
-                statusDiv.textContent = '✅ Test połączenia udany';
+                statusDiv.textContent = '✅ Connection test successful';
                 statusDiv.style.color = '#28a745';
-                this.showNotification('✅ Webhook działa poprawnie!');
+                this.showNotification('✅ Webhook works correctly!');
             } else {
-                statusDiv.textContent = `❌ Test nieudany: ${result.error}`;
+                statusDiv.textContent = `❌ Test failed: ${result.error}`;
                 statusDiv.style.color = '#dc3545';
-                this.showNotification('❌ Test webhook nieudany');
+                this.showNotification('❌ Webhook test failed');
             }
         });
         
@@ -523,7 +523,7 @@ class AIOverviewExtractor {
         // Przygotuj dane
         const container = document.querySelector('#m-x-content');
         if (!container) {
-            this.showNotification('❌ Nie można znaleźć kontenera AI Overview');
+            this.showNotification('❌ Cannot find AI Overview container');
             return;
         }
         
@@ -542,10 +542,10 @@ class AIOverviewExtractor {
         const result = await this.webhookManager.sendToWebhook(data);
         
         if (result.success) {
-            this.showNotification('✅ Dane wysłane do webhook!');
+            this.showNotification('✅ Data sent to webhook!');
         } else {
-            this.showNotification(`❌ Błąd webhook: ${result.error}`);
-            console.error('[AI Overview Extractor] Błąd webhook:', result.error);
+            this.showNotification(`❌ Webhook error: ${result.error}`);
+            console.error('[AI Overview Extractor] Webhook error:', result.error);
         }
     }
 
