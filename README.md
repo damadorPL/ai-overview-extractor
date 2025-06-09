@@ -158,7 +158,14 @@ ai-overview-extractor/
 │   ├── ai-overview-extractor-001.jpg
 │   └── ai_overviews_extractor_logo.png
 ├── workflows_templates/  # Ready n8n workflow template
-│   └── AI_Overviews_Extractor_Plugin.json  # Comprehensive n8n workflow
+│   ├── AI_Overviews_Extractor_Plugin.json  # Comprehensive n8n workflow
+│   └── README.md                            # Workflow documentation
+├── n8n-template-submission/  # n8n Template Store submission files
+│   ├── AI_Overviews_Extractor_Plugin.json  # Template workflow file
+│   ├── README.md                            # Template description
+│   ├── setup-instructions.md               # Installation instructions
+│   ├── template-description.md             # Detailed template description
+│   └── template-name.txt                   # Template name
 └── docs/             # Publication and legal documentation
     ├── chrome-web-store-description.md         # Chrome Web Store description
     ├── chrome-web-store-privacy-justifications.md # Chrome privacy justifications
