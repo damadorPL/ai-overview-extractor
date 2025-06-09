@@ -71,8 +71,8 @@ Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extra
 ### Przykład webhook URL
 ```
 https://your-api.com/ai-overview-webhook
-https://zapier.com/hooks/catch/123456/abcdef
-https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+https://example.com/webhook-endpoint
+https://api.your-domain.com/receive-ai-data
 ```
 
 ## 📁 Struktura plików
