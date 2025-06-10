@@ -296,17 +296,23 @@ To update the extension:
 
 ## 📝 Changelog
 
-### v1.0.4 (current)
+### v1.0.5 (current)
+- 🔧 **Chrome Web Store compliance** - removed unnecessary `activeTab` permission
+- 📝 **Documentation update** - updated all permission justifications and descriptions
+- ✅ **Verification** - confirmed extension works with minimal permissions only
+- 🏪 **Store ready** - prepared for Chrome Web Store resubmission
+
+### v1.0.4
 - 🌍 **English translation** - complete interface and documentation translation
 - 🎨 **UI improvements** - updated button text and user messages
 - 📝 **Documentation** - fully translated README and user guides
-- 🔧 **Code cleanup** - improved console messages and comments
+- � **Code cleanup** - improved console messages and comments
 
 ### v1.0.3
 - 🚀 **NEW: Webhooks** - automatic data sending to external APIs
 - ⚙️ **Webhook configuration** - UI for URL setup and testing
 - 🧹 **Improved cleaning** - removal of CSS, JavaScript and inline styles
-- 💾 **Chrome Storage** - secure configuration storage
+- �💾 **Chrome Storage** - secure configuration storage
 - 🔒 **HTTPS validation** - webhook security
 - ⏱️ **Timeout handling** - error handling and timeouts (5s)
 

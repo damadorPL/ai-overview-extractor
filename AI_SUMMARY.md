@@ -273,7 +273,8 @@ testPayload: { test: true, timestamp: ISO_string, message: "Test..." }
 - **Integration:** Seamless with extension webhook functionality
 
 ## 🚀 **Version History**
-- **v1.0.4** - Current: Complete English UI translation, documentation updates
+- **v1.0.5** - Current: Chrome Web Store compliance fix - removed activeTab permission
+- **v1.0.4** - Complete English UI translation, documentation updates
 - **v1.0.3** - Webhooks + n8n template integration
 - **v1.0.2** - Stability fixes, Manifest V3 support
 - **v1.0.1** - Source extraction improvements, performance optimization
