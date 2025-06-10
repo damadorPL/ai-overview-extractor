@@ -6,7 +6,7 @@ Chrome/Firefox extension that extracts **AI Overview** content from Google Searc
 ## 📁 **File Architecture**
 ```
 ai-overview-extractor/
-├── manifest.json              # Manifest V3, permissions: activeTab, storage
+├── manifest.json              # Manifest V3, permissions: storage
 ├── styles.css                 # UI styles (modal, buttons, notifications)
 ├── README.md                  # Main documentation (English)
 ├── LICENCE                    # MIT License
@@ -156,7 +156,7 @@ cleanHTML.replace(/var\s+\w+\s*=\s*[^;]*;/g, '');
   "manifest_version": 3,
   "version": "1.0.4",
   "name": "AI Overview Extractor",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["storage"],
   "host_permissions": ["*://www.google.com/*"],
   "content_scripts": [{
     "matches": ["*://www.google.com/search*"],
@@ -284,7 +284,7 @@ testPayload: { test: true, timestamp: ISO_string, message: "Test..." }
 - **Cross-browser** - Chrome + Firefox support
 - **Dependencies:** TurndownService (HTML→Markdown)
 - **Storage:** Chrome Storage API for webhook URLs
-- **Permissions:** `activeTab`, `storage`, `*://www.google.com/*`
+- **Permissions:** `storage`, `*://www.google.com/*`
 - **Architecture:** Class-based, modular design
 - **Error handling:** Comprehensive try/catch with user feedback
 

@@ -1,112 +1,116 @@
-# Chrome Web Store - Uzasadnienia uprawnień i polityka prywatności
+# Chrome Web Store - Privacy Justifications
 
-## Uzasadnienie uprawnień activeTab
+## Data Collection and Usage
 
-**Dlaczego potrzebujemy uprawnienia activeTab:**
-Rozszerzenie AI Overview Extractor wymaga dostępu do aktywnej karty, aby:
+The AI Overview Extractor extension is designed with privacy as a core principle. Here's how we handle data:
 
-1. **Wykrywać AI Overview** - Musi przeskanować DOM strony Google Search w poszukiwaniu kontenera AI Overview (`#m-x-content`)
-2. **Wstrzykiwać przycisk interfejsu** - Dodaje przycisk "Ekstraktuj do Markdown" w odpowiednim miejscu na stronie
-3. **Ekstraktować treść** - Odczytuje zawartość AI Overview i konwertuje ją do formatu Markdown
-4. **Obserwować zmiany DOM** - Używa MutationObserver do wykrywania dynamicznie ładowanych AI Overview
+### What data we collect:
+- **AI Overview content** - Only when user explicitly clicks "Extract to Markdown" button
+- **Search query** - Extracted from current Google Search URL for context
+- **Source links** - Links referenced in AI Overview for completeness
+- **Webhook URLs** - Only when user configures webhook functionality (stored locally)
 
-**Bezpieczeństwo:** Uprawnienie activeTab jest najbezpieczniejszą opcją, ponieważ działa tylko gdy użytkownik aktywnie korzysta z karty i nie daje dostępu do innych kart.
+### What data we DON'T collect:
+- **Personal information** - No names, emails, or personal data
+- **Browsing history** - No tracking of user's browsing patterns
+- **Search history** - No storage of previous searches
+- **Automatic data** - No background data collection without user action
 
-## Uzasadnienie uprawnień dotyczących hosta (*://www.google.com/*)
+## Data Storage
 
-**Dlaczego potrzebujemy dostępu do google.com:**
-Rozszerzenie jest specjalnie zaprojektowane do pracy wyłącznie z Google Search:
+### Local Storage Only:
+- **Webhook URLs** - Stored locally in browser using chrome.storage.local
+- **No cloud storage** - All data remains on user's device
+- **No external databases** - Extension doesn't maintain any external data storage
+- **User control** - Users can clear stored data anytime through browser settings
 
-1. **Specjalizacja** - AI Overview występuje tylko na stronach wyników wyszukiwania Google
-2. **Wykrywanie treści** - Musi analizować strukturę HTML specyficzną dla Google Search
-3. **Bezpieczeństwo** - Ograniczenie tylko do google.com minimalizuje powierzchnię ataku
-4. **Funkcjonalność** - Bez dostępu do google.com rozszerzenie nie może działać zgodnie z przeznaczeniem
+### Data Processing:
+- **Client-side only** - All content processing happens locally in browser
+- **No server processing** - Extension doesn't send data to our servers
+- **Optional webhooks** - Data only sent to user-configured endpoints (user's choice)
 
-**Minimalizacja uprawnień:** Używamy najwęższego możliwego zakresu - tylko google.com, nie wszystkie strony internetowe.
+## Permissions and Their Usage
 
-## Uzasadnienie uprawnień storage
+### storage permission:
+**Purpose:** Save webhook configuration URLs locally
+**Data accessed:** Only webhook URLs that user explicitly configures
+**Storage location:** Local browser storage (chrome.storage.local)
+**User control:** Can be cleared through browser settings
 
-**Dlaczego potrzebujemy uprawnienia storage (NOWE w v1.0.3):**
-Rozszerzenie używa chrome.storage.local do przechowywania konfiguracji webhook'ów:
+### host_permissions (*://www.google.com/*):
+**Purpose:** Access Google Search pages to extract AI Overview content
+**Data accessed:** Only AI Overview content visible on current page
+**Trigger:** Only when user clicks extraction button
+**Scope:** Limited to Google Search result pages only
 
-1. **Konfiguracja webhook'ów** - Przechowuje URL webhook'a skonfigurowany przez użytkownika
-2. **Brak synchronizacji** - Używamy storage.local (nie sync) dla zwiększenia prywatności
-3. **Minimalne dane** - Przechowujemy tylko URL webhook'a, żadnych danych osobowych
-4. **Kontrola użytkownika** - Webhook jest funkcją opcjonalną, wyłączoną domyślnie
+## Data Sharing
 
-**Bezpieczeństwo:** Dane są przechowywane lokalnie w przeglądarce i nie są synchronizowane z innymi urządzeniami ani wysyłane do deweloperów.
+### No Third-Party Sharing:
+- **No analytics** - Extension doesn't use Google Analytics or similar services
+- **No advertising** - No data shared with advertising networks
+- **No data brokers** - No data sold or shared with third parties
+- **No tracking** - No user behavior tracking
 
-## Uzasadnienie użycia kodu zdalnego (turndown.js)
+### Optional User-Controlled Sharing:
+- **Webhooks** - Users can optionally configure webhooks to send extracted data to their own systems
+- **User choice** - Webhook functionality is entirely optional and user-controlled
+- **User endpoints** - Data only sent to URLs that user explicitly configures
 
-**Dlaczego używamy biblioteki turndown.js:**
-1. **Konwersja HTML→Markdown** - Profesjonalna biblioteka do konwersji HTML na Markdown
-2. **Stabilność** - Sprawdzona biblioteka z wieloletnią historią rozwoju
-3. **Bezpieczeństwo** - Kod biblioteki jest statyczny, nie wykonuje żadnych połączeń sieciowych
-4. **Funkcjonalność** - Zapewnia prawidłowe formatowanie Markdown z zachowaniem struktury
+## Security Measures
 
-**Bezpieczeństwo kodu:**
-- Biblioteka turndown.js jest dołączona lokalnie do rozszerzenia
-- Nie pobiera żadnych danych z zewnętrznych serwerów
-- Kod jest statyczny i nie zmienia się po instalacji
-- Używana wyłącznie do konwersji tekstu HTML na Markdown
+### Data Protection:
+- **HTTPS validation** - Webhook URLs must use HTTPS (except localhost for testing)
+- **Input validation** - All user inputs are validated before processing
+- **No script injection** - Content is sanitized to remove JavaScript and CSS
+- **Timeout protection** - Network requests have 5-second timeout limits
 
-## Opis jednego celu (Single Purpose Description)
+### Code Security:
+- **Content Security Policy** - Extension follows CSP best practices
+- **Minimal permissions** - Only requests permissions absolutely necessary for functionality
+- **Open source** - Code is publicly available for security review
+- **No obfuscation** - All code is readable and transparent
 
-**Główny cel rozszerzenia:**
-AI Overview Extractor ma jeden, jasno zdefiniowany cel: **ekstraktowanie treści AI Overview z Google Search do formatu Markdown**.
+## User Rights and Control
 
-**Szczegółowy opis celu:**
-- Automatyczne wykrywanie AI Overview na stronach Google Search
-- Konwersja treści HTML AI Overview do czytelnego formatu Markdown
-- Wyciąganie i czyszczenie linków źródłowych
-- Umożliwienie kopiowania lub pobierania skonwertowanej treści
+### User Control:
+- **Explicit consent** - All data extraction requires explicit user action (button click)
+- **Data visibility** - Users see exactly what data is extracted before any action
+- **Configuration control** - Users have full control over webhook configuration
+- **Data deletion** - Users can clear all stored data through browser settings
 
-**Dlaczego to jeden cel:**
-Wszystkie funkcje rozszerzenia służą jednemu celowi - przekształceniu AI Overview w format Markdown. Nie ma żadnych dodatkowych funkcji niezwiązanych z tym głównym zadaniem.
+### Transparency:
+- **Open source** - Full source code available on GitHub
+- **Clear documentation** - Detailed explanation of all functionality
+- **Privacy policy** - Comprehensive privacy policy available
+- **No hidden functionality** - All features clearly documented and visible
 
-## Polityka prywatności
+## Compliance
 
-### Zbieranie danych
-AI Overview Extractor **NIE ZBIERA, NIE PRZECHOWUJE ANI NIE PRZESYŁA** żadnych danych osobowych lub informacji o użytkownikach.
+### Privacy Standards:
+- **GDPR compliant** - No personal data collection, user control over all data
+- **CCPA compliant** - No sale of personal information, user control over data
+- **Minimal data collection** - Only collects data necessary for functionality
+- **Purpose limitation** - Data only used for stated purpose (AI Overview extraction)
 
-### Przetwarzanie danych
-- Rozszerzenie przetwarza wyłącznie treść AI Overview widoczną na stronie Google Search
-- Wszystkie operacje wykonywane są lokalnie w przeglądarce użytkownika
-- **Webhook'i (NOWE w v1.0.3)**: Opcjonalnie może wysyłać dane do serwerów konfigurowanych przez użytkownika
-- Brak komunikacji sieciowej do deweloperów lub usług analitycznych
+### Browser Standards:
+- **Manifest V3** - Uses latest Chrome extension security standards
+- **Chrome Web Store policies** - Complies with all Chrome Web Store requirements
+- **Firefox policies** - Complies with Mozilla Add-on policies
 
-**Dane wysyłane przez webhook'i (tylko jeśli skonfigurowane przez użytkownika):**
-- Treść AI Overview (Markdown i HTML)
-- Lista źródeł z linkami
-- Słowo kluczowe wyszukiwania
-- URL strony Google Search
-- Timestamp i metadane techniczne
+## Contact and Support
 
-### Przechowywanie danych
-- Rozszerzenie nie przechowuje żadnych danych na stałe
-- Skonwertowana treść istnieje tylko tymczasowo w pamięci przeglądarki
-- Po zamknięciu karty wszystkie dane są automatycznie usuwane
+For privacy-related questions or concerns:
+- **GitHub Issues:** https://github.com/romek-rozen/ai-overview-extractor/issues
+- **Email:** Contact through GitHub profile
+- **Documentation:** Complete privacy policy available in repository
 
-### Uprawnienia i ich użycie
-- **activeTab**: Używane wyłącznie do odczytu treści AI Overview z aktywnej karty
-- **host_permissions (google.com)**: Umożliwia działanie rozszerzenia na stronach Google Search
-- Żadne uprawnienia nie są używane do zbierania danych osobowych
+## Summary
 
-### Bezpieczeństwo
-- Kod rozszerzenia działa w izolowanym środowisku przeglądarki
-- Brak połączeń z zewnętrznymi serwerami
-- Minimalne uprawnienia zgodnie z zasadą najmniejszych uprawnień
-- Regularnie aktualizowane dla zachowania bezpieczeństwa
+The AI Overview Extractor extension is designed with privacy by design principles:
+- **No automatic data collection** - All data extraction requires explicit user action
+- **Local processing only** - No data sent to our servers
+- **User control** - Users have complete control over all functionality
+- **Transparency** - Open source code and clear documentation
+- **Minimal permissions** - Only requests permissions necessary for core functionality
 
-### Kontakt
-W przypadku pytań dotyczących prywatności:
-- Email: [WYMAGANY ADRES EMAIL]
-- GitHub: https://github.com/romek-rozen/ai-overview-extractor
-
-### Zmiany w polityce
-O wszelkich zmianach w polityce prywatności użytkownicy będą informowani poprzez aktualizację rozszerzenia.
-
----
-
-**Data ostatniej aktualizacji:** 6 czerwca 2025
-**Wersja rozszerzenia:** 1.0.3
+The extension serves as a tool for users to extract and format AI Overview content for their own use, with complete user control and privacy protection.

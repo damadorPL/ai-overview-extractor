@@ -1,43 +1,41 @@
-# Chrome Web Store - Uzasadnienia uprawnień v1.0.3
-
-## activeTab justification
-
-The extension requires activeTab permission to access the currently active Google Search tab's DOM to extract AI Overview content. Specifically: 1) Content script uses document.querySelector('#m-x-content') to locate AI Overview containers, 2) MutationObserver monitors DOM changes for dynamically loaded AI Overview content, 3) navigator.clipboard.writeText() requires activeTab to copy extracted Markdown to clipboard, 4) Dynamic UI injection (adding extract button) needs DOM access to the active tab. This permission is essential for the core functionality - without it, the extension cannot detect, access or extract AI Overview content from Google Search results.
+# Chrome Web Store - Permission Justifications
 
 ## storage justification
 
-The extension uses chrome.storage.local to store user-configured webhook URLs for automated data sending (optional feature). The storage contains only the webhook endpoint URL that users voluntarily configure. No personal data, search history, or extracted content is stored persistently. Data is stored locally only (not synced) for privacy. This permission allows users to save their preferred webhook configuration so they don't need to re-enter the URL each time they want to automatically send extracted AI Overview data to their external systems or APIs.
+The extension requires storage permission to save webhook configuration URLs. Specifically:
 
-## Host permission justification
-
-The extension requires access to "*://www.google.com/*" to function exclusively on Google Search pages where AI Overview appears. This specific host permission is necessary because: 1) AI Overview content only exists on Google Search result pages, 2) Content script must inject into google.com to detect #m-x-content containers, 3) The extension's sole purpose is extracting AI Overview from Google Search - no other sites are needed, 4) Narrow scope ensures minimal permissions following security best practices. Without google.com access, the extension cannot fulfill its core function of detecting and extracting AI Overview content.
-
-## Remote Code Usage
-
-**Answer: No, I am not using remote code**
-
-The extension includes all dependencies locally:
-- turndown.js library is bundled within the extension package
-- No external script loading or remote code execution
-- All JavaScript files are static and included in the extension package
-- No eval() or dynamic code generation
-
-## Additional Evidence of Permission Usage
-
-### activeTab Permission Usage:
-1. **DOM Access in content.js line 15:** `document.querySelector('#m-x-content')`
-2. **DOM Manipulation line 65:** `container.parentNode.insertBefore(button, container)`
-3. **Clipboard API line 287:** `navigator.clipboard.writeText(markdown)`
-4. **DOM Observer line 22:** `observer.observe(document.body, { childList: true, subtree: true })`
+1. **Webhook URL storage** - Users can configure custom webhook endpoints for automated data sending
+2. **Configuration persistence** - Webhook URLs are saved using chrome.storage.local API
+3. **User convenience** - Saved configuration eliminates need to re-enter webhook URLs
 
 ### storage Permission Usage:
-1. **Webhook URL storage in webhook-manager.js:** `chrome.storage.local.set()`
-2. **Webhook URL retrieval:** `chrome.storage.local.get()`
-3. **Optional user configuration:** Only saves webhook URLs when user explicitly configures them
+1. **Webhook URL saving in webhook-manager.js line 20:** `chrome.storage.local.set({ [this.storageKey]: webhookUrl })`
+2. **Webhook URL retrieval in webhook-manager.js line 35:** `chrome.storage.local.get([this.storageKey])`
+3. **Configuration removal in webhook-manager.js line 50:** `chrome.storage.local.remove([this.storageKey])`
 
-### Host Permission Usage:
-1. **Content script injection** defined in manifest.json matches: `"*://www.google.com/search*"`
-2. **AI Overview detection** requires access to Google Search DOM structure
-3. **No other domains accessed** - extension is single-purpose for Google Search
+The storage permission is essential for webhook functionality - without it, users would need to re-enter webhook URLs every time they use the extension.
 
-These permissions are minimal and necessary for the declared functionality of extracting AI Overview content from Google Search results.
+## host_permissions (*://www.google.com/*) justification
+
+The extension requires host permissions for google.com to inject content scripts and access Google Search pages. Specifically:
+
+1. **Content script injection** - Extension needs to run on Google Search result pages
+2. **AI Overview detection** - Access to DOM elements like #m-x-content container
+3. **Source extraction** - Reading links and content from Google Search results
+4. **Button injection** - Adding extraction button to Google Search interface
+
+### host_permissions Usage:
+1. **Content script execution** - Defined in manifest.json content_scripts section
+2. **DOM access in content.js** - document.querySelector('#m-x-content') and other DOM operations
+3. **Search query extraction** - Reading URL parameters from window.location.href
+4. **Dynamic UI injection** - Adding extraction button and modal overlay
+
+The host permission for google.com is essential for core functionality - the extension specifically extracts AI Overview content from Google Search results and cannot function without access to Google's domain.
+
+## Summary
+
+Both permissions are actively used and essential for the extension's core functionality:
+- **storage**: Required for webhook URL configuration persistence
+- **host_permissions**: Required for accessing Google Search pages and extracting AI Overview content
+
+The extension follows the principle of least privilege by requesting only the minimal permissions necessary for its functionality.

@@ -182,7 +182,7 @@ ai-overview-extractor/
 - **Manifest V3** - modern extension standard
 - **Page**: `google.com/search`
 - **Language**: Works with Google interface in any language
-- **Permissions**: `activeTab`, `host_permissions: *://www.google.com/*`
+- **Permissions**: `storage`, `host_permissions: *://www.google.com/*`
 
 ## 🔧 Configuration
 

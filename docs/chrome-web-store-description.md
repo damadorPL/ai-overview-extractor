@@ -41,7 +41,7 @@ Automatycznie wykrywaj i ekstraktuj treść AI Overview z wyników wyszukiwania 
 - Działa tylko na stronach Google Search
 - Nie zbiera ani nie przesyła danych osobowych
 - Wszystkie operacje wykonywane lokalnie w przeglądarce
-- Minimalne uprawnienia - tylko activeTab i google.com
+- Minimalne uprawnienia - tylko storage i google.com
 
 ### 🛠️ Wymagania techniczne:
 
