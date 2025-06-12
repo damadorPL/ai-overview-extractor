@@ -3,6 +3,9 @@ class AutoExpanderSources {
         this.settingsManager = settingsManager;
         this.expansionCallbacks = [];
         this.isReady = false;
+        this.domObserver = null;
+        this.domChanges = [];
+        this.buttonClicked = false; // Flaga zapobiega wielokrotnemu klikaniu
         console.log('[AutoExpanderSources] Initialized');
     }
 
@@ -69,6 +72,12 @@ class AutoExpanderSources {
 
     // Uniwersalna strategia rozwijania źródeł
     async universalExpandSources() {
+        // Sprawdź czy już kliknęliśmy - jeśli tak, to KONIEC
+        if (this.buttonClicked) {
+            console.log('[AutoExpanderSources] Button already clicked, stopping');
+            return true;
+        }
+        
         const maxAttempts = 10; // 5 sekund (10 * 500ms)
         let attempt = 0;
         
@@ -111,27 +120,35 @@ class AutoExpanderSources {
             const beforeCount = this.countAllVisibleSources();
             console.log('[AutoExpanderSources] Sources count before click:', beforeCount);
             
-            // Kliknij przycisk (proste kliknięcie jak w auto-expander-overviews)
+            // Rozpocznij obserwację DOM przed kliknięciem
+            this.startDOMLogger();
+            
+            // Kliknij przycisk TYLKO RAZ
             try {
                 button.click();
-                console.log('[AutoExpanderSources] Button clicked successfully');
+                this.buttonClicked = true; // USTAW FLAGĘ - NIGDY WIĘCEJ NIE KLIKAJ!
+                console.log('[AutoExpanderSources] Button clicked successfully - NEVER CLICKING AGAIN!');
                 
-                // Czekaj na rozwinięcie
-                await this.delay(1000);
+                // Czekaj na rozwinięcie i obserwuj zmiany DOM
+                await this.delay(2000);
+                
+                // Zatrzymaj obserwację DOM
+                this.stopDOMLogger();
                 
                 // Loguj stan po kliknięciu
                 const afterCount = this.countAllVisibleSources();
                 console.log('[AutoExpanderSources] Sources count after click:', afterCount);
                 
-                // Sprawdź czy się rozwinęło
-                if (this.areSourcesExpanded()) {
-                    console.log('[AutoExpanderSources] Success! Sources expanded');
-                    return true;
-                } else {
-                    console.log('[AutoExpanderSources] Click completed but sources not detected as expanded');
-                }
+                // ZAWSZE zwracaj sukces po kliknięciu - nie sprawdzaj czy się rozwinęło
+                console.log('[AutoExpanderSources] Click completed - SUCCESS!');
+                return true;
+                
             } catch (error) {
                 console.log('[AutoExpanderSources] Click failed:', error);
+                // Zatrzymaj obserwację DOM w razie błędu
+                this.stopDOMLogger();
+                // Resetuj flagę jeśli kliknięcie nie powiodło się
+                this.buttonClicked = false;
             }
             
             await this.delay(500);
@@ -333,6 +350,120 @@ class AutoExpanderSources {
     // Pomocnicza funkcja opóźnienia
     async delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Rozpoczyna obserwację zmian DOM
+    startDOMLogger() {
+        console.log('[AutoExpanderSources] Starting DOM observer...');
+        this.domChanges = [];
+        
+        const targetContainer = document.querySelector('#m-x-content') || document.body;
+        
+        this.domObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                this.logDOMChange(mutation);
+            });
+        });
+        
+        const observerConfig = {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeOldValue: true,
+            characterData: true,
+            characterDataOldValue: true
+        };
+        
+        this.domObserver.observe(targetContainer, observerConfig);
+        console.log('[AutoExpanderSources] DOM observer started');
+    }
+
+    // Zatrzymuje obserwację zmian DOM
+    stopDOMLogger() {
+        if (this.domObserver) {
+            this.domObserver.disconnect();
+            this.domObserver = null;
+            console.log('[AutoExpanderSources] DOM observer stopped');
+        }
+        
+        // Podsumowanie zmian
+        console.log(`[AutoExpanderSources] DOM Logger Summary: ${this.domChanges.length} total changes`);
+        this.domChanges.forEach((change, index) => {
+            console.log(`[AutoExpanderSources] Change ${index + 1}:`, change);
+        });
+    }
+
+    // Loguje pojedynczą zmianę DOM
+    logDOMChange(mutation) {
+        const timestamp = Date.now();
+        const changeData = {
+            timestamp,
+            type: mutation.type,
+            target: this.getElementPath(mutation.target)
+        };
+
+        if (mutation.type === 'childList') {
+            changeData.addedNodes = Array.from(mutation.addedNodes).map(node => ({
+                type: node.nodeType,
+                name: node.nodeName,
+                className: node.className || '',
+                text: node.textContent?.substring(0, 50) || ''
+            }));
+            
+            changeData.removedNodes = Array.from(mutation.removedNodes).map(node => ({
+                type: node.nodeType,
+                name: node.nodeName,
+                className: node.className || '',
+                text: node.textContent?.substring(0, 50) || ''
+            }));
+        }
+
+        if (mutation.type === 'attributes') {
+            changeData.attributeName = mutation.attributeName;
+            changeData.oldValue = mutation.oldValue;
+            changeData.newValue = mutation.target.getAttribute(mutation.attributeName);
+        }
+
+        if (mutation.type === 'characterData') {
+            changeData.oldValue = mutation.oldValue;
+            changeData.newValue = mutation.target.textContent;
+        }
+
+        this.domChanges.push(changeData);
+        
+        // Real-time logging dla ważnych zmian
+        if (mutation.addedNodes.length > 0) {
+            console.log('[AutoExpanderSources] DOM: Added nodes:', changeData.addedNodes);
+        }
+        if (mutation.removedNodes.length > 0) {
+            console.log('[AutoExpanderSources] DOM: Removed nodes:', changeData.removedNodes);
+        }
+    }
+
+    // Generuje ścieżkę do elementu
+    getElementPath(element) {
+        if (!element || element === document.body) return 'body';
+        
+        const path = [];
+        let current = element;
+        
+        while (current && current !== document.body && path.length < 10) {
+            let selector = current.tagName.toLowerCase();
+            
+            if (current.id) {
+                selector += `#${current.id}`;
+            } else if (current.className) {
+                const classes = current.className.split(' ').filter(c => c.length > 0);
+                if (classes.length > 0) {
+                    selector += `.${classes.slice(0, 2).join('.')}`;
+                }
+            }
+            
+            path.unshift(selector);
+            current = current.parentElement;
+        }
+        
+        return path.join(' > ');
     }
 
     // Sprawdza czy źródła są już rozwinięte

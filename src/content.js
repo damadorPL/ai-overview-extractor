@@ -5,6 +5,8 @@ class AIOverviewExtractor {
         this.settings = null;
         this.isInitialized = false;
         this.debounceTimer = null;
+        this.containerProcessed = false;
+        this.scrollHandler = null;
         
         // Initialize auto-expansion modules
         this.autoExpanderOverviews = new AutoExpanderOverviews(this.settingsManager);
@@ -55,8 +57,8 @@ class AIOverviewExtractor {
             this.debouncedCheckAndAddButton();
         }, 5000);
         
-        // Observe DOM changes
-        this.observeDOM();
+        // Setup scroll observation for late-loading AI Overviews
+        this.setupScrollObserver();
     }
 
     // Setup callbacks between modules
@@ -116,17 +118,34 @@ class AIOverviewExtractor {
         return await this.autoExpanderOverviews.expandAIOverview();
     }
 
-    observeDOM() {
-        const observer = new MutationObserver(() => {
-            this.debouncedCheckAndAddButton();
-        });
+    setupScrollObserver() {
+        // Only setup scroll observer if container not already processed
+        if (this.containerProcessed) {
+            return;
+        }
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-        
-        console.log('[AI Overview Extractor] DOM Observer started');
+        this.scrollHandler = () => {
+            if (!this.containerProcessed) {
+                this.debouncedCheckAndAddButton();
+            }
+        };
+
+        let scrollTimeout;
+        const debouncedScrollHandler = () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(this.scrollHandler, 300);
+        };
+
+        window.addEventListener('scroll', debouncedScrollHandler);
+        console.log('[AI Overview Extractor] Scroll Observer started');
+    }
+
+    removeScrollObserver() {
+        if (this.scrollHandler) {
+            window.removeEventListener('scroll', this.scrollHandler);
+            this.scrollHandler = null;
+            console.log('[AI Overview Extractor] Scroll Observer removed');
+        }
     }
 
     debouncedCheckAndAddButton() {
@@ -140,6 +159,12 @@ class AIOverviewExtractor {
     }
 
     async checkAndAddButton() {
+        // Stop checking if container already processed
+        if (this.containerProcessed) {
+            console.log('[AI Overview Extractor] Container already processed, skipping check');
+            return;
+        }
+
         console.log('[AI Overview Extractor] Checking for AI Overview container...');
         
         // Look for #m-x-content
@@ -211,6 +236,11 @@ class AIOverviewExtractor {
         // Add button above container
         container.parentNode.insertBefore(button, container);
         console.log('[AI Overview Extractor] Button added');
+        
+        // Mark container as processed and stop further checks
+        this.containerProcessed = true;
+        this.removeScrollObserver();
+        console.log('[AI Overview Extractor] Container processed, stopping all checks');
     }
 
 }
