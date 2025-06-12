@@ -149,7 +149,7 @@ class AutoExpanderSources {
     // Sprawdza czy element prawdopodobnie jest przyciskiem expand
     isProbablyExpandButton(element) {
         const text = element.textContent?.trim().toLowerCase() || '';
-        const hasExpandText = text.includes('pokaż') || text.includes('show') || text.includes('więcej') || text.includes('all') || text.includes('more');
+        const hasExpandText = text.includes('pokaż wszystko') || text.includes('show all') || text.includes('pokaż') || text.includes('show') || text.includes('więcej') || text.includes('all') || text.includes('more');
         
         // Sprawdź czy ma jsaction related do triggera
         const jsaction = element.getAttribute('jsaction') || '';
@@ -159,7 +159,14 @@ class AutoExpanderSources {
         const hasButtonRole = element.getAttribute('role') === 'button' || element.tagName === 'BUTTON';
         const hasTabIndex = element.hasAttribute('tabindex');
         
-        return hasExpandText || (hasJsAction && (hasButtonRole || hasTabIndex));
+        // Sprawdź konkretne klasy z Google
+        const className = element.className || '';
+        const hasGoogleExpandClasses = className.includes('trEk7e') || className.includes('tg2Kqf');
+        
+        // Sprawdź czy jest w ostatnim li
+        const isInLastLi = element.closest('li.tg2Kqf') !== null;
+        
+        return hasExpandText || (hasJsAction && (hasButtonRole || hasTabIndex)) || hasGoogleExpandClasses || isInLastLi;
     }
     
     // Próbuje kliknąć przycisk różnymi metodami
