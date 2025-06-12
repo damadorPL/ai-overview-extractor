@@ -36,7 +36,7 @@ class AutoExpanderSources {
             }
 
             // Dodatkowe opóźnienie na załadowanie sekcji źródeł
-            await this.delay(500);
+            await this.delay(1500);
 
             // Sprawdź czy już rozwinięte
             if (this.areSourcesExpanded()) {
@@ -117,7 +117,7 @@ class AutoExpanderSources {
             
             if (!button) {
                 console.log('[AutoExpanderSources] No expand button found with any strategy, retrying...');
-                await this.delay(500);
+                await this.delay(1000);
                 continue;
             }
             
@@ -137,7 +137,7 @@ class AutoExpanderSources {
                 console.log('[AutoExpanderSources] Button clicked successfully - NEVER CLICKING AGAIN!');
                 
                 // Czekaj na rozwinięcie i obserwuj zmiany DOM
-                await this.delay(2000);
+                await this.delay(3000);
                 
                 // Zatrzymaj obserwację DOM
                 this.stopDOMLogger();
@@ -247,10 +247,10 @@ class AutoExpanderSources {
         
         console.log('[AutoExpanderSources] Found last <li>:', lastLi);
         
-        // Szukaj przycisku w ostatnim <li> z role="button" i jsaction zaczynającym się od "trigger"
-        const buttons = lastLi.querySelectorAll('[role="button"][jsaction^="trigger"]');
+        // Szukaj przycisku w ostatnim <li> z role="button" i jsaction zawierającym "trigger"
+        const buttons = lastLi.querySelectorAll('[role="button"][jsaction*="trigger"]');
         if (buttons.length === 0) {
-            console.log('[AutoExpanderSources] No button with role="button" and jsaction starting with "trigger" found in last <li>');
+            console.log('[AutoExpanderSources] No button with role="button" and jsaction containing "trigger" found in last <li>');
             return null;
         }
         
@@ -478,6 +478,12 @@ class AutoExpanderSources {
     areSourcesExpanded() {
         console.log('[AutoExpanderSources] Checking if sources are expanded...');
         
+        // Jeśli przycisk został już kliknięty przez nas, uznaj za rozwinięte
+        if (this.buttonClicked) {
+            console.log('[AutoExpanderSources] Button was already clicked by us - considering expanded');
+            return true;
+        }
+        
         // Strategia 1: Sprawdź czy istnieje div z style="height: 100%" w #m-x-content
         const expandedDiv = document.querySelector('#m-x-content div[style*="height: 100%"]');
         if (expandedDiv) {
@@ -485,8 +491,21 @@ class AutoExpanderSources {
             return true;
         }
         
-        // Strategia 2: Sprawdź czy przycisk "+X" zniknął (został już kliknięty)
-        const expandButtons = document.querySelectorAll('#m-x-content [role="button"][style*="cursor:pointer"]');
+        // Strategia 2: Sprawdź liczbę widocznych linków w MSC sekcji (tylko jako wskazówka)
+        const mscSection = document.querySelector('div[data-subtree="msc"]');
+        if (mscSection) {
+            const visibleLinks = this.countVisibleSources(mscSection);
+            console.log('[AutoExpanderSources] Found', visibleLinks, 'visible links in MSC section');
+            
+            // Jeśli jest więcej niż 8 linków, prawdopodobnie rozwinięte
+            if (visibleLinks > 8) {
+                console.log('[AutoExpanderSources] Many links found (>8) - sources likely expanded');
+                return true;
+            }
+        }
+        
+        // Strategia 3: Sprawdź czy przycisk "+X" istnieje (zachowaj dla innych przypadków AI Overview)
+        const expandButtons = document.querySelectorAll('#m-x-content [role="button"]');
         const hasExpandButton = Array.from(expandButtons).some(btn => {
             const text = btn.textContent?.trim() || '';
             const isPlusNumber = /\+\d+/.test(text); // Szuka wzorca "+liczba"
@@ -494,25 +513,13 @@ class AutoExpanderSources {
             return isPlusNumber;
         });
         
-        if (!hasExpandButton) {
-            console.log('[AutoExpanderSources] No +X button found - sources likely expanded');
-            return true;
+        if (hasExpandButton) {
+            console.log('[AutoExpanderSources] Found +X button - sources NOT expanded yet');
+            return false;
         }
         
-        // Strategia 3: Sprawdź liczbę widocznych linków w MSC sekcji
-        const mscSection = document.querySelector('div[data-subtree="msc"]');
-        if (mscSection) {
-            const visibleLinks = this.countVisibleSources(mscSection);
-            console.log('[AutoExpanderSources] Found', visibleLinks, 'visible links in MSC section');
-            
-            // Jeśli jest więcej niż 5 linków, prawdopodobnie rozwinięte
-            if (visibleLinks > 5) {
-                console.log('[AutoExpanderSources] Many links found - sources likely expanded');
-                return true;
-            }
-        }
-        
-        console.log('[AutoExpanderSources] Sources not yet expanded');
+        // KONSERWATYWNE PODEJŚCIE: Jeśli nie ma jasnych oznak rozwinięcia, uznaj za nierozwinięte
+        console.log('[AutoExpanderSources] No clear signs of expansion - considering NOT expanded');
         return false;
     }
 

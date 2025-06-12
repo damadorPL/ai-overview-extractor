@@ -2,6 +2,41 @@
 
 All notable changes to the AI Overview Extractor extension will be documented in this file.
 
+## [1.0.8] - 2025-12-06
+
+### 🐛 Fixed
+- **Auto-expand sources functionality** - Fixed critical issue where sources were not expanding automatically
+- **Button selector bug** - Fixed jsaction selector from `^="trigger"` to `*="trigger"` to properly match `jsaction="trigger.Wyhgxe"`
+- **Timing issues** - Increased delays for better DOM loading stability (1500ms, 1000ms, 3000ms)
+- **Expansion detection logic** - Made `areSourcesExpanded()` more conservative to prevent false positives
+- **Button clicking prevention** - Added `buttonClicked` flag to prevent multiple clicking attempts
+
+### 🔧 Changed  
+- **Improved selector reliability** - Button detection now works with dynamic Google jsaction attributes
+- **Enhanced timing** - Better delays for DOM loading and expansion confirmation
+- **Conservative expansion detection** - Higher threshold (8+ links) for considering sources as expanded
+- **Preserved +X detection** - Maintained detection for different AI Overview layouts
+- **Better debugging** - More detailed logging for troubleshooting button detection
+
+### 🏗️ Technical Improvements
+- Fixed `findExpandButtonInLastLi()` selector to use `[jsaction*="trigger"]` instead of `[jsaction^="trigger"]`
+- Increased initial delay to 1500ms for sources section loading
+- Increased retry delay to 1000ms and observation delay to 3000ms
+- Enhanced `areSourcesExpanded()` with `buttonClicked` flag tracking
+- Preserved +X button detection for other AI Overview cases
+- Added more conservative fallback logic
+
+### ✨ User Experience
+- **Reliable source expansion** - "Pokaż wszystko" button now properly detected and clicked
+- **No duplicate clicks** - Prevents multiple clicking attempts on the same button
+- **Better stability** - More time allowed for DOM elements to load properly
+- **Comprehensive logging** - Enhanced debugging information for issue identification
+
+### 🎯 Focus Areas
+- **Button detection**: Fixed selector incompatibility with Google's dynamic jsaction attributes
+- **Timing optimization**: Better delays for reliable DOM interaction
+- **Stability**: Prevention of multiple clicks and false positive detections
+
 ## [1.0.7] - 2025-12-06
 
 ### 🐛 Fixed
