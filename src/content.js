@@ -142,6 +142,16 @@ class AIOverviewExtractor {
             const expanded = await this.autoExpandAIOverview();
             if (expanded) {
                 console.log('[AI Overview Extractor] AI overview expanded, will recheck in 1000ms');
+                
+                // Auto-expand sources if enabled
+                if (this.settings.autoExpandSources) {
+                    console.log('[AI Overview Extractor] Starting sources expansion after AI overview');
+                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
+                    if (sourcesExpanded) {
+                        console.log('[AI Overview Extractor] Sources expansion completed');
+                    }
+                }
+                
                 // Wait for expansion animation and check again
                 setTimeout(() => this.checkAndAddButton(), 1000);
                 return;

@@ -90,10 +90,10 @@ class AutoExpanderSources {
                 continue;
             }
             
-            // Znajdź przycisk - tylko [role="button"]
-            const button = mscSection.querySelector('[role="button"]');
+            // Znajdź przycisk w ostatnim <li>
+            const button = this.findExpandButtonInLastLi(mscSection);
             if (!button) {
-                console.log('[AutoExpanderSources] No button found in MSC section, retrying...');
+                console.log('[AutoExpanderSources] No expand button found in last <li>, retrying...');
                 await this.delay(500);
                 continue;
             }
@@ -172,7 +172,40 @@ class AutoExpanderSources {
                element.offsetHeight > 0;
     }
 
-    // Szuka przycisku rozwijania źródeł
+    // Znajduje przycisk rozwijania w ostatnim <li>
+    findExpandButtonInLastLi(mscSection) {
+        console.log('[AutoExpanderSources] Looking for expand button in last <li>');
+        
+        // Znajdź <ul> w sekcji MSC
+        const ul = mscSection.querySelector('ul');
+        if (!ul) {
+            console.log('[AutoExpanderSources] No <ul> found in MSC section');
+            return null;
+        }
+        
+        // Pobierz ostatni <li>
+        const lastLi = ul.lastElementChild;
+        if (!lastLi || lastLi.tagName !== 'LI') {
+            console.log('[AutoExpanderSources] No valid last <li> found');
+            return null;
+        }
+        
+        console.log('[AutoExpanderSources] Found last <li>:', lastLi);
+        
+        // Szukaj przycisku w ostatnim <li>
+        const button = lastLi.querySelector('[role="button"]');
+        if (!button) {
+            console.log('[AutoExpanderSources] No button found in last <li>');
+            return null;
+        }
+        
+        console.log('[AutoExpanderSources] Found button in last <li>:', button);
+        console.log('[AutoExpanderSources] Button text:', button.textContent?.trim());
+        
+        return button;
+    }
+
+    // Szuka przycisku rozwijania źródeł (stara metoda - backup)
     findSourcesExpandButton() {
         // Szukaj w sekcji MSC (Most Shared Content)
         const mscSection = document.querySelector('div[data-subtree="msc"]');
