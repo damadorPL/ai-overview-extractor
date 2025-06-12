@@ -107,17 +107,31 @@ class AutoExpanderSources {
             
             console.log('[AutoExpanderSources] Found button:', button);
             
-            // Kliknij przycisk
-            const success = await this.tryClickButton(button);
-            if (success) {
+            // Loguj stan przed kliknięciem
+            const beforeCount = this.countAllVisibleSources();
+            console.log('[AutoExpanderSources] Sources count before click:', beforeCount);
+            
+            // Kliknij przycisk (proste kliknięcie jak w auto-expander-overviews)
+            try {
+                button.click();
+                console.log('[AutoExpanderSources] Button clicked successfully');
+                
                 // Czekaj na rozwinięcie
                 await this.delay(1000);
+                
+                // Loguj stan po kliknięciu
+                const afterCount = this.countAllVisibleSources();
+                console.log('[AutoExpanderSources] Sources count after click:', afterCount);
                 
                 // Sprawdź czy się rozwinęło
                 if (this.areSourcesExpanded()) {
                     console.log('[AutoExpanderSources] Success! Sources expanded');
                     return true;
+                } else {
+                    console.log('[AutoExpanderSources] Click completed but sources not detected as expanded');
                 }
+            } catch (error) {
+                console.log('[AutoExpanderSources] Click failed:', error);
             }
             
             await this.delay(500);
@@ -166,6 +180,16 @@ class AutoExpanderSources {
     // Liczy widoczne źródła w sekcji
     countVisibleSources(mscSection) {
         const links = mscSection.querySelectorAll('a[href]');
+        const visibleLinks = Array.from(links).filter(link => this.isElementVisible(link));
+        return visibleLinks.length;
+    }
+    
+    // Liczy wszystkie widoczne źródła w całym #m-x-content
+    countAllVisibleSources() {
+        const container = document.querySelector('#m-x-content');
+        if (!container) return 0;
+        
+        const links = container.querySelectorAll('a[href]');
         const visibleLinks = Array.from(links).filter(link => this.isElementVisible(link));
         return visibleLinks.length;
     }
@@ -313,9 +337,42 @@ class AutoExpanderSources {
 
     // Sprawdza czy źródła są już rozwinięte
     areSourcesExpanded() {
-        // Sprawdź czy istnieje div z style="height: 100%" w #m-x-content
+        console.log('[AutoExpanderSources] Checking if sources are expanded...');
+        
+        // Strategia 1: Sprawdź czy istnieje div z style="height: 100%" w #m-x-content
         const expandedDiv = document.querySelector('#m-x-content div[style*="height: 100%"]');
-        return !!expandedDiv;
+        if (expandedDiv) {
+            console.log('[AutoExpanderSources] Found height: 100% div - sources expanded');
+            return true;
+        }
+        
+        // Strategia 2: Sprawdź czy przycisk "+X" zniknął (został już kliknięty)
+        const expandButtons = document.querySelectorAll('#m-x-content [role="button"][style*="cursor:pointer"]');
+        const hasExpandButton = Array.from(expandButtons).some(btn => {
+            const text = btn.textContent?.trim() || '';
+            return /\+\d+/.test(text); // Szuka wzorca "+liczba"
+        });
+        
+        if (!hasExpandButton) {
+            console.log('[AutoExpanderSources] No +X button found - sources likely expanded');
+            return true;
+        }
+        
+        // Strategia 3: Sprawdź liczbę widocznych linków w MSC sekcji
+        const mscSection = document.querySelector('div[data-subtree="msc"]');
+        if (mscSection) {
+            const visibleLinks = this.countVisibleSources(mscSection);
+            console.log('[AutoExpanderSources] Found', visibleLinks, 'visible links in MSC section');
+            
+            // Jeśli jest więcej niż 5 linków, prawdopodobnie rozwinięte
+            if (visibleLinks > 5) {
+                console.log('[AutoExpanderSources] Many links found - sources likely expanded');
+                return true;
+            }
+        }
+        
+        console.log('[AutoExpanderSources] Sources not yet expanded');
+        return false;
     }
 
     // Sprawdza czy sekcja źródeł w ogóle istnieje
