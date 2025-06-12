@@ -4,7 +4,8 @@ class SettingsManager {
         this.defaultSettings = {
             autoExpandOverviews: true,
             autoExpandSources: true,
-            autoSendWebhook: false
+            autoSendWebhook: false,
+            autoExtract: false
         };
     }
 

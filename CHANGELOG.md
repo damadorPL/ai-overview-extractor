@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Extension popup interface** - Modern settings panel accessible from browser toolbar
 - **Real-time settings synchronization** - Changes applied immediately across all Google.com tabs
 - Toggle switches for auto-expand overviews, auto-expand sources, and auto-webhook functionality
+- **Auto-extract on google.com** - Automatically extract and show AI overview content without manual clicking
 
 ### Changed
 - Extension name updated to "AI Overview Extractor - Features"
