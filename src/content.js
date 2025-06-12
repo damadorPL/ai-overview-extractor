@@ -140,22 +140,24 @@ class AIOverviewExtractor {
             return;
         }
         
-        // Auto-expand AI overview if enabled
-        if (this.settings && this.settings.autoExpandOverviews) {
-            const expanded = await this.autoExpandAIOverview();
-            if (expanded) {
-                // Wait for expansion animation and check again
-                setTimeout(() => this.checkAndAddButton(), 1000);
-                return;
-            }
-        }
-        
-        // Auto extract if enabled
+        // Check auto extract first (most common case on google.com)
         if (this.settings && this.settings.autoExtract) {
             console.log('[AI Overview Extractor] Auto extract enabled, performing extraction');
             this.extractionOrchestrator.handleExtraction(container);
             this.processedContainers.add(containerId);
             return;
+        }
+        
+        // Auto-expand AI overview if enabled and needed
+        if (this.settings && this.settings.autoExpandOverviews) {
+            const expanded = await this.autoExpandAIOverview();
+            if (expanded) {
+                console.log('[AI Overview Extractor] AI overview expanded, will recheck in 1000ms');
+                // Wait for expansion animation and check again
+                setTimeout(() => this.checkAndAddButton(), 1000);
+                return;
+            }
+            console.log('[AI Overview Extractor] No expansion needed, continuing to add button');
         }
         
         console.log('[AI Overview Extractor] Found #m-x-content, adding button');
