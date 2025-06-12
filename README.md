@@ -4,6 +4,7 @@
 
 Extension automatically detects AI Overview on Google results pages and enables exporting content along with sources to readable Markdown format.
 
+Chrome Extension: https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
 Firefox Add-on: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
 
 ![Extension demo](./images/ai-overviews-extractor.gif)
