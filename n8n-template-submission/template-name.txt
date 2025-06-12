@@ -1,1 +1,1 @@
-Extract and Analyze Google AI Overviews with Any LLM from Open Router, Browser Extension, and Google Sheets for SEO Recommendations
+Extract and Analyze Google AI Overviews with Gemini 2.5 Pro, Browser Extension, and Google Sheets for SEO Recommendations

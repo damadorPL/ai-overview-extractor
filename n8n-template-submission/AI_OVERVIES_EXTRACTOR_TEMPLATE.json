@@ -1,5 +1,5 @@
 {
-  "name": "AI OVERVIES EXTRACTOR TEMPLATE",
+  "name": "AI_OVERVIES_EXTRACTOR_TEMPLATE",
   "nodes": [
     {
       "parameters": {
@@ -8,24 +8,24 @@
         "responseMode": "lastNode",
         "options": {}
       },
-      "id": "71fcdc6f-e9a0-4e7d-8417-c0a611a9ff0f",
+      "id": "d54405a8-ce00-4f39-bcea-fae97338a27f",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "position": [
-        -380,
-        -600
+        -120,
+        20
       ],
       "typeVersion": 2,
       "webhookId": "81d02aee-0018-48f4-b228-0716bba9bf8b"
     },
     {
       "parameters": {},
-      "id": "a08973b2-eb18-4599-83e5-7beea3e503f5",
+      "id": "2853ad27-91c9-405a-b696-b077823a1021",
       "name": "When clicking 'Execute workflow'",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -360,
-        105
+        -100,
+        740
       ],
       "typeVersion": 1
     },
@@ -144,12 +144,12 @@
           "cellFormat": "RAW"
         }
       },
-      "id": "88660f53-64bc-4a4a-aee5-100fd52e8c1e",
-      "name": "updateRows",
+      "id": "9dfbb1ee-6979-49bd-8963-f1b7f339feb5",
+      "name": "Save AI Overview to Sheets",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        360,
-        -600
+        620,
+        20
       ],
       "typeVersion": 4.6,
       "notesInFlow": true,
@@ -186,12 +186,12 @@
         },
         "options": {}
       },
-      "id": "2aa669d4-e33b-43fa-bd47-5d83675f4934",
+      "id": "b2453757-c908-4747-8029-2d24e5690be4",
       "name": "myURL Exists",
       "type": "n8n-nodes-base.filter",
       "position": [
-        300,
-        205
+        560,
+        840
       ],
       "typeVersion": 2.2,
       "notesInFlow": true,
@@ -214,12 +214,12 @@
         },
         "options": {}
       },
-      "id": "2be90459-772e-4c35-8f92-332ec711a5d4",
-      "name": "HTML",
+      "id": "f48fc7a2-c6ac-4426-9986-e987e5dc9a23",
+      "name": "Extract Page Title and H1",
       "type": "n8n-nodes-base.html",
       "position": [
-        1180,
-        180
+        1440,
+        800
       ],
       "typeVersion": 1.2,
       "notesInFlow": true,
@@ -231,12 +231,12 @@
         "combineBy": "combineByPosition",
         "options": {}
       },
-      "id": "2a9974f3-f7f4-458e-aedf-1079049f1b91",
+      "id": "d250bdc4-0b58-41f4-afa2-ba82f67d67d6",
       "name": "Merge",
       "type": "n8n-nodes-base.merge",
       "position": [
-        1400,
-        80
+        1660,
+        700
       ],
       "typeVersion": 3.2,
       "notes": "merge variables by position"
@@ -246,12 +246,12 @@
         "url": "={{ $json.myURL }}",
         "options": {}
       },
-      "id": "6f9ab7d9-aa10-4e1f-bbaa-5e54df4d4bb8",
-      "name": "getPage",
+      "id": "67d57eb8-2edc-4592-a9e2-0a5c0bade571",
+      "name": "Fetch Page Content",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        960,
-        80
+        1220,
+        700
       ],
       "typeVersion": 4.2,
       "notesInFlow": true,
@@ -261,12 +261,12 @@
       "parameters": {
         "options": {}
       },
-      "id": "bf17262a-3482-4333-a082-9239f033b166",
-      "name": "loopOverRows",
+      "id": "8d816cf1-dae5-4a47-9117-ed13dc9a4590",
+      "name": "Process URLs in Batches",
       "type": "n8n-nodes-base.splitInBatches",
       "position": [
-        520,
-        205
+        780,
+        840
       ],
       "typeVersion": 3
     },
@@ -275,12 +275,12 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "9e60283b-ac6a-45cd-a949-7fe0fc60b03d",
-      "name": "singleRow",
+      "id": "d8db7f48-21e3-4f7b-a48a-6931cf397601",
+      "name": "Get Current URL Data",
       "type": "n8n-nodes-base.set",
       "position": [
-        740,
-        80
+        1000,
+        700
       ],
       "typeVersion": 3.4,
       "notesInFlow": true,
@@ -303,7 +303,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "guidelines": "={{ $json.text }}",
-            "row_number": "={{ $('singleRow').item.json.row_number }}",
+            "row_number": "={{ $('Get Current URL Data').item.json.row_number }}",
             "task": "guidelines created"
           },
           "matchingColumns": [
@@ -407,12 +407,12 @@
         },
         "options": {}
       },
-      "id": "e513dfbb-51b9-449e-833f-7f72d17cdf5f",
-      "name": "updateGuideLines",
+      "id": "c82ae7fe-8369-461c-8661-ebd51371138b",
+      "name": "Save SEO Guidelines to Sheets",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        1996,
-        80
+        2260,
+        700
       ],
       "typeVersion": 4.6,
       "notesInFlow": true,
@@ -435,23 +435,23 @@
           ]
         }
       },
-      "id": "4f205f67-8119-45e5-8b24-10dd3f1219fc",
+      "id": "ecd9fbfa-328f-4507-a662-0c0d6e6f620e",
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
-        -360,
-        305
+        -100,
+        940
       ],
       "typeVersion": 1.2
     },
     {
       "parameters": {},
-      "id": "7e38ccca-a54c-4244-8ab9-f66bcf168eef",
+      "id": "90c30cd2-9b88-48e0-8846-065340014f29",
       "name": "Wait",
       "type": "n8n-nodes-base.wait",
       "position": [
-        2216,
-        205
+        2480,
+        840
       ],
       "typeVersion": 1.1,
       "webhookId": "03dd000b-26dc-4905-8efb-19a7175e689e"
@@ -460,12 +460,12 @@
       "parameters": {
         "maxItems": 10
       },
-      "id": "75f73aea-8261-4afa-a352-e49a17f92f31",
+      "id": "e0516ed5-69cd-4543-8816-aa70579aef2a",
       "name": "Limit",
       "type": "n8n-nodes-base.limit",
       "position": [
-        80,
-        205
+        340,
+        840
       ],
       "typeVersion": 1,
       "notesInFlow": true,
@@ -496,12 +496,12 @@
         },
         "options": {}
       },
-      "id": "2e5db758-21eb-4b1f-b8f7-b0d0cd3ca15c",
-      "name": "getRows",
+      "id": "30c3e6fb-044b-4d8c-8da2-5e67d95f397b",
+      "name": "Get URLs to Analyze",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        -120,
-        180
+        140,
+        800
       ],
       "typeVersion": 4.6,
       "notesInFlow": true,
@@ -520,12 +520,12 @@
           "responseFormat": "text"
         }
       },
-      "id": "e2b800c2-b169-4f43-9045-6f5c06f8e248",
-      "name": "chatModel",
+      "id": "2253258b-846f-445d-baa8-7cb754a32738",
+      "name": "Gemini 2.5 Pro Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "position": [
-        1620,
-        300
+        1880,
+        920
       ],
       "typeVersion": 1,
       "notesInFlow": true,
@@ -543,12 +543,12 @@
         "destinationKey": "markdown",
         "options": {}
       },
-      "id": "ed5e2432-2089-459e-865a-893b485fe6bc",
-      "name": "htmlToMarkdown",
+      "id": "5eeb0cd6-7fd9-4fd0-9053-08607bdc824c",
+      "name": "Convert AI Overview to Markdown",
       "type": "n8n-nodes-base.markdown",
       "position": [
-        60,
-        -600
+        320,
+        20
       ],
       "typeVersion": 1,
       "notesInFlow": true,
@@ -562,17 +562,17 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -460,
-        -720
+        -200,
+        -100
       ],
       "typeVersion": 1,
-      "id": "69c0bb5a-ff85-4ada-badb-b8507727ee55",
+      "id": "85e2d470-f80a-44db-8166-31b2883a310b",
       "name": "Sticky Note"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=# KEYWORD:\n{{ $('singleRow').item.json.searchQuery }}\n\n# PAGE CONTENT:\n{{ $json.data }}\n\n# AI OVERVIEW CONTENT:\n{{ $('singleRow').item.json.markdown }}\n\n# Task\nDescribe exactly what I need to change in my page content, and specify where to add or modify things. Provide clear, actionable instructions so I can implement the changes quickly.\n",
+        "text": "=# KEYWORD:\n{{ $('Get Current URL Data').item.json.searchQuery }}\n\n# PAGE CONTENT:\n{{ $json.data }}\n\n# AI OVERVIEW CONTENT:\n{{ $('Get Current URL Data').item.json.markdown }}\n\n# Task\nDescribe exactly what I need to change in my page content, and specify where to add or modify things. Provide clear, actionable instructions so I can implement the changes quickly.\n",
         "messages": {
           "messageValues": [
             {
@@ -586,12 +586,12 @@
         },
         "batching": {}
       },
-      "id": "6753156e-8c8b-4c60-a072-ebafac615128",
-      "name": "guidelines chain",
+      "id": "cc15d895-9211-4480-8593-97c5e7f84697",
+      "name": "Generate SEO Recommendations",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        1620,
-        80
+        1880,
+        700
       ],
       "typeVersion": 1.7,
       "notesInFlow": true,
@@ -605,11 +605,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -460,
-        -140
+        -200,
+        480
       ],
       "typeVersion": 1,
-      "id": "d113a832-2ef9-4f4f-8f56-100de4b304da",
+      "id": "7443adb0-440c-4223-8362-55641f0afa21",
       "name": "Sticky Note1"
     },
     {
@@ -644,12 +644,12 @@
         },
         "options": {}
       },
-      "id": "f845f211-0f61-4635-a4a4-d92da6cdc62a",
-      "name": "inputData",
+      "id": "5607f7b6-c6b2-4325-95ae-1d749959946b",
+      "name": "Extract Webhook Data",
       "type": "n8n-nodes-base.set",
       "position": [
-        -160,
-        -600
+        100,
+        20
       ],
       "typeVersion": 3.4,
       "notes": "get only necessary data from webhook"
@@ -659,12 +659,12 @@
         "html": "={{ $json.data }}",
         "options": {}
       },
-      "id": "f299a147-0d47-4b1c-a5d2-5e51b790c128",
-      "name": "pageToMarkdown",
+      "id": "93567700-0a9e-4a19-934e-ee6d98eb9ba6",
+      "name": "Convert Page Content to Markdown",
       "type": "n8n-nodes-base.markdown",
       "position": [
-        1180,
-        -20
+        1440,
+        600
       ],
       "typeVersion": 1,
       "notesInFlow": true,
@@ -673,7 +673,7 @@
   ],
   "pinData": {},
   "connections": {
-    "HTML": {
+    "Extract Page Title and H1": {
       "main": [
         [
           {
@@ -688,7 +688,7 @@
       "main": [
         [
           {
-            "node": "loopOverRows",
+            "node": "Process URLs in Batches",
             "type": "main",
             "index": 0
           }
@@ -710,7 +710,7 @@
       "main": [
         [
           {
-            "node": "guidelines chain",
+            "node": "Generate SEO Recommendations",
             "type": "main",
             "index": 0
           }
@@ -721,46 +721,46 @@
       "main": [
         [
           {
-            "node": "inputData",
+            "node": "Extract Webhook Data",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "getPage": {
+    "Fetch Page Content": {
       "main": [
         [
           {
-            "node": "pageToMarkdown",
+            "node": "Convert Page Content to Markdown",
             "type": "main",
             "index": 0
           },
           {
-            "node": "HTML",
+            "node": "Extract Page Title and H1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "singleRow": {
+    "Get Current URL Data": {
       "main": [
         [
           {
-            "node": "getPage",
+            "node": "Fetch Page Content",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "loopOverRows": {
+    "Process URLs in Batches": {
       "main": [
         [],
         [
           {
-            "node": "singleRow",
+            "node": "Get Current URL Data",
             "type": "main",
             "index": 0
           }
@@ -771,19 +771,14 @@
       "main": [
         [
           {
-            "node": "loopOverRows",
+            "node": "Process URLs in Batches",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Schedule Trigger": {
-      "main": [
-        []
-      ]
-    },
-    "updateGuideLines": {
+    "Save SEO Guidelines to Sheets": {
       "main": [
         [
           {
@@ -798,14 +793,14 @@
       "main": [
         [
           {
-            "node": "getRows",
+            "node": "Get URLs to Analyze",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "getRows": {
+    "Get URLs to Analyze": {
       "main": [
         [
           {
@@ -816,51 +811,51 @@
         ]
       ]
     },
-    "chatModel": {
+    "Gemini 2.5 Pro Model": {
       "ai_languageModel": [
         [
           {
-            "node": "guidelines chain",
+            "node": "Generate SEO Recommendations",
             "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "htmlToMarkdown": {
+    "Convert AI Overview to Markdown": {
       "main": [
         [
           {
-            "node": "updateRows",
+            "node": "Save AI Overview to Sheets",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "guidelines chain": {
+    "Generate SEO Recommendations": {
       "main": [
         [
           {
-            "node": "updateGuideLines",
+            "node": "Save SEO Guidelines to Sheets",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "inputData": {
+    "Extract Webhook Data": {
       "main": [
         [
           {
-            "node": "htmlToMarkdown",
+            "node": "Convert AI Overview to Markdown",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "pageToMarkdown": {
+    "Convert Page Content to Markdown": {
       "main": [
         [
           {
@@ -870,16 +865,27 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get URLs to Analyze",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "61565fda-608f-46c6-90ee-5e7a22ae1636",
+  "versionId": "9893a353-6861-4b33-8cad-51398078889b",
   "meta": {
     "instanceId": "e8794a4f970040d09c64040698c632aefaa9a59e97e60424e4b5671338351753"
   },
-  "id": "xxyEygAs1xr26qAI",
+  "id": "LCD5jIxtbjApUGd6",
   "tags": []
 }
