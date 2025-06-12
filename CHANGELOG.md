@@ -8,11 +8,13 @@ All notable changes to the AI Overview Extractor extension will be documented in
 - **Auto-webhook functionality** - Fixed automatic webhook sending after AI overview expansion
 - **AI Overview detection** - Improved detection of asynchronously loaded AI overviews
 - **ContentExtractor integration** - Fixed webhook data preparation using proper extraction methods
+- **Manual button visibility** - Fixed issue where "Extract to Markdown" button was hidden when automation features were enabled
 
 ### 🔧 Changed  
 - **Default settings** - Auto-expansion features now disabled by default for better user control
 - **Enhanced logging** - Added comprehensive debugging logs for troubleshooting
 - **Timing improvements** - Added delayed checks to catch AI overviews that load with delay
+- **Execution order** - Automation now triggers only after manual button is successfully loaded (sequential flow)
 
 ### 🏗️ Technical Improvements
 - Fixed `AutoWebhook.prepareWebhookData()` to use `ContentExtractor` and `MarkdownGenerator` instances

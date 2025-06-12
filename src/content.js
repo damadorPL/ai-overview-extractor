@@ -77,25 +77,23 @@ class AIOverviewExtractor {
                 await this.handleAutomationFailure(data);
                 break;
             case 'MANUAL_MODE':
-                this.addManualButton(data?.container);
+                // Manual button is now always added in handleContainerFound()
+                console.log('[AI Overview Extractor] Manual mode active');
                 break;
         }
     }
 
     async handleContainerFound(container) {
-        console.log('[AI Overview Extractor] Container found, determining action based on settings');
+        console.log('[AI Overview Extractor] Container found, adding manual button first');
         
         // Store container for later use
         this.stateMachine.updateStateData({ container });
         
-        // Check automation settings and start appropriate flow
-        if (this.settings.autoExpandOverviews || this.settings.autoExpandSources || this.settings.autoSendWebhook) {
-            console.log('[AI Overview Extractor] Auto-automation enabled, starting state machine');
-            this.stateMachine.transition('START_AUTOMATION', { container });
-        } else {
-            console.log('[AI Overview Extractor] Auto-automation disabled, switching to manual mode');
-            this.stateMachine.transition('MANUAL_MODE', { container });
-        }
+        // Add manual button and setup automation trigger after successful button creation
+        this.addManualButton(container, () => {
+            // This callback runs after button is successfully added
+            this.triggerAutomationAfterButtonReady(container);
+        });
     }
 
     // Execute overview expansion with circuit breaker protection
@@ -192,12 +190,8 @@ class AIOverviewExtractor {
     async handleAutomationFailure(data) {
         console.log('[AI Overview Extractor] Automation failed, falling back to manual mode');
         
-        const container = data?.container || this.stateMachine.getStateData().container;
-        if (container) {
-            this.addManualButton(container);
-        }
-        
-        // Log circuit breaker states for debugging
+        // Manual button is already available since it's added in handleContainerFound()
+        // Just log the failure and circuit breaker states for debugging
         console.log('[AI Overview Extractor] Circuit breaker states:', {
             overview: this.circuitBreakers.overview.getMetrics(),
             sources: this.circuitBreakers.sources.getMetrics(),
@@ -205,14 +199,32 @@ class AIOverviewExtractor {
         });
     }
 
+    // Trigger automation after manual button is ready
+    triggerAutomationAfterButtonReady(container) {
+        console.log('[AI Overview Extractor] Manual button ready, checking automation settings');
+        
+        // Check automation settings and start appropriate flow
+        if (this.settings.autoExpandOverviews || this.settings.autoExpandSources || this.settings.autoSendWebhook) {
+            console.log('[AI Overview Extractor] Auto-automation enabled, starting state machine');
+            this.stateMachine.transition('START_AUTOMATION', { container });
+        } else {
+            console.log('[AI Overview Extractor] Auto-automation disabled, staying in manual mode');
+            this.stateMachine.transition('MANUAL_MODE', { container });
+        }
+    }
+
     // Add manual extraction button
-    addManualButton(container) {
+    addManualButton(container, onButtonReady = null) {
         console.log('[AI Overview Extractor] Adding manual extraction button');
         
         // Check if button already exists
         const existingButton = container.parentNode?.querySelector('.ai-extractor-button');
         if (existingButton) {
             console.log('[AI Overview Extractor] Button already exists');
+            // If callback provided and button exists, still trigger it
+            if (onButtonReady) {
+                setTimeout(() => onButtonReady(), 100);
+            }
             return;
         }
         
@@ -228,6 +240,15 @@ class AIOverviewExtractor {
         // Add button above container
         container.parentNode.insertBefore(button, container);
         console.log('[AI Overview Extractor] Manual button added successfully');
+        
+        // Trigger callback after button is ready
+        if (onButtonReady) {
+            // Small delay to ensure button is fully rendered
+            setTimeout(() => {
+                console.log('[AI Overview Extractor] Manual button ready, triggering callback');
+                onButtonReady();
+            }, 100);
+        }
     }
 
     // Get current automation status for debugging
