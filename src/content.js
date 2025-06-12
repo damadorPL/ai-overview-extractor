@@ -4,7 +4,6 @@ class AIOverviewExtractor {
         this.settingsManager = new SettingsManager();
         this.settings = null;
         this.isInitialized = false;
-        this.processedContainers = new Set(); // Track processed containers
         this.debounceTimer = null;
         
         // Initialize auto-expansion modules
@@ -125,18 +124,9 @@ class AIOverviewExtractor {
             return;
         }
 
-        // Create unique ID for this container based on location and content
-        const containerId = this.generateContainerId(container);
-        
-        // Check if we already processed this container
-        if (this.processedContainers.has(containerId)) {
-            return;
-        }
-
-        // Check if button already exists for this specific container
+        // Check if button already exists
         const existingButton = container.parentNode?.querySelector('.ai-extractor-button');
         if (existingButton) {
-            this.processedContainers.add(containerId);
             return;
         }
         
@@ -154,17 +144,8 @@ class AIOverviewExtractor {
         
         console.log('[AI Overview Extractor] Found #m-x-content, adding button');
         this.addButton(container);
-        this.processedContainers.add(containerId);
     }
 
-    generateContainerId(container) {
-        // Generate unique ID based on container position and first 100 chars of content
-        const rect = container.getBoundingClientRect();
-        const content = container.textContent.slice(0, 100);
-        const position = `${Math.round(rect.top)}-${Math.round(rect.left)}`;
-        const contentHash = btoa(content).slice(0, 10);
-        return `${position}-${contentHash}`;
-    }
 
     addButton(container) {
         const button = document.createElement('button');
