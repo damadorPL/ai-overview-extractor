@@ -44,7 +44,6 @@ class PopupManager {
         const autoExpandOverviews = document.getElementById('autoExpandOverviews');
         const autoExpandSources = document.getElementById('autoExpandSources');
         const autoSendWebhook = document.getElementById('autoSendWebhook');
-        const autoExtract = document.getElementById('autoExtract');
 
         if (autoExpandOverviews) {
             autoExpandOverviews.checked = settings.autoExpandOverviews;
@@ -56,10 +55,6 @@ class PopupManager {
         
         if (autoSendWebhook) {
             autoSendWebhook.checked = settings.autoSendWebhook;
-        }
-        
-        if (autoExtract) {
-            autoExtract.checked = settings.autoExtract;
         }
 
         console.log('[Popup] UI updated with settings');
@@ -90,13 +85,6 @@ class PopupManager {
             });
         }
 
-        // Auto extract toggle
-        const autoExtract = document.getElementById('autoExtract');
-        if (autoExtract) {
-            autoExtract.addEventListener('change', async (e) => {
-                await this.handleSettingChange('autoExtract', e.target.checked);
-            });
-        }
 
         // Reset button
         const resetBtn = document.getElementById('resetBtn');

@@ -140,14 +140,6 @@ class AIOverviewExtractor {
             return;
         }
         
-        // Check auto extract first (most common case on google.com)
-        if (this.settings && this.settings.autoExtract) {
-            console.log('[AI Overview Extractor] Auto extract enabled, performing extraction');
-            this.extractionOrchestrator.handleExtraction(container);
-            this.processedContainers.add(containerId);
-            return;
-        }
-        
         // Auto-expand AI overview if enabled and needed
         if (this.settings && this.settings.autoExpandOverviews) {
             const expanded = await this.autoExpandAIOverview();
