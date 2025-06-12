@@ -23,7 +23,7 @@
       "matches": [
         "*://www.google.com/search*"
       ],
-      "js": ["src/turndown.js", "src/webhook-manager.js", "src/settings-manager.js", "src/content.js"],
+      "js": ["src/turndown.js", "src/webhook-manager.js", "src/settings-manager.js", "src/auto-expander-overviews.js", "src/auto-expander-sources.js", "src/auto-webhook.js", "src/content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }

@@ -3,6 +3,12 @@ class AIOverviewExtractor {
         this.webhookManager = new WebhookManager();
         this.settingsManager = new SettingsManager();
         this.settings = null;
+        
+        // Initialize new modules
+        this.autoExpanderOverviews = new AutoExpanderOverviews(this.settingsManager);
+        this.autoExpanderSources = new AutoExpanderSources(this.settingsManager);
+        this.autoWebhook = new AutoWebhook(this.settingsManager, this.webhookManager);
+        
         this.init();
     }
 
@@ -13,6 +19,12 @@ class AIOverviewExtractor {
         this.settings = await this.settingsManager.getSettings();
         console.log('[AI Overview Extractor] Settings loaded:', this.settings);
         
+        // Setup module callbacks
+        this.setupModuleCallbacks();
+        
+        // Start the orchestrated automation
+        await this.orchestrateModules();
+        
         // Check immediately if container exists
         this.checkAndAddButton();
         
@@ -20,27 +32,54 @@ class AIOverviewExtractor {
         this.observeDOM();
     }
 
-    async autoExpandAIOverview() {
-        // Look for the "Show more" button with specific attributes
-        const expandButton = document.querySelector('[aria-expanded="false"][aria-controls="m-x-content"]');
-        
-        if (expandButton) {
-            console.log('[AI Overview Extractor] Auto-expanding AI overview');
-            
-            // Click the expand button
-            expandButton.click();
-            
-            // Wait for expansion animation
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    console.log('[AI Overview Extractor] AI overview expanded');
-                    resolve(true);
-                }, 800);
-            });
+    // Setup callbacks between modules
+    setupModuleCallbacks() {
+        // When AI Overview expansion completes, signal to sources expander
+        this.autoExpanderOverviews.onExpansionComplete(() => {
+            console.log('[AI Overview Extractor] AI Overview expanded, signaling sources expander');
+            this.autoExpanderSources.setReady();
+        });
+
+        // When sources expansion completes, signal to webhook
+        this.autoExpanderSources.onExpansionComplete(() => {
+            console.log('[AI Overview Extractor] Sources expanded, signaling webhook');
+            this.autoWebhook.setReady();
+        });
+    }
+
+    // Orchestrate the execution of all modules in sequence
+    async orchestrateModules() {
+        try {
+            console.log('[AI Overview Extractor] Starting module orchestration');
+
+            // Step 1: Expand AI Overview
+            const overviewExpanded = await this.autoExpanderOverviews.expandAIOverview();
+            if (overviewExpanded) {
+                console.log('[AI Overview Extractor] AI Overview expansion completed');
+                
+                // Step 2: Expand Sources (will wait for signal from overview expander)
+                const sourcesExpanded = await this.autoExpanderSources.expandSources();
+                if (sourcesExpanded) {
+                    console.log('[AI Overview Extractor] Sources expansion completed');
+                }
+                
+                // Step 3: Auto send webhook (will wait for signal from sources expander)
+                const webhookSent = await this.autoWebhook.autoSendWebhook();
+                if (webhookSent) {
+                    console.log('[AI Overview Extractor] Auto webhook completed');
+                }
+            }
+
+            console.log('[AI Overview Extractor] Module orchestration completed');
+        } catch (error) {
+            console.error('[AI Overview Extractor] Error in module orchestration:', error);
         }
-        
-        console.log('[AI Overview Extractor] No collapsible AI overview found');
-        return false;
+    }
+
+    async autoExpandAIOverview() {
+        // This method is kept for backward compatibility
+        // The actual expansion is now handled by AutoExpanderOverviews module
+        return await this.autoExpanderOverviews.expandAIOverview();
     }
 
     observeDOM() {
