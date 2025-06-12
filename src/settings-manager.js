@@ -2,8 +2,8 @@ class SettingsManager {
     constructor() {
         this.storageKey = 'ai-overview-settings';
         this.defaultSettings = {
-            autoExpandOverviews: true,
-            autoExpandSources: true,
+            autoExpandOverviews: false,
+            autoExpandSources: false,
             autoSendWebhook: false
         };
     }

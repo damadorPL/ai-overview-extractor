@@ -2,33 +2,34 @@
 
 All notable changes to the AI Overview Extractor extension will be documented in this file.
 
-## [1.0.7] - 2025-06-12
+## [1.0.7] - 2025-12-06
 
-### 🔧 Changed
-- **Removed auto-extract functionality** - Extension no longer automatically extracts markdown content
-- **Maintained manual extraction** - Users can still extract markdown by clicking the manual button
-- **Improved performance** - Removed unnecessary automatic extraction logic that was running on every page load
+### 🐛 Fixed
+- **Auto-webhook functionality** - Fixed automatic webhook sending after AI overview expansion
+- **AI Overview detection** - Improved detection of asynchronously loaded AI overviews
+- **ContentExtractor integration** - Fixed webhook data preparation using proper extraction methods
+
+### 🔧 Changed  
+- **Default settings** - Auto-expansion features now disabled by default for better user control
+- **Enhanced logging** - Added comprehensive debugging logs for troubleshooting
+- **Timing improvements** - Added delayed checks to catch AI overviews that load with delay
 
 ### 🏗️ Technical Improvements
-- Removed `autoExtract` setting from settings-manager
-- Simplified content.js by removing automatic extraction workflow
-- Removed "Auto extract markdown" toggle from popup interface
-- Updated extension architecture to focus on expansion and manual extraction only
+- Fixed `AutoWebhook.prepareWebhookData()` to use `ContentExtractor` and `MarkdownGenerator` instances
+- Added proper initialization of extraction modules in `AutoWebhook` constructor
+- Enhanced DOM observation with multiple delayed checks (1s, 3s, 5s)
+- Improved error handling and status logging throughout the extraction pipeline
 
 ### ✨ User Experience
-- **Better control** - Users now have full control over when to extract content
-- **Cleaner interface** - Simplified popup with only relevant auto-expansion settings
-- **More predictable behavior** - Extension behavior is now more predictable and user-initiated
-
-### 📋 Settings Migration
-- Existing `autoExtract` settings are automatically cleaned up
-- All other settings (auto-expand overviews, sources, webhook) remain unchanged
-- No user action required for existing installations
+- **Better reliability** - Extension now consistently detects AI overviews regardless of load timing
+- **Conservative defaults** - Auto-expansion disabled by default, users can opt-in as needed
+- **Improved debugging** - Comprehensive console logging helps identify issues
+- **More robust detection** - Multiple detection attempts ensure AI overviews are not missed
 
 ### 🎯 Focus Areas
-- **Auto-expansion**: Automatically expands AI overviews and sources for better visibility
-- **Manual extraction**: On-demand markdown extraction with full user control
-- **Webhook integration**: Optional automatic webhook sending after expansions
+- **Reliability**: Consistent detection and processing of AI overviews
+- **User control**: Conservative defaults with easy opt-in for automation features  
+- **Debugging**: Enhanced logging for better troubleshooting and development
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

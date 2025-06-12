@@ -310,12 +310,13 @@ To update the extension:
 ## 📝 Changelog
 
 ### v1.0.7 (current)
-- 🔧 **Removed auto-extract functionality** - Extension no longer automatically extracts markdown content
-- ✅ **Maintained manual extraction** - Users can still extract markdown by clicking the manual button
-- 🚀 **Improved performance** - Removed unnecessary automatic extraction logic
-- 🎨 **Cleaner interface** - Simplified popup with only relevant auto-expansion settings
-- 📋 **Better user control** - Extension behavior is now more predictable and user-initiated
-- 🏗️ **Enhanced architecture** - Added comprehensive source code documentation in `src/README.md`
+- 🐛 **Fixed auto-webhook functionality** - Fixed automatic webhook sending after AI overview expansion
+- 🔍 **Improved AI Overview detection** - Enhanced detection of asynchronously loaded AI overviews
+- 🔧 **Conservative defaults** - Auto-expansion features now disabled by default for better user control
+- 📊 **Enhanced logging** - Added comprehensive debugging logs for troubleshooting
+- ⏱️ **Timing improvements** - Added delayed checks to catch AI overviews that load with delay
+- 🏗️ **Technical fixes** - Fixed ContentExtractor integration and improved error handling
+- 🛡️ **Better reliability** - Extension now consistently detects AI overviews regardless of load timing
 
 ### v1.0.6
 - ✨ **Auto-expand AI overviews** - Automatically clicks "Show more" button on collapsed AI overviews

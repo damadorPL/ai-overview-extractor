@@ -39,6 +39,22 @@ class AIOverviewExtractor {
         // Check immediately if container exists
         this.debouncedCheckAndAddButton();
         
+        // Additional delayed checks for AI Overview that loads asynchronously
+        setTimeout(() => {
+            console.log('[AI Overview Extractor] Delayed check 1s...');
+            this.debouncedCheckAndAddButton();
+        }, 1000);
+        
+        setTimeout(() => {
+            console.log('[AI Overview Extractor] Delayed check 3s...');
+            this.debouncedCheckAndAddButton();
+        }, 3000);
+        
+        setTimeout(() => {
+            console.log('[AI Overview Extractor] Delayed check 5s...');
+            this.debouncedCheckAndAddButton();
+        }, 5000);
+        
         // Observe DOM changes
         this.observeDOM();
     }
@@ -124,21 +140,28 @@ class AIOverviewExtractor {
     }
 
     async checkAndAddButton() {
+        console.log('[AI Overview Extractor] Checking for AI Overview container...');
+        
         // Look for #m-x-content
         const container = document.querySelector('#m-x-content');
         
         if (!container) {
+            console.log('[AI Overview Extractor] No #m-x-content found');
             return;
         }
+
+        console.log('[AI Overview Extractor] Found #m-x-content:', container);
 
         // Check if button already exists
         const existingButton = container.parentNode?.querySelector('.ai-extractor-button');
         if (existingButton) {
+            console.log('[AI Overview Extractor] Button already exists, skipping');
             return;
         }
         
         // Auto-expand AI overview if enabled and needed
         if (this.settings && this.settings.autoExpandOverviews) {
+            console.log('[AI Overview Extractor] Auto-expand overviews enabled, checking for expansion');
             const expanded = await this.autoExpandAIOverview();
             if (expanded) {
                 console.log('[AI Overview Extractor] AI overview expanded, will recheck in 1000ms');
@@ -149,6 +172,15 @@ class AIOverviewExtractor {
                     const sourcesExpanded = await this.autoExpanderSources.expandSources();
                     if (sourcesExpanded) {
                         console.log('[AI Overview Extractor] Sources expansion completed');
+                        
+                        // Auto-send webhook if enabled
+                        if (this.settings.autoSendWebhook) {
+                            console.log('[AI Overview Extractor] Starting auto webhook after sources expansion');
+                            const webhookSent = await this.autoWebhook.autoSendWebhook();
+                            if (webhookSent) {
+                                console.log('[AI Overview Extractor] Auto webhook completed');
+                            }
+                        }
                     }
                 }
                 
@@ -157,6 +189,8 @@ class AIOverviewExtractor {
                 return;
             }
             console.log('[AI Overview Extractor] No expansion needed, continuing to add button');
+        } else {
+            console.log('[AI Overview Extractor] Auto-expand overviews disabled');
         }
         
         console.log('[AI Overview Extractor] Found #m-x-content, adding button');

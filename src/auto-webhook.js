@@ -3,6 +3,8 @@ class AutoWebhook {
         this.settingsManager = settingsManager;
         this.webhookManager = webhookManager;
         this.isReady = false;
+        this.contentExtractor = new ContentExtractor();
+        this.markdownGenerator = new MarkdownGenerator();
         console.log('[AutoWebhook] Initialized');
     }
 
@@ -79,25 +81,23 @@ class AutoWebhook {
     // Przygotowuje dane do webhook
     async prepareWebhookData(container) {
         try {
-            // Użyj metod z content.js do ekstrakcji danych
-            if (window.aiExtractor) {
-                const htmlContent = window.aiExtractor.extractContent(container);
-                const sources = window.aiExtractor.extractSources(container);
-                const searchQuery = window.aiExtractor.extractSearchQuery();
-                const markdown = window.aiExtractor.createMarkdown(htmlContent, sources);
+            // Użyj ContentExtractor i MarkdownGenerator do ekstrakcji danych
+            const htmlContent = this.contentExtractor.extractContent(container);
+            const sources = this.contentExtractor.extractSources(container);
+            const searchQuery = this.contentExtractor.extractSearchQuery();
+            const markdown = this.markdownGenerator.createMarkdown(htmlContent, sources, searchQuery);
 
-                return {
-                    searchQuery: searchQuery,
-                    content: markdown,
-                    htmlContent: htmlContent,
-                    sources: sources,
-                    timestamp: new Date().toISOString(),
-                    autoSent: true
-                };
-            } else {
-                console.error('[AutoWebhook] aiExtractor not available');
-                return null;
-            }
+            console.log('[AutoWebhook] Data prepared successfully');
+
+            return {
+                searchQuery: searchQuery,
+                content: markdown,
+                htmlContent: htmlContent,
+                sources: sources,
+                timestamp: new Date().toISOString(),
+                autoSent: true,
+                url: window.location.href
+            };
         } catch (error) {
             console.error('[AutoWebhook] Error preparing webhook data:', error);
             return null;

@@ -69,7 +69,7 @@ class AutoExpanderSources {
 
     // Uniwersalna strategia rozwijania źródeł
     async universalExpandSources() {
-        const maxAttempts = 30; // 15 sekund (30 * 500ms)
+        const maxAttempts = 10; // 5 sekund (10 * 500ms)
         let attempt = 0;
         
         while (attempt < maxAttempts) {
@@ -90,10 +90,17 @@ class AutoExpanderSources {
                 continue;
             }
             
-            // Znajdź przycisk w ostatnim <li>
-            const button = this.findExpandButtonInLastLi(mscSection);
+            // Strategia 1: Znajdź przycisk w ostatnim <li> (stara metoda)
+            let button = this.findExpandButtonInLastLi(mscSection);
+            
+            // Strategia 2: Fallback - szukaj przycisków z cursor:pointer (nowa metoda)
             if (!button) {
-                console.log('[AutoExpanderSources] No expand button found in last <li>, retrying...');
+                console.log('[AutoExpanderSources] Trying fallback strategy...');
+                button = this.findExpandButtonFallback();
+            }
+            
+            if (!button) {
+                console.log('[AutoExpanderSources] No expand button found with any strategy, retrying...');
                 await this.delay(500);
                 continue;
             }
@@ -203,6 +210,47 @@ class AutoExpanderSources {
         console.log('[AutoExpanderSources] Button text:', button.textContent?.trim());
         
         return button;
+    }
+
+    // Fallback strategia - szuka przycisków z cursor:pointer (nowa metoda)
+    findExpandButtonFallback() {
+        console.log('[AutoExpanderSources] Using fallback strategy - looking for cursor:pointer buttons');
+        
+        // Szukaj przycisków z cursor:pointer w #m-x-content
+        const buttons = document.querySelectorAll('#m-x-content [role="button"][style*="cursor:pointer"]');
+        console.log('[AutoExpanderSources] Found cursor:pointer buttons:', buttons.length);
+        
+        for (let button of buttons) {
+            // Sprawdź czy przycisk ma ikonki/obrazki (często znak expandowania)
+            const hasImages = button.querySelectorAll('img').length > 0;
+            
+            // Sprawdź czy ma tekst z liczbą lub +
+            const buttonText = button.textContent?.trim() || '';
+            const hasNumberOrPlus = /[\+\d]/.test(buttonText);
+            
+            console.log('[AutoExpanderSources] Checking button:', {
+                text: buttonText,
+                hasImages,
+                hasNumberOrPlus,
+                element: button
+            });
+            
+            // Jeśli ma obrazki lub liczbę/plus, prawdopodobnie to przycisk expandowania
+            if (hasImages || hasNumberOrPlus) {
+                console.log('[AutoExpanderSources] Found potential expand button via fallback');
+                return button;
+            }
+        }
+        
+        // Jeśli nic nie znaleziono, spróbuj ostatni przycisk z cursor:pointer
+        if (buttons.length > 0) {
+            const lastButton = buttons[buttons.length - 1];
+            console.log('[AutoExpanderSources] Using last cursor:pointer button as fallback');
+            return lastButton;
+        }
+        
+        console.log('[AutoExpanderSources] No suitable button found in fallback strategy');
+        return null;
     }
 
     // Szuka przycisku rozwijania źródeł (stara metoda - backup)
