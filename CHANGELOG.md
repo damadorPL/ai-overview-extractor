@@ -2,7 +2,7 @@
 
 All notable changes to the AI Overview Extractor extension will be documented in this file.
 
-## [1.0.7] - 2025-12-06
+## [1.0.7] - 2025-06-12
 
 ### 🔧 Changed
 - **Removed auto-extract functionality** - Extension no longer automatically extracts markdown content
@@ -33,7 +33,7 @@ All notable changes to the AI Overview Extractor extension will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.6] - 2024-12-06
+## [1.0.6] - 2025-06-12
 
 ### Added
 - **Auto-expand AI overviews feature** - Automatically clicks "Show more" button on collapsed AI overviews
