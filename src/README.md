@@ -55,9 +55,10 @@ The extension follows a **modular architecture** with clear separation of concer
 ### 🔄 Execution Flow
 
 1. **Initialization**: `content.js` loads all modules and settings
-2. **Auto-Expansion**: Sequential execution of overview → sources → webhook
-3. **Manual Extraction**: User triggers manual markdown extraction
-4. **Webhook Integration**: Automatic or manual data sending
+2. **State Machine Control**: Automation follows predictable state transitions
+3. **Auto-Expansion**: Sequential execution of overview → sources → webhook with circuit breaker protection
+4. **Manual Extraction**: User triggers manual markdown extraction
+5. **Webhook Integration**: Automatic or manual data sending with error handling
 
 ---
 
@@ -150,6 +151,152 @@ onSettingsChanged(callback)           // Listen for changes
 - Graceful fallback to defaults on errors
 - Validation of setting types and structure
 - Console logging for debugging
+
+---
+
+### 🤖 Automation Control Modules
+
+#### `automation-state-machine.js` - State Machine Implementation
+
+**Purpose**: Manages predictable automation flow with clear state transitions
+
+**Class**: `AutomationStateMachine`
+
+**State Transitions**:
+```
+IDLE → EXPANDING_OVERVIEW → EXPANDING_SOURCES → SENDING_WEBHOOK → COMPLETE
+```
+
+**Available States**:
+- `IDLE` - No automation in progress
+- `EXPANDING_OVERVIEW` - AI overview expansion in progress
+- `EXPANDING_SOURCES` - Source list expansion in progress  
+- `SENDING_WEBHOOK` - Webhook dispatch in progress
+- `COMPLETE` - Automation cycle completed
+
+**Key Methods**:
+```javascript
+// State management
+getCurrentState()                     // Get current state
+transitionTo(newState)               // Transition to new state
+reset()                              // Reset to IDLE state
+canTransitionTo(newState)            // Check if transition is valid
+
+// State queries
+isIdle()                             // Check if in IDLE state
+isProcessing()                       // Check if automation is running
+isComplete()                         // Check if automation completed
+
+// Event handling
+onStateChange(callback)              // Register state change callback
+```
+
+**State Validation**:
+- Prevents invalid state transitions
+- Logs all state changes for debugging
+- Provides hooks for state-dependent behavior
+
+**Error Handling**:
+- Invalid transitions return false
+- State resets on critical errors
+- Comprehensive logging of state changes
+
+---
+
+#### `automation-circuit-breaker.js` - Circuit Breaker Protection
+
+**Purpose**: Prevents infinite loops and system failures during automation
+
+**Class**: `AutomationCircuitBreaker`
+
+**Circuit States**:
+- `CLOSED` - Normal operation, allows requests
+- `OPEN` - Circuit tripped, blocks requests
+- `HALF_OPEN` - Testing if system recovered
+
+**Configuration**:
+```javascript
+{
+    failureThreshold: 5,              // Max failures before opening
+    recoveryTimeout: 30000,           // Time before retry (30s)
+    monitoringWindow: 60000           // Failure tracking window (60s)
+}
+```
+
+**Key Methods**:
+```javascript
+// Circuit control
+async execute(operation)              // Execute operation with protection
+isOpen()                             // Check if circuit is open
+isClosed()                           // Check if circuit is closed
+reset()                              // Reset circuit to closed state
+
+// Failure tracking
+recordFailure()                      // Record a failure
+recordSuccess()                      // Record a success
+getFailureCount()                    // Get current failure count
+
+// Status monitoring
+getStatus()                          // Get detailed circuit status
+```
+
+**Protection Features**:
+- Automatic failure counting and thresholds
+- Exponential backoff for recovery attempts
+- Prevents cascading failures across modules
+- Detailed metrics for monitoring
+
+**Integration**:
+- Used by all auto-expansion modules
+- Prevents infinite clicking attempts
+- Graceful degradation to manual mode
+
+---
+
+#### `container-detection-manager.js` - Unified Container Detection
+
+**Purpose**: Provides robust AI Overview container detection with multiple fallback strategies
+
+**Class**: `ContainerDetectionManager`
+
+**Detection Strategies**:
+1. **Primary**: `#m-x-content` selector
+2. **Fallback**: `[data-attrid="AIOverview"]` containers
+3. **Universal**: Text-based content detection
+4. **Debounced**: Multiple detection attempts with delays
+
+**Key Methods**:
+```javascript
+// Container detection
+async detectContainer()               // Main detection with all strategies
+async detectWithStrategy(strategy)   // Use specific detection strategy
+isContainerValid(container)         // Validate detected container
+
+// Detection strategies
+async detectById()                   // Detect by #m-x-content ID
+async detectByAttribute()            // Detect by data-attrid
+async detectByContent()              // Detect by AI Overview text content
+
+// Configuration
+setDetectionTimeout(timeout)         // Set detection timeout
+setDebounceDelay(delay)              // Set debounce delay
+enableStrategy(strategy)             // Enable detection strategy
+```
+
+**Debouncing Logic**:
+- 300ms default debounce delay
+- Prevents multiple rapid detections
+- Combines with MutationObserver for efficiency
+
+**Fallback System**:
+- Tries multiple selectors in sequence
+- Adapts to Google's UI changes
+- Provides compatibility across different layouts
+
+**Error Handling**:
+- Graceful fallback between strategies
+- Detailed logging of detection attempts
+- Timeout protection for stuck operations
 
 ---
 
@@ -590,7 +737,7 @@ async makeRequest(url, payload)       // Execute HTTP request
         googleSearchUrl: "https://google.com/search?q=...",
         extractedAt: "2025-01-06T12:30:00Z",
         userAgent: "Mozilla/5.0...",
-        extensionVersion: "1.0.7"
+        extensionVersion: "1.0.8"
     }
 }
 ```
@@ -632,6 +779,9 @@ async makeRequest(url, payload)       // Execute HTTP request
 ```
 content.js (Main Controller)
 ├── settings-manager.js
+├── automation-state-machine.js
+├── automation-circuit-breaker.js
+├── container-detection-manager.js
 ├── webhook-manager.js
 ├── auto-expander-overviews.js
 ├── auto-expander-sources.js
@@ -834,4 +984,4 @@ When contributing to this codebase:
 
 ---
 
-*Last updated: June 12, 2025 (v1.0.7)*
+*Last updated: December 06, 2025 (v1.0.8)*

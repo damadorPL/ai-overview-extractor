@@ -23,6 +23,10 @@ Extension automatically detects AI Overview on Google results pages and enables 
 - ⚙️ **Webhook configuration** - easy URL setup and connection testing
 - 🎨 **Clean interface** with preview and notifications
 - 🔄 **DOM Observer** - automatic button addition for new results
+- 🤖 **Intelligent State Machine** - Predictable automation flow control
+- 🛡️ **Circuit Breaker Protection** - Automatic failure detection and recovery
+- 🔄 **Unified Detection System** - Robust container detection with multiple fallback strategies
+- ⚙️ **Advanced Debugging** - Real-time system status monitoring and reset capabilities
 
 ## 📦 Installation
 
@@ -228,6 +232,7 @@ To add other Google domains, edit `content_scripts.matches` section in `manifest
 - Looks for `#m-x-content` container on page
 - Uses `MutationObserver` to monitor DOM changes
 - Automatically adds button when container is found
+- **State Machine Architecture** - Predictable automation flow: IDLE → EXPANDING_OVERVIEW → EXPANDING_SOURCES → SENDING_WEBHOOK → COMPLETE
 
 ### Content Extraction
 - Removes elements with `data-subtree="msc"` (MSC elements)
@@ -238,10 +243,17 @@ To add other Google domains, edit `content_scripts.matches` section in `manifest
 ### Source Extraction
 - Finds sources container `div[style="height: 100%;"]`
 - Extracts links from visible list `ul[class]`
+- **Improved button detection** - Fixed jsaction selector for reliable expansion
 - Cleans Google URLs (removes `/url?` wrappers)
 - Filters duplicates and invalid links
 
-### Webhooks (NEW!)
+### Automation System
+- **Circuit Breaker Protection** - Prevents infinite loops and system failures
+- **Unified Container Detection** - Multiple fallback strategies with debouncing
+- **Enhanced Debugging** - `getAutomationStatus()` and `resetAutomation()` methods
+- **Robust Error Handling** - Automatic fallback to manual mode
+
+### Webhooks
 - **Automatic sending** of data to external APIs via POST method
 - **UI configuration** - easy webhook URL setup
 - **Connection testing** - check if webhook works
@@ -265,7 +277,7 @@ To add other Google domains, edit `content_scripts.matches` section in `manifest
     "googleSearchUrl": "https://google.com/search?q=...",
     "extractedAt": "2025-01-06T12:30:00Z",
     "userAgent": "Mozilla/5.0...",
-    "extensionVersion": "1.0.4"
+    "extensionVersion": "1.0.8"
   }
 }
 ```
@@ -277,6 +289,12 @@ To add other Google domains, edit `content_scripts.matches` section in `manifest
 - Open console (F12) and look for `[AI Overview Extractor]` logs
 - Check if `#m-x-content` element exists
 - Refresh page and wait for full loading
+
+### Sources not expanding automatically
+- Check console for `[AutoExpanderSources]` logs
+- Verify auto-expand sources is enabled in popup settings
+- Try refreshing page if button detection fails
+- Check for jsaction attribute changes in new Google updates
 
 ### No content in markdown
 - AI Overview may not be fully loaded
@@ -293,6 +311,12 @@ To add other Google domains, edit `content_scripts.matches` section in `manifest
 - Check console logs about found links
 - Some sources may be filtered (Google, support etc.)
 - URLs are automatically cleaned from Google wrappers
+
+### Automation issues
+- Use `getAutomationStatus()` in console to check system state
+- Use `resetAutomation()` to reset state machine if stuck
+- Check circuit breaker status in console logs
+- Verify settings are properly saved in popup
 
 ## 🔄 Updates
 
@@ -312,7 +336,15 @@ To update the extension:
 
 ## 📝 Changelog
 
-### v1.0.7 (current)
+### v1.0.8 (current)
+- 🐛 **Fixed auto-expand sources functionality** - Fixed critical issue where sources were not expanding automatically
+- 🔧 **Button selector bug** - Fixed jsaction selector from `^="trigger"` to `*="trigger"` to properly match `jsaction="trigger.Wyhgxe"`
+- ⏱️ **Timing improvements** - Increased delays for better DOM loading stability (1500ms, 1000ms, 3000ms)
+- 🔍 **Expansion detection logic** - Made `areSourcesExpanded()` more conservative to prevent false positives
+- 🛡️ **Button clicking prevention** - Added `buttonClicked` flag to prevent multiple clicking attempts
+- 🔧 **Reliable Source Expansion** - Fixed button detection with improved jsaction selectors
+
+### v1.0.7
 - 🏗️ **Major Architecture Refactor** - Replaced callback-based system with state machine for predictable automation flow
 - 🔧 **State Machine Implementation** - Clear automation states: IDLE → EXPANDING_OVERVIEW → EXPANDING_SOURCES → SENDING_WEBHOOK → COMPLETE
 - 🛡️ **Circuit Breaker Protection** - Added circuit breakers to prevent infinite loops and system failures
@@ -321,13 +353,6 @@ To update the extension:
 - 📊 **Enhanced Debugging** - Added `getAutomationStatus()` and `resetAutomation()` methods for system monitoring
 - 🔍 **Improved Reliability** - Robust error handling with automatic fallback to manual mode
 - ⚙️ **Modular Design** - Clean separation of concerns with well-defined module interfaces
-
-## 🚀 Features (updated)
-- 🤖 **Intelligent State Machine** - Predictable automation flow with clear state transitions
-- 🛡️ **Circuit Breaker Protection** - Automatic failure detection and recovery
-- 🔄 **Unified Detection System** - Robust container detection with multiple fallback strategies
-- 🚀 **Webhooks** - Automatic data sending with retry logic and error handling
-- ⚙️ **Advanced Debugging** - Real-time system status monitoring and reset capabilities
 
 ### v1.0.6
 - ✨ **Auto-expand AI overviews** - Automatically clicks "Show more" button on collapsed AI overviews
@@ -347,13 +372,13 @@ To update the extension:
 - 🌍 **English translation** - complete interface and documentation translation
 - 🎨 **UI improvements** - updated button text and user messages
 - 📝 **Documentation** - fully translated README and user guides
-- � **Code cleanup** - improved console messages and comments
+- 🧹 **Code cleanup** - improved console messages and comments
 
 ### v1.0.3
 - 🚀 **NEW: Webhooks** - automatic data sending to external APIs
 - ⚙️ **Webhook configuration** - UI for URL setup and testing
 - 🧹 **Improved cleaning** - removal of CSS, JavaScript and inline styles
-- �💾 **Chrome Storage** - secure configuration storage
+- 💾 **Chrome Storage** - secure configuration storage
 - 🔒 **HTTPS validation** - webhook security
 - ⏱️ **Timeout handling** - error handling and timeouts (5s)
 
