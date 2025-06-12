@@ -56,6 +56,11 @@ ai-overview-extractor/
 - **`content.js`** - Main orchestrator (`AIOverviewExtractor`)
 - **`settings-manager.js`** - Settings persistence (`SettingsManager`)
 
+### **Automation Control**
+- **`automation-state-machine.js`** - State machine for predictable automation flow (`AutomationStateMachine`)
+- **`automation-circuit-breaker.js`** - Circuit breaker protection against failures (`AutomationCircuitBreaker`)
+- **`container-detection-manager.js`** - Unified container detection system (`ContainerDetectionManager`)
+
 ### **Auto-Expansion Layer**
 - **`auto-expander-overviews.js`** - AI Overview expansion (`AutoExpanderOverviews`)
 - **`auto-expander-sources.js`** - Source list expansion (`AutoExpanderSources`) 

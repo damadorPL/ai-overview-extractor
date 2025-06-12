@@ -4,9 +4,16 @@ class AIOverviewExtractor {
         this.settingsManager = new SettingsManager();
         this.settings = null;
         this.isInitialized = false;
-        this.debounceTimer = null;
-        this.containerProcessed = false;
-        this.scrollHandler = null;
+        
+        // Initialize state management
+        this.stateMachine = new AutomationStateMachine();
+        
+        // Initialize circuit breakers for each module
+        this.circuitBreakers = {
+            overview: new AutomationCircuitBreaker('AutoExpanderOverviews', { maxFailures: 2, resetTimeout: 30000 }),
+            sources: new AutomationCircuitBreaker('AutoExpanderSources', { maxFailures: 3, resetTimeout: 45000 }),
+            webhook: new AutomationCircuitBreaker('AutoWebhook', { maxFailures: 2, resetTimeout: 60000 })
+        };
         
         // Initialize auto-expansion modules
         this.autoExpanderOverviews = new AutoExpanderOverviews(this.settingsManager);
@@ -15,6 +22,11 @@ class AIOverviewExtractor {
         
         // Initialize extraction modules
         this.extractionOrchestrator = new ExtractionOrchestrator(this.webhookManager, this.settingsManager);
+        
+        // Initialize container detection manager
+        this.containerDetectionManager = new ContainerDetectionManager(
+            (container) => this.handleContainerFound(container)
+        );
         
         this.init();
     }
@@ -32,291 +44,223 @@ class AIOverviewExtractor {
         this.settings = await this.settingsManager.getSettings();
         console.log('[AI Overview Extractor] Settings loaded:', this.settings);
         
-        // Setup module callbacks
-        this.setupModuleCallbacks();
+        // Setup state machine callbacks
+        this.setupStateMachineCallbacks();
         
-        // Remove orchestrateModules call to avoid skipping due to missing container
-        // await this.orchestrateModules();
-        
-        // Setup MutationObserver to detect #m-x-content and start automation immediately
-        this.observeContainerAndStartAutomation();
-        
-        // Setup scroll observation for late-loading AI Overviews
-        this.setupScrollObserver();
+        // Start unified container detection
+        this.containerDetectionManager.startDetection();
     }
 
-    observeContainerAndStartAutomation() {
-        const checkAndStart = () => {
-            const container = document.querySelector('#m-x-content');
-            if (container) {
-                console.log('[AI Overview Extractor] Found #m-x-content, starting automation');
-                this.handleContainerFound(container);
-                return true;
-            }
-            return false;
-        };
+    // Setup callbacks for state machine transitions
+    setupStateMachineCallbacks() {
+        this.stateMachine.onStateChange((newState, previousState, action, data) => {
+            console.log(`[AI Overview Extractor] State transition: ${previousState} -> ${newState} (${action})`);
+            
+            // Handle state-specific logic
+            this.handleStateChange(newState, previousState, action, data);
+        });
+    }
 
-        if (!checkAndStart()) {
-            const observer = new MutationObserver((mutations, obs) => {
-                if (checkAndStart()) {
-                    obs.disconnect();
-                }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-            console.log('[AI Overview Extractor] MutationObserver set to watch for #m-x-content');
+    // Handle state machine transitions
+    async handleStateChange(newState, previousState, action, data) {
+        switch (newState) {
+            case 'EXPANDING_OVERVIEW':
+                await this.executeOverviewExpansion();
+                break;
+            case 'EXPANDING_SOURCES':
+                await this.executeSourcesExpansion();
+                break;
+            case 'SENDING_WEBHOOK':
+                await this.executeWebhookSend();
+                break;
+            case 'FAILED':
+                await this.handleAutomationFailure(data);
+                break;
+            case 'MANUAL_MODE':
+                this.addManualButton(data?.container);
+                break;
         }
     }
 
     async handleContainerFound(container) {
-        if (this.containerProcessed) {
-            console.log('[AI Overview Extractor] Container already processed, skipping automation');
-            return;
-        }
-
-        if (this.settings.autoExpandOverviews) {
-            console.log('[AI Overview Extractor] Auto-expand overviews enabled, starting expansion');
-            const expanded = await this.autoExpanderOverviews.expandAIOverview();
-            if (expanded) {
-                console.log('[AI Overview Extractor] AI overview expanded, starting sources expansion');
-                if (this.settings.autoExpandSources) {
-                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
-                    if (sourcesExpanded) {
-                        console.log('[AI Overview Extractor] Sources expansion completed');
-                        if (this.settings.autoSendWebhook) {
-                            const webhookSent = await this.autoWebhook.autoSendWebhook();
-                            if (webhookSent) {
-                                console.log('[AI Overview Extractor] Auto webhook completed');
-                            }
-                        }
-                    }
-                }
-            } else {
-                // Jeśli AI overview jest już rozwinięte, kontynuuj rozwijanie źródeł i wysyłanie webhooka
-                console.log('[AI Overview Extractor] AI overview already expanded, continuing sources expansion');
-                if (this.settings.autoExpandSources) {
-                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
-                    if (sourcesExpanded) {
-                        console.log('[AI Overview Extractor] Sources expansion completed');
-                        if (this.settings.autoSendWebhook) {
-                            const webhookSent = await this.autoWebhook.autoSendWebhook();
-                            if (webhookSent) {
-                                console.log('[AI Overview Extractor] Auto webhook completed');
-                            }
-                        }
-                    }
-                }
-            }
+        console.log('[AI Overview Extractor] Container found, determining action based on settings');
+        
+        // Store container for later use
+        this.stateMachine.updateStateData({ container });
+        
+        // Check automation settings and start appropriate flow
+        if (this.settings.autoExpandOverviews || this.settings.autoExpandSources || this.settings.autoSendWebhook) {
+            console.log('[AI Overview Extractor] Auto-automation enabled, starting state machine');
+            this.stateMachine.transition('START_AUTOMATION', { container });
         } else {
-            console.log('[AI Overview Extractor] Auto-expand overviews disabled, adding button');
-            this.addButton(container);
+            console.log('[AI Overview Extractor] Auto-automation disabled, switching to manual mode');
+            this.stateMachine.transition('MANUAL_MODE', { container });
         }
-
-        this.containerProcessed = true;
-        this.removeScrollObserver();
     }
 
-    // Setup callbacks between modules
-    setupModuleCallbacks() {
-        // When AI Overview expansion completes, signal to sources expander and start sources expansion
-        this.autoExpanderOverviews.onExpansionComplete(async () => {
-            console.log('[AI Overview Extractor] AI Overview expanded, starting sources expansion');
-            this.autoExpanderSources.setReady();
-            if (this.settings.autoExpandSources) {
-                const sourcesExpanded = await this.autoExpanderSources.expandSources();
-                if (sourcesExpanded) {
-                    console.log('[AI Overview Extractor] Sources expansion completed');
-                    this.autoExpanderSources.expansionCallbacks.forEach(cb => {
-                        try { cb(); } catch (e) { console.error(e); }
-                    });
-                }
-            } else {
-                console.log('[AI Overview Extractor] Auto expand sources disabled');
-            }
-        });
-
-        // When sources expansion completes, signal to webhook and send webhook
-        this.autoExpanderSources.onExpansionComplete(() => {
-            console.log('[AI Overview Extractor] Sources expanded, signaling webhook');
-            this.autoWebhook.setReady();
-            if (this.settings.autoSendWebhook) {
-                this.autoWebhook.autoSendWebhook().then(sent => {
-                    if (sent) {
-                        console.log('[AI Overview Extractor] Auto webhook completed');
-                    } else {
-                        console.log('[AI Overview Extractor] Auto webhook failed or skipped');
-                    }
-                });
-            } else {
-                console.log('[AI Overview Extractor] Auto send webhook disabled');
-            }
-        });
-    }
-
-    // Orchestrate the execution of all modules in sequence
-    async orchestrateModules() {
+    // Execute overview expansion with circuit breaker protection
+    async executeOverviewExpansion() {
+        console.log('[AI Overview Extractor] Executing overview expansion with circuit breaker');
+        
         try {
-            console.log('[AI Overview Extractor] Starting module orchestration');
-
-            // Sprawdź czy mamy #m-x-content
-            const container = document.querySelector('#m-x-content');
-            if (!container) {
-                console.log('[AI Overview Extractor] No AI Overview container found, skipping orchestration');
-                return;
+            const result = await this.circuitBreakers.overview.executeWithRetry(
+                () => this.autoExpanderOverviews.expandAIOverview(),
+                'expandAIOverview',
+                1 // Only 1 retry for overview expansion
+            );
+            
+            if (result) {
+                console.log('[AI Overview Extractor] Overview expansion succeeded');
+                this.stateMachine.transition('OVERVIEW_COMPLETE');
+            } else {
+                console.log('[AI Overview Extractor] Overview expansion not needed (already expanded)');
+                this.stateMachine.transition('OVERVIEW_SKIPPED');
             }
-
-            // Step 1: Expand AI Overview
-            const overviewExpanded = await this.autoExpanderOverviews.expandAIOverview();
-            if (overviewExpanded) {
-                console.log('[AI Overview Extractor] AI Overview expansion completed');
-                
-                // Step 2: Expand Sources (will wait for signal from overview expander)
-                const sourcesExpanded = await this.autoExpanderSources.expandSources();
-                if (sourcesExpanded) {
-                    console.log('[AI Overview Extractor] Sources expansion completed');
-                }
-                
-                // Step 3: Auto send webhook (will wait for signal from sources expander)
-                const webhookSent = await this.autoWebhook.autoSendWebhook();
-                if (webhookSent) {
-                    console.log('[AI Overview Extractor] Auto webhook completed');
-                }
-            }
-
-            console.log('[AI Overview Extractor] Module orchestration completed');
         } catch (error) {
-            console.error('[AI Overview Extractor] Error in module orchestration:', error);
+            console.error('[AI Overview Extractor] Overview expansion failed:', error);
+            this.stateMachine.transition('OVERVIEW_FAILED', { error: error.message });
         }
     }
 
-    async autoExpandAIOverview() {
-        // This method is kept for backward compatibility
-        // The actual expansion is now handled by AutoExpanderOverviews module
-        return await this.autoExpanderOverviews.expandAIOverview();
-    }
-
-    setupScrollObserver() {
-        // Only setup scroll observer if container not already processed
-        if (this.containerProcessed) {
+    // Execute sources expansion with circuit breaker protection
+    async executeSourcesExpansion() {
+        console.log('[AI Overview Extractor] Executing sources expansion with circuit breaker');
+        
+        if (!this.settings.autoExpandSources) {
+            console.log('[AI Overview Extractor] Sources expansion disabled, skipping');
+            this.stateMachine.transition('SOURCES_SKIPPED');
             return;
         }
-
-        this.scrollHandler = () => {
-            if (!this.containerProcessed) {
-                this.debouncedCheckAndAddButton();
+        
+        try {
+            // Signal sources expander that it's ready to work
+            this.autoExpanderSources.setReady();
+            
+            const result = await this.circuitBreakers.sources.executeWithRetry(
+                () => this.autoExpanderSources.expandSources(),
+                'expandSources',
+                2 // 2 retries for sources expansion
+            );
+            
+            if (result) {
+                console.log('[AI Overview Extractor] Sources expansion succeeded');
+                this.stateMachine.transition('SOURCES_COMPLETE');
+            } else {
+                console.log('[AI Overview Extractor] Sources expansion not needed');
+                this.stateMachine.transition('SOURCES_SKIPPED');
             }
-        };
-
-        let scrollTimeout;
-        const debouncedScrollHandler = () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(this.scrollHandler, 300);
-        };
-
-        window.addEventListener('scroll', debouncedScrollHandler);
-        console.log('[AI Overview Extractor] Scroll Observer started');
-    }
-
-    removeScrollObserver() {
-        if (this.scrollHandler) {
-            window.removeEventListener('scroll', this.scrollHandler);
-            this.scrollHandler = null;
-            console.log('[AI Overview Extractor] Scroll Observer removed');
+        } catch (error) {
+            console.error('[AI Overview Extractor] Sources expansion failed:', error);
+            this.stateMachine.transition('SOURCES_FAILED', { error: error.message });
         }
     }
 
-    debouncedCheckAndAddButton() {
-        if (this.debounceTimer) {
-            clearTimeout(this.debounceTimer);
-        }
+    // Execute webhook send with circuit breaker protection
+    async executeWebhookSend() {
+        console.log('[AI Overview Extractor] Executing webhook send with circuit breaker');
         
-        this.debounceTimer = setTimeout(() => {
-            this.checkAndAddButton();
-        }, 300); // 300ms debounce
-    }
-
-    async checkAndAddButton() {
-        // Stop checking if container already processed
-        if (this.containerProcessed) {
-            console.log('[AI Overview Extractor] Container already processed, skipping check');
+        if (!this.settings.autoSendWebhook) {
+            console.log('[AI Overview Extractor] Auto webhook disabled, skipping');
+            this.stateMachine.transition('WEBHOOK_SKIPPED');
             return;
         }
-
-        console.log('[AI Overview Extractor] Checking for AI Overview container...');
         
-        // Look for #m-x-content
-        const container = document.querySelector('#m-x-content');
-        
-        if (!container) {
-            console.log('[AI Overview Extractor] No #m-x-content found');
-            return;
+        try {
+            // Signal webhook module that it's ready to work
+            this.autoWebhook.setReady();
+            
+            const result = await this.circuitBreakers.webhook.executeWithRetry(
+                () => this.autoWebhook.autoSendWebhook(),
+                'autoSendWebhook',
+                1 // Only 1 retry for webhook
+            );
+            
+            if (result) {
+                console.log('[AI Overview Extractor] Webhook send succeeded');
+                this.stateMachine.transition('WEBHOOK_COMPLETE');
+            } else {
+                console.log('[AI Overview Extractor] Webhook send not needed');
+                this.stateMachine.transition('WEBHOOK_SKIPPED');
+            }
+        } catch (error) {
+            console.error('[AI Overview Extractor] Webhook send failed:', error);
+            this.stateMachine.transition('WEBHOOK_FAILED', { error: error.message });
         }
+    }
 
-        console.log('[AI Overview Extractor] Found #m-x-content:', container);
+    // Handle automation failure
+    async handleAutomationFailure(data) {
+        console.log('[AI Overview Extractor] Automation failed, falling back to manual mode');
+        
+        const container = data?.container || this.stateMachine.getStateData().container;
+        if (container) {
+            this.addManualButton(container);
+        }
+        
+        // Log circuit breaker states for debugging
+        console.log('[AI Overview Extractor] Circuit breaker states:', {
+            overview: this.circuitBreakers.overview.getMetrics(),
+            sources: this.circuitBreakers.sources.getMetrics(),
+            webhook: this.circuitBreakers.webhook.getMetrics()
+        });
+    }
 
+    // Add manual extraction button
+    addManualButton(container) {
+        console.log('[AI Overview Extractor] Adding manual extraction button');
+        
         // Check if button already exists
         const existingButton = container.parentNode?.querySelector('.ai-extractor-button');
         if (existingButton) {
-            console.log('[AI Overview Extractor] Button already exists, skipping');
+            console.log('[AI Overview Extractor] Button already exists');
             return;
         }
         
-        // Auto-expand AI overview if enabled and needed
-        if (this.settings && this.settings.autoExpandOverviews) {
-            console.log('[AI Overview Extractor] Auto-expand overviews enabled, checking for expansion');
-            const expanded = await this.autoExpandAIOverview();
-            if (expanded) {
-                console.log('[AI Overview Extractor] AI overview expanded, will recheck in 1000ms');
-                
-                // Auto-expand sources if enabled
-                if (this.settings.autoExpandSources) {
-                    console.log('[AI Overview Extractor] Starting sources expansion after AI overview');
-                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
-                    if (sourcesExpanded) {
-                        console.log('[AI Overview Extractor] Sources expansion completed');
-                        
-                        // Auto-send webhook if enabled
-                        if (this.settings.autoSendWebhook) {
-                            console.log('[AI Overview Extractor] Starting auto webhook after sources expansion');
-                            const webhookSent = await this.autoWebhook.autoSendWebhook();
-                            if (webhookSent) {
-                                console.log('[AI Overview Extractor] Auto webhook completed');
-                            }
-                        }
-                    }
-                }
-                
-                // Wait for expansion animation and check again
-                setTimeout(() => this.checkAndAddButton(), 1000);
-                return;
-            }
-            console.log('[AI Overview Extractor] No expansion needed, continuing to add button');
-        } else {
-            console.log('[AI Overview Extractor] Auto-expand overviews disabled');
-        }
-        
-        console.log('[AI Overview Extractor] Found #m-x-content, adding button');
-        this.addButton(container);
-    }
-
-
-    addButton(container) {
         const button = document.createElement('button');
         button.className = 'ai-extractor-button';
         button.innerHTML = '📋 Extract to Markdown';
         
         button.addEventListener('click', () => {
-            console.log('[AI Overview Extractor] Extraction button clicked');
+            console.log('[AI Overview Extractor] Manual extraction button clicked');
             this.extractionOrchestrator.handleExtraction(container);
         });
 
         // Add button above container
         container.parentNode.insertBefore(button, container);
-        console.log('[AI Overview Extractor] Button added');
+        console.log('[AI Overview Extractor] Manual button added successfully');
+    }
+
+    // Get current automation status for debugging
+    getAutomationStatus() {
+        return {
+            stateMachine: {
+                currentState: this.stateMachine.getCurrentState(),
+                isActive: this.stateMachine.isAutomationActive(),
+                isCompleted: this.stateMachine.isCompleted(),
+                isFailed: this.stateMachine.isFailed(),
+                stateData: this.stateMachine.getStateData()
+            },
+            circuitBreakers: {
+                overview: this.circuitBreakers.overview.getMetrics(),
+                sources: this.circuitBreakers.sources.getMetrics(),
+                webhook: this.circuitBreakers.webhook.getMetrics()
+            },
+            containerDetection: this.containerDetectionManager.getStatus(),
+            settings: this.settings
+        };
+    }
+
+    // Reset automation state (useful for debugging/testing)
+    resetAutomation() {
+        console.log('[AI Overview Extractor] Resetting automation state');
         
-        // Mark container as processed and stop further checks
-        this.containerProcessed = true;
-        this.removeScrollObserver();
-        console.log('[AI Overview Extractor] Container processed, stopping all checks');
+        this.stateMachine.reset();
+        this.circuitBreakers.overview.reset();
+        this.circuitBreakers.sources.reset();
+        this.circuitBreakers.webhook.reset();
+        this.containerDetectionManager.reset();
+        
+        console.log('[AI Overview Extractor] Automation state reset completed');
     }
 
 }

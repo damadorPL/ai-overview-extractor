@@ -145,21 +145,24 @@ ai-overview-extractor/
 ├── .gitignore         # Files ignored by Git
 ├── AI_SUMMARY.md      # 🤖 CRITICAL: Technical documentation for AI/LLM systems - main project overview
 ├── src/              # Source files
-│   ├── content.js                  # Main script with AIOverviewExtractor class
-│   ├── settings-manager.js         # Extension settings management
-│   ├── auto-expander-overviews.js  # Automatic AI overview expansion
-│   ├── auto-expander-sources.js    # Automatic source list expansion
-│   ├── auto-webhook.js             # Automatic webhook dispatch
-│   ├── extraction-orchestrator.js  # Manual extraction coordination
-│   ├── content-extractor.js        # Content and source extraction
-│   ├── markdown-generator.js       # Markdown conversion
-│   ├── ui-manager.js               # In-page UI management
-│   ├── popup.js                    # Extension popup management
-│   ├── popup.html                  # Popup interface structure
-│   ├── popup.css                   # Popup interface styling
-│   ├── webhook-manager.js          # Webhook management and POST requests
-│   ├── turndown.js                 # HTML→Markdown conversion library
-│   └── README.md                   # Source code documentation
+│   ├── content.js                    # Main orchestrator with AIOverviewExtractor class
+│   ├── automation-state-machine.js  # State machine for automation flow control
+│   ├── automation-circuit-breaker.js # Circuit breaker protection against failures
+│   ├── container-detection-manager.js # Unified container detection system
+│   ├── settings-manager.js           # Extension settings management
+│   ├── auto-expander-overviews.js    # Automatic AI overview expansion
+│   ├── auto-expander-sources.js      # Automatic source list expansion
+│   ├── auto-webhook.js               # Automatic webhook dispatch
+│   ├── extraction-orchestrator.js    # Manual extraction coordination
+│   ├── content-extractor.js          # Content and source extraction
+│   ├── markdown-generator.js         # Markdown conversion
+│   ├── ui-manager.js                 # In-page UI management
+│   ├── popup.js                      # Extension popup management
+│   ├── popup.html                    # Popup interface structure
+│   ├── popup.css                     # Popup interface styling
+│   ├── webhook-manager.js            # Webhook management and POST requests
+│   ├── turndown.js                   # HTML→Markdown conversion library
+│   └── README.md                     # Source code documentation
 ├── icons/            # Extension icons
 │   ├── icon-16.png
 │   ├── icon-32.png  
@@ -310,18 +313,21 @@ To update the extension:
 ## 📝 Changelog
 
 ### v1.0.7 (current)
-- 🐛 **Fixed auto-webhook functionality** - Fixed automatic webhook sending after AI overview expansion
-- 🔍 **Improved AI Overview detection** - Enhanced detection of asynchronously loaded AI overviews
-- 🔧 **Conservative defaults** - Auto-expansion features now disabled by default for better user control
-- 📊 **Enhanced logging** - Added comprehensive debugging logs for troubleshooting
-- ⏱️ **Timing improvements** - Added delayed checks to catch AI overviews that load with delay
-- 🏗️ **Technical fixes** - Fixed ContentExtractor integration and improved error handling
-- 🛡️ **Better reliability** - Extension now consistently detects AI overviews regardless of load timing
+- 🏗️ **Major Architecture Refactor** - Replaced callback-based system with state machine for predictable automation flow
+- 🔧 **State Machine Implementation** - Clear automation states: IDLE → EXPANDING_OVERVIEW → EXPANDING_SOURCES → SENDING_WEBHOOK → COMPLETE
+- 🛡️ **Circuit Breaker Protection** - Added circuit breakers to prevent infinite loops and system failures
+- 🎯 **Unified Container Detection** - Single manager for all container detection with debouncing and multiple strategies
+- 🐛 **Fixed Automation Issues** - Resolved multiple button clicks, infinite loops, and unpredictable behavior
+- 📊 **Enhanced Debugging** - Added `getAutomationStatus()` and `resetAutomation()` methods for system monitoring
+- 🔍 **Improved Reliability** - Robust error handling with automatic fallback to manual mode
+- ⚙️ **Modular Design** - Clean separation of concerns with well-defined module interfaces
 
 ## 🚀 Features (updated)
-- 🚀 **Webhooks** - automatic sending of data to external APIs after AI Overview and sources expansion
-- 🔄 **Auto-expander improvements** - fixed blinking by clicking expand buttons only once
-- ⚙️ **Settings** - auto-expansion features disabled by default for better user control
+- 🤖 **Intelligent State Machine** - Predictable automation flow with clear state transitions
+- 🛡️ **Circuit Breaker Protection** - Automatic failure detection and recovery
+- 🔄 **Unified Detection System** - Robust container detection with multiple fallback strategies
+- 🚀 **Webhooks** - Automatic data sending with retry logic and error handling
+- ⚙️ **Advanced Debugging** - Real-time system status monitoring and reset capabilities
 
 ### v1.0.6
 - ✨ **Auto-expand AI overviews** - Automatically clicks "Show more" button on collapsed AI overviews

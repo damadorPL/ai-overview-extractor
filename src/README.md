@@ -18,6 +18,13 @@ The extension follows a **modular architecture** with clear separation of concer
 │  settings-manager.js - Configuration persistence           │
 └─────────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────────┐
+│                    Automation Control                       │
+├─────────────────────────────────────────────────────────────┤
+│  automation-state-machine.js - Predictable automation flow │
+│  automation-circuit-breaker.js - Failure protection        │
+│  container-detection-manager.js - Unified container detect │
+└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
 │                   Auto-Expansion Layer                      │
 ├─────────────────────────────────────────────────────────────┤
 │  auto-expander-overviews.js - AI Overview expansion        │
