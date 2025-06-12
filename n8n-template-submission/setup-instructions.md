@@ -70,47 +70,17 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 
 ## Step 4: Install Browser Extension
 
-### Download Extension
-
-**Option 1: From Firefox Add-ons (Recommended)**
-1. **Visit Firefox Add-on**: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
-2. **Click "Add to Firefox"** for automatic installation
-
-**Option 2: From Chrome Web Store (Recommended)**
-1. **Visit Chrome Extension**: https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
-2. **Click "Add to Chrome"** for automatic installation
-
-**Option 3: From GitHub Source Code**
-1. **Visit GitHub repository**: https://github.com/romek-rozen/ai-overview-extractor
-2. **Download the source code** or clone the repository:
-   ```bash
-   git clone https://github.com/romek-rozen/ai-overview-extractor.git
-   ```
-3. **Extract files** to a folder
-
 ### Install in Chrome
 
-**Method 1: Official Extension (Recommended)**
+**Official Extension (Recommended)**
 1. **Visit**: https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
 2. **Click "Add to Chrome"**
 
-**Method 2: Developer Mode (for GitHub source)**
-1. **Open Chrome** and go to `chrome://extensions/`
-2. **Enable** "Developer mode" (toggle in top right)
-3. **Click** "Load unpacked extension"
-4. **Select the extension folder**
-
 ### Install in Firefox
 
-**Method 1: Official Add-on (Recommended)**
+**Official Add-on (Recommended)**
 1. **Visit**: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
 2. **Click "Add to Firefox"**
-
-**Method 2: Developer Mode (for GitHub source)**
-1. **Open Firefox** and go to `about:debugging`
-2. **Click** "This Firefox" in left menu
-3. **Click** "Load Temporary Add-on"
-4. **Select** the `manifest.json` file from extension folder
 
 ## Step 5: Configure Webhook Connection
 

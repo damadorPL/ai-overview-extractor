@@ -1,7 +1,4 @@
 # How it works
-
-Distill what your flow does in a few high-level steps:
-
 • **Extract AI Overviews from Google Search** - Receives data from browser extension via webhook
 • **Convert HTML to Markdown** - Automatically processes and cleans AI Overview content  
 • **Store in Google Sheets** - Archives all extracted AI Overviews with metadata and sources
@@ -9,16 +6,11 @@ Distill what your flow does in a few high-level steps:
 • **Automate Analysis** - Batch process multiple URLs and schedule regular checks
 
 # Set up steps
-
-Give users an idea of how long set up will take. Don't describe every detail.
-
 • **Import workflow** - Load the JSON template into your n8n instance (2 minutes)
 • **Configure Google Sheets** - Set up OAuth connection and create spreadsheet with required columns (5 minutes)  
 • **Set up AI provider** - Add OpenRouter API credentials for Gemini 2.5 Pro (3 minutes)
 • **Install browser extension** - Deploy the companion Chrome/Firefox extension for data extraction (5 minutes)
 • **Test webhook endpoint** - Verify the connection between extension and n8n workflow (2 minutes)
-
-Keep detailed descriptions in sticky notes inside your workflow
 
 **Total setup time: ~15 minutes**
 
