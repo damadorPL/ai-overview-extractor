@@ -23,7 +23,7 @@ Quick 15-minute setup process:
 • **Import workflow** - Load the JSON template into your n8n instance (2 minutes)
 • **Configure Google Sheets** - Set up OAuth connection and create spreadsheet with required columns (5 minutes)  
 • **Set up Gemini 2.5 Pro** - Add OpenRouter API credentials for AI analysis (3 minutes)
-• **Install browser extension** - Deploy the companion Chrome/Firefox extension for data extraction (5 minutes)
+• **Install browser extension** - Deploy the companion extension: [Chrome Extension](https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje) or [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/) (5 minutes)
 • **Test webhook endpoint** - Verify connection between extension and n8n using the "Extract Webhook Data" node (2 minutes)
 
 **Total setup time: ~15 minutes**
@@ -32,7 +32,7 @@ Quick 15-minute setup process:
 
 - Google account for Sheets integration
 - OpenRouter API key for Gemini 2.5 Pro access
-- Browser extension installed from the GitHub repository  
+- Browser extension: [Chrome Extension](https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje) or [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/)
 - n8n instance (local or cloud)
 
 ## Use cases
@@ -53,4 +53,6 @@ The workflow is designed for flexibility:
 - **Alternative storage** - Replace Google Sheets with databases or other storage solutions
 - **Scheduling frequency** - Adjust the Schedule Trigger from 15 minutes to your preferred interval
 
-The workflow comes with a free browser extension that automatically extracts AI Overview content from Google Search and sends structured data via webhook to your n8n workflow for processing and analysis.
+The workflow comes with a free browser extension ([Chrome](https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje) | [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/)) that automatically extracts AI Overview content from Google Search and sends structured data via webhook to your n8n workflow for processing and analysis.
+
+**GitHub Repository:** https://github.com/romek-rozen/ai-overview-extractor/
