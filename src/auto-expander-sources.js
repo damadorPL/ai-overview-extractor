@@ -58,6 +58,12 @@ class AutoExpanderSources {
                         console.error('[AutoExpanderSources] Error in expansion callback:', error);
                     }
                 });
+
+                // Dodatkowo wywołaj setReady na autoWebhook, jeśli jest dostępny
+                if (window.autoWebhook && typeof window.autoWebhook.setReady === 'function') {
+                    window.autoWebhook.setReady();
+                    console.log('[AutoExpanderSources] autoWebhook.setReady() called');
+                }
                 
                 return true;
             } else {
