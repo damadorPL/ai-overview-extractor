@@ -9,20 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Auto-expand AI overviews feature** - Automatically clicks "Show more" button on collapsed AI overviews
+- **Auto-expand sources feature** - Automatically expands collapsed source sections in AI overviews
+- **Auto-webhook functionality** - Automatically sends extracted data to configured webhook endpoints
 - **Settings management system** - Persistent storage of user preferences using Chrome storage API
 - **Extension popup interface** - Modern settings panel accessible from browser toolbar
 - **Real-time settings synchronization** - Changes applied immediately across all Google.com tabs
-- Toggle switch for auto-expand functionality with on/off control
+- Toggle switches for auto-expand overviews, auto-expand sources, and auto-webhook functionality
 
 ### Changed
 - Extension name updated to "AI Overview Extractor - Features"
 - Updated manifest.json to include popup interface and new permissions
 - Enhanced content script with message handling for settings communication
+- Modularized auto-expand and webhook functionality into separate files
 
 ### Technical Details
 - Added `SettingsManager` class for settings persistence
 - Implemented popup UI with toggle switches and status indicators
 - Added automatic detection of collapsed AI overviews using `[aria-expanded="false"][aria-controls="m-x-content"]` selector
+- Added automatic detection and expansion of collapsed sources
+- Integrated automatic webhook sending when data extraction occurs
+- Modular architecture with separate files for different auto-features
 - Integrated real-time communication between popup and content scripts
 
 ---
