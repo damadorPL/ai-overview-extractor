@@ -1,37 +1,56 @@
-# How it works
+## Who is this for?
 
-Distill what your flow does in a few high-level steps:
+SEO agencies, content marketers, e-commerce businesses, and researchers who want to understand and optimize for Google's AI Overviews. Perfect for teams monitoring search visibility and content performance across multiple keywords and websites.
 
-• **Extract AI Overviews from Google Search** - Receives data from browser extension via webhook
-• **Convert HTML to Markdown** - Automatically processes and cleans AI Overview content  
-• **Store in Google Sheets** - Archives all extracted AI Overviews with metadata and sources
-• **Generate SEO Guidelines** - AI analyzes page content vs AI Overview to suggest improvements
-• **Automate Analysis** - Batch process multiple URLs and schedule regular checks
+## What problem does this workflow solve?
 
-# Set up steps
+Google's AI Overviews significantly impact search visibility, but manually tracking which content gets featured is time-consuming. This workflow automates the extraction, analysis, and optimization process, helping you understand why certain content appears in AI Overviews and how to improve your own content accordingly.
 
-Give users an idea of how long set up will take. Don't describe every detail.
+## What this workflow does
+
+Transform raw AI Overview data into actionable SEO insights using AI-powered analysis:
+
+• **Extract AI Overviews from Google Search** - Receives clean data from browser extension via webhook
+• **Convert AI Overview to Markdown** - Automatically processes and formats extracted content using the "Convert AI Overview to Markdown" node
+• **Save AI Overview to Sheets** - Archives all extracted data with metadata and sources in Google Sheets
+• **Generate SEO Recommendations** - Gemini 2.5 Pro analyzes your page content against AI Overview content using the "Generate SEO Recommendations" node
+• **Process URLs in Batches** - Automatically analyze multiple URLs and schedule regular monitoring
+
+## Setup
+
+Quick 15-minute setup process:
 
 • **Import workflow** - Load the JSON template into your n8n instance (2 minutes)
 • **Configure Google Sheets** - Set up OAuth connection and create spreadsheet with required columns (5 minutes)  
-• **Set up AI provider** - Add OpenRouter or other LLM provider API credentials (3 minutes)
+• **Set up Gemini 2.5 Pro** - Add OpenRouter API credentials for AI analysis (3 minutes)
 • **Install browser extension** - Deploy the companion Chrome/Firefox extension for data extraction (5 minutes)
-• **Test webhook endpoint** - Verify the connection between extension and n8n workflow (2 minutes)
-
-Keep detailed descriptions in sticky notes inside your workflow
+• **Test webhook endpoint** - Verify connection between extension and n8n using the "Extract Webhook Data" node (2 minutes)
 
 **Total setup time: ~15 minutes**
 
-## What you'll need:
+## What you'll need
+
 - Google account for Sheets integration
-- OpenRouter API key (or other LLM provider) for AI analysis  
-- Browser extension installed from the GitHub repository
+- OpenRouter API key for Gemini 2.5 Pro access
+- Browser extension installed from the GitHub repository  
 - n8n instance (local or cloud)
 
-## Use cases:
-- **SEO agencies** - Monitor AI Overview presence for client keywords
-- **Content marketers** - Analyze what content gets featured in AI Overviews
-- **E-commerce** - Track AI Overview coverage for product-related searches
-- **Research** - Build datasets of AI Overview content across different topics
+## Use cases
 
-The workflow comes with a free browser extension that automatically extracts AI Overview content from Google Search and sends it via webhook to your n8n workflow for processing and analysis.
+- **SEO agencies** - Monitor AI Overview presence for client keywords and generate optimization reports
+- **Content marketers** - Analyze what content gets featured in AI Overviews and identify content gaps
+- **E-commerce** - Track AI Overview coverage for product-related searches and optimize product descriptions
+- **Research teams** - Build comprehensive datasets of AI Overview content across different industries and topics
+- **Digital marketing teams** - Automate competitive analysis and content optimization workflows
+
+## How to customize this workflow to your needs
+
+The workflow is designed for flexibility:
+
+- **Change AI model** - Swap Gemini 2.5 Pro for Claude, GPT-4, or other models in the "Gemini 2.5 Pro Model" node
+- **Adjust batch processing** - Modify the "Process URLs in Batches" node to handle more or fewer URLs per run
+- **Custom analysis prompts** - Update the "Generate SEO Recommendations" node with industry-specific analysis criteria
+- **Alternative storage** - Replace Google Sheets with databases or other storage solutions
+- **Scheduling frequency** - Adjust the Schedule Trigger from 15 minutes to your preferred interval
+
+The workflow comes with a free browser extension that automatically extracts AI Overview content from Google Search and sends structured data via webhook to your n8n workflow for processing and analysis.
