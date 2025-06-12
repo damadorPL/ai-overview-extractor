@@ -318,6 +318,11 @@ To update the extension:
 - 🏗️ **Technical fixes** - Fixed ContentExtractor integration and improved error handling
 - 🛡️ **Better reliability** - Extension now consistently detects AI overviews regardless of load timing
 
+## 🚀 Features (updated)
+- 🚀 **Webhooks** - automatic sending of data to external APIs after AI Overview and sources expansion
+- 🔄 **Auto-expander improvements** - fixed blinking by clicking expand buttons only once
+- ⚙️ **Settings** - auto-expansion features disabled by default for better user control
+
 ### v1.0.6
 - ✨ **Auto-expand AI overviews** - Automatically clicks "Show more" button on collapsed AI overviews
 - 🔗 **Auto-expand sources** - Automatically expands collapsed source sections
