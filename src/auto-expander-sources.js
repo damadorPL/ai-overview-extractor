@@ -76,6 +76,12 @@ class AutoExpanderSources {
             attempt++;
             console.log(`[AutoExpanderSources] Attempt ${attempt}/${maxAttempts}`);
             
+            // Sprawdź czy już rozwinięte
+            if (this.areSourcesExpanded()) {
+                console.log('[AutoExpanderSources] Sources already expanded');
+                return true;
+            }
+            
             // Znajdź sekcję MSC
             const mscSection = document.querySelector('div[data-subtree="msc"]');
             if (!mscSection) {
@@ -84,59 +90,27 @@ class AutoExpanderSources {
                 continue;
             }
             
-            // Zapisz obecną liczbę źródeł
-            const sourcesCountBefore = this.countVisibleSources(mscSection);
-            
-            // Próbuj różne selektory w kolejności preferencji
-            const selectors = [
-                '[role="button"]',
-                'button',
-                '[tabindex="0"]',
-                '[jsaction*="trigger"]',
-                'div[class*="button"], span[class*="button"]'
-            ];
-            
-            let buttonFound = false;
-            
-            for (const selector of selectors) {
-                const buttons = mscSection.querySelectorAll(selector);
-                console.log(`[AutoExpanderSources] Found ${buttons.length} elements with selector: ${selector}`);
-                
-                for (const button of buttons) {
-                    // Sprawdź czy to prawdopodobnie przycisk expand
-                    if (this.isProbablyExpandButton(button)) {
-                        console.log('[AutoExpanderSources] Found potential expand button:', button);
-                        
-                        // Próbuj różne metody kliknięcia
-                        const success = await this.tryClickButton(button);
-                        if (success) {
-                            // Czekaj na zmianę
-                            await this.delay(1000);
-                            
-                            // Sprawdź czy liczba źródeł wzrosła
-                            const sourcesCountAfter = this.countVisibleSources(mscSection);
-                            if (sourcesCountAfter > sourcesCountBefore) {
-                                console.log(`[AutoExpanderSources] Success! Sources increased from ${sourcesCountBefore} to ${sourcesCountAfter}`);
-                                return true;
-                            }
-                            
-                            // Sprawdź czy przycisk zniknął
-                            if (!this.isElementVisible(button)) {
-                                console.log('[AutoExpanderSources] Success! Button disappeared');
-                                return true;
-                            }
-                        }
-                        buttonFound = true;
-                    }
-                }
-                
-                if (buttonFound) break;
+            // Znajdź przycisk - tylko [role="button"]
+            const button = mscSection.querySelector('[role="button"]');
+            if (!button) {
+                console.log('[AutoExpanderSources] No button found in MSC section, retrying...');
+                await this.delay(500);
+                continue;
             }
             
-            // Jeśli nie znaleziono przycisku, może już jest rozwinięte?
-            if (!buttonFound && sourcesCountBefore > 3) {
-                console.log('[AutoExpanderSources] No expand button found, sources might already be expanded');
-                return true;
+            console.log('[AutoExpanderSources] Found button:', button);
+            
+            // Kliknij przycisk
+            const success = await this.tryClickButton(button);
+            if (success) {
+                // Czekaj na rozwinięcie
+                await this.delay(1000);
+                
+                // Sprawdź czy się rozwinęło
+                if (this.areSourcesExpanded()) {
+                    console.log('[AutoExpanderSources] Success! Sources expanded');
+                    return true;
+                }
             }
             
             await this.delay(500);
@@ -146,28 +120,6 @@ class AutoExpanderSources {
         return false;
     }
     
-    // Sprawdza czy element prawdopodobnie jest przyciskiem expand
-    isProbablyExpandButton(element) {
-        const text = element.textContent?.trim().toLowerCase() || '';
-        const hasExpandText = text.includes('pokaż wszystko') || text.includes('show all') || text.includes('pokaż') || text.includes('show') || text.includes('więcej') || text.includes('all') || text.includes('more');
-        
-        // Sprawdź czy ma jsaction related do triggera
-        const jsaction = element.getAttribute('jsaction') || '';
-        const hasJsAction = jsaction.includes('trigger');
-        
-        // Sprawdź czy wygląda jak przycisk
-        const hasButtonRole = element.getAttribute('role') === 'button' || element.tagName === 'BUTTON';
-        const hasTabIndex = element.hasAttribute('tabindex');
-        
-        // Sprawdź konkretne klasy z Google
-        const className = element.className || '';
-        const hasGoogleExpandClasses = className.includes('trEk7e') || className.includes('tg2Kqf');
-        
-        // Sprawdź czy jest w ostatnim li
-        const isInLastLi = element.closest('li.tg2Kqf') !== null;
-        
-        return hasExpandText || (hasJsAction && (hasButtonRole || hasTabIndex)) || hasGoogleExpandClasses || isInLastLi;
-    }
     
     // Próbuje kliknąć przycisk różnymi metodami
     async tryClickButton(button) {
@@ -280,12 +232,9 @@ class AutoExpanderSources {
 
     // Sprawdza czy źródła są już rozwinięte
     areSourcesExpanded() {
-        const mscSection = document.querySelector('div[data-subtree="msc"]');
-        if (!mscSection) return false;
-
-        // Sprawdź czy przycisk "Pokaż wszystko" już nie istnieje (co oznacza że źródła są rozwinięte)
-        const expandButton = this.findSourcesExpandButton();
-        return !expandButton;
+        // Sprawdź czy istnieje div z style="height: 100%" w #m-x-content
+        const expandedDiv = document.querySelector('#m-x-content div[style*="height: 100%"]');
+        return !!expandedDiv;
     }
 
     // Sprawdza czy sekcja źródeł w ogóle istnieje

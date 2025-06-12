@@ -69,7 +69,7 @@ class PopupManager {
             });
         }
 
-        // Auto expand sources toggle (disabled for now)
+        // Auto expand sources toggle
         const autoExpandSources = document.getElementById('autoExpandSources');
         if (autoExpandSources) {
             autoExpandSources.addEventListener('change', async (e) => {
@@ -77,7 +77,8 @@ class PopupManager {
             });
         }
 
-        // Auto send webhook toggle (disabled for now)  
+
+        // Auto send webhook toggle
         const autoSendWebhook = document.getElementById('autoSendWebhook');
         if (autoSendWebhook) {
             autoSendWebhook.addEventListener('change', async (e) => {

@@ -63,6 +63,13 @@ class AIOverviewExtractor {
         try {
             console.log('[AI Overview Extractor] Starting module orchestration');
 
+            // Sprawdź czy mamy #m-x-content
+            const container = document.querySelector('#m-x-content');
+            if (!container) {
+                console.log('[AI Overview Extractor] No AI Overview container found, skipping orchestration');
+                return;
+            }
+
             // Step 1: Expand AI Overview
             const overviewExpanded = await this.autoExpanderOverviews.expandAIOverview();
             if (overviewExpanded) {
