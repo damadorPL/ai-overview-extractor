@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Overview Extractor Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <div class="header">
+            <h3>🤖 AI Overview Extractor</h3>
+            <div class="version">v1.0.5</div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="setting-item">
+                <div class="setting-content">
+                    <label class="setting-label" for="autoExpandOverviews">
+                        <span class="setting-title">Auto expand AI overviews</span>
+                        <span class="setting-description">Automatically expands collapsed AI overviews to save clicks</span>
+                    </label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoExpandOverviews">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item disabled">
+                <div class="setting-content">
+                    <label class="setting-label" for="autoExpandSources">
+                        <span class="setting-title">Auto expand sources</span>
+                        <span class="setting-description">Coming soon - Automatically expands source lists</span>
+                    </label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoExpandSources" disabled>
+                    <span class="slider disabled"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item disabled">
+                <div class="setting-content">
+                    <label class="setting-label" for="autoSendWebhook">
+                        <span class="setting-title">Auto send webhook</span>
+                        <span class="setting-description">Coming soon - Automatically sends data to webhook</span>
+                    </label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoSendWebhook" disabled>
+                    <span class="slider disabled"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="status-section">
+            <div class="status-item" id="statusMessage">
+                <span class="status-icon">⚙️</span>
+                <span class="status-text">Loading settings...</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="reset-btn" id="resetBtn">🔄 Reset to defaults</button>
+            <a href="https://github.com/romek-rozen/ai-overview-extractor" target="_blank" rel="noopener" class="github-link">
+                <span>📖 GitHub</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="settings-manager.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

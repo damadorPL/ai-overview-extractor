@@ -1,17 +1,46 @@
 class AIOverviewExtractor {
     constructor() {
         this.webhookManager = new WebhookManager();
+        this.settingsManager = new SettingsManager();
+        this.settings = null;
         this.init();
     }
 
-    init() {
+    async init() {
         console.log('[AI Overview Extractor] Initializing...');
+        
+        // Load settings
+        this.settings = await this.settingsManager.getSettings();
+        console.log('[AI Overview Extractor] Settings loaded:', this.settings);
         
         // Check immediately if container exists
         this.checkAndAddButton();
         
         // Observe DOM changes
         this.observeDOM();
+    }
+
+    async autoExpandAIOverview() {
+        // Look for the "Show more" button with specific attributes
+        const expandButton = document.querySelector('[aria-expanded="false"][aria-controls="m-x-content"]');
+        
+        if (expandButton) {
+            console.log('[AI Overview Extractor] Auto-expanding AI overview');
+            
+            // Click the expand button
+            expandButton.click();
+            
+            // Wait for expansion animation
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    console.log('[AI Overview Extractor] AI overview expanded');
+                    resolve(true);
+                }, 800);
+            });
+        }
+        
+        console.log('[AI Overview Extractor] No collapsible AI overview found');
+        return false;
     }
 
     observeDOM() {
@@ -27,9 +56,19 @@ class AIOverviewExtractor {
         console.log('[AI Overview Extractor] DOM Observer started');
     }
 
-    checkAndAddButton() {
+    async checkAndAddButton() {
         // Check if button already exists
         if (document.querySelector('.ai-extractor-button')) return;
+        
+        // Auto-expand AI overview if enabled
+        if (this.settings && this.settings.autoExpandOverviews) {
+            const expanded = await this.autoExpandAIOverview();
+            if (expanded) {
+                // Wait for expansion animation and check again
+                setTimeout(() => this.checkAndAddButton(), 1000);
+                return;
+            }
+        }
         
         // Look for #m-x-content
         const container = document.querySelector('#m-x-content');
@@ -571,11 +610,46 @@ class AIOverviewExtractor {
     }
 }
 
+// Message listener for popup communication
+if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        console.log('[AI Overview Extractor] Received message:', message);
+        
+        if (message.type === 'SETTING_CHANGED') {
+            console.log(`[AI Overview Extractor] Setting changed: ${message.key} = ${message.value}`);
+            
+            // Reload settings in the current instance
+            if (window.aiExtractor && window.aiExtractor.settingsManager) {
+                window.aiExtractor.settingsManager.getSettings().then(settings => {
+                    window.aiExtractor.settings = settings;
+                    console.log('[AI Overview Extractor] Settings refreshed:', settings);
+                });
+            }
+            
+            sendResponse({ success: true });
+        } else if (message.type === 'SETTINGS_RESET') {
+            console.log('[AI Overview Extractor] Settings reset');
+            
+            // Reload settings in the current instance
+            if (window.aiExtractor && window.aiExtractor.settingsManager) {
+                window.aiExtractor.settingsManager.getSettings().then(settings => {
+                    window.aiExtractor.settings = settings;
+                    console.log('[AI Overview Extractor] Settings refreshed after reset:', settings);
+                });
+            }
+            
+            sendResponse({ success: true });
+        }
+        
+        return true; // Keep message channel open for async response
+    });
+}
+
 // Uruchom wtyczkę
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        new AIOverviewExtractor();
+        window.aiExtractor = new AIOverviewExtractor();
     });
 } else {
-    new AIOverviewExtractor();
+    window.aiExtractor = new AIOverviewExtractor();
 }

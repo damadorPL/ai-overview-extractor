@@ -23,11 +23,16 @@
       "matches": [
         "*://www.google.com/search*"
       ],
-      "js": ["src/turndown.js", "src/webhook-manager.js", "src/content.js"],
+      "js": ["src/turndown.js", "src/webhook-manager.js", "src/settings-manager.js", "src/content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }
   ],
+
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "AI Overview Extractor Settings"
+  },
   
   "icons": {
     "16": "icons/icon-16.png",
