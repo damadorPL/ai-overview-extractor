@@ -1,220 +1,229 @@
 # n8n Workflow Template - AI Overview Extractor
 
-🚀 **Gotowy workflow n8n do kompleksowej automatyzacji AI Overview z wtyczką przeglądarki**
+🚀 **Complete n8n workflow for comprehensive AI Overview automation with browser extension integration**
 
-Ten template zawiera kompletny workflow n8n który współpracuje z rozszerzeniem AI Overview Extractor do automatycznego przetwarzania i analizy danych AI Overview.
+This template contains a complete n8n workflow that works with the AI Overview Extractor browser extension for automatic processing and analysis of AI Overview data.
 
-## 📋 Co robi ten workflow?
+## 📋 What does this workflow do?
 
-### 🔄 Główne funkcje:
-1. **Webhook endpoint** - odbiera dane z wtyczki przeglądarki
-2. **Przetwarzanie HTML→Markdown** - automatyczna konwersja treści
-3. **Zapis do Google Sheets** - archiwizacja wszystkich AI Overview
-4. **AI Guidelines Generator** - LLM analizuje i generuje wytyczne SEO
-5. **Batch processing** - analiza wielu stron z arkusza Google
-6. **Scheduler** - automatyczne uruchamianie co 15 minut
+### 🔄 Main functions:
+1. **Webhook endpoint** - receives data from browser extension
+2. **HTML→Markdown processing** - automatic content conversion
+3. **Google Sheets storage** - archives all AI Overviews
+4. **AI Guidelines Generator** - LLM analyzes and generates SEO guidelines
+5. **Batch processing** - analyzes multiple pages from Google Sheets
+6. **Scheduler** - automatic execution every 15 minutes
 
-### 📊 Przepływ danych:
+### 📊 Data flow:
 ```
-Wtyczka → Webhook → Przetwarzanie → Google Sheets → AI Analiza → Wytyczne SEO
+Browser Extension → Webhook → Processing → Google Sheets → AI Analysis → SEO Guidelines
 ```
 
-## 🛠️ Instalacja
+## 🛠️ Installation
 
-### Krok 1: Import workflow
-1. **Otwórz n8n** (lokalnie `http://localhost:5678` lub w chmurze)
-2. **Przejdź do:** Menu → `Workflows` → `Add workflow` → `Import from JSON`
-3. **Załaduj plik:** `AI_Overviews_Extractor_Plugin.json`
-4. **Zapisz workflow**
+### Step 1: Import workflow
+1. **Open n8n** (locally `http://localhost:5678` or in cloud)
+2. **Navigate to:** Menu → `Workflows` → `Add workflow` → `Import from JSON`
+3. **Load file:** `AI_OVERVIES_EXTRACTOR_TEMPLATE.json`
+4. **Save workflow**
 
-### Krok 2: Konfiguracja Google Sheets
-1. **Utwórz Google Sheet** z kolumnami:
+### Step 2: Configure Google Sheets
+1. **Create Google Sheet** with columns:
    ```
    extractedAt | searchQuery | sources | markdown | myURL | task | guidelines | key
    ```
-2. **W n8n dodaj Google Sheets credential:**
-   - Przejdź do: `Settings` → `Credentials` → `Add credential`
-   - Wybierz: `Google Sheets OAuth2 API`
-   - Autoryzuj dostęp do Google
-3. **Ustaw URL arkusza** w węzłach:
-   - `getRows`
-   - `updateRows` 
-   - `updateGuideLines`
 
-### Krok 3: Konfiguracja LLM (OpenRouter)
-1. **Zarejestruj się w OpenRouter:** https://openrouter.ai/
-2. **Wygeneruj klucz API**
-3. **W n8n dodaj OpenRouter credential:**
+Here is a public Google Sheet template: https://docs.google.com/spreadsheets/d/15xqZ2dTiLMoyICYnnnRV-HPvXfdgVeXowr8a7kU4uHk/edit?gid=0#gid=0
+
+2. **In n8n add Google Sheets credential:**
+   - Go to: `Settings` → `Credentials` → `Add credential`
+   - Select: `Google Sheets OAuth2 API`
+   - Authorize Google access
+3. **Set sheet URL** in nodes:
+   - `Get URLs to Analyze`
+   - `Save AI Overview to Sheets` 
+   - `Save SEO Guidelines to Sheets`
+
+### Step 3: Configure LLM (OpenRouter)
+1. **Register at OpenRouter:** https://openrouter.ai/
+2. **Generate API key**
+3. **In n8n add OpenRouter credential:**
    - `Settings` → `Credentials` → `Add credential`
-   - Wybierz: `OpenRouter API`
-   - Wklej klucz API
-4. **Przypisz credential** do węzła `OpenRouter Chat Model`
+   - Select: `OpenRouter API`
+   - Paste API key
+4. **Assign credential** to `Gemini 2.5 Pro Model` node
 
-### Krok 4: Aktywacja
-1. **Ustaw webhook URL** - skopiuj z węzła `Webhook`, pamiętaj o metodzie **POST**!
-2. **Aktywuj workflow** - przełącznik w prawym górnym rogu
-3. **Test webhook** - powinien odpowiadać na porcie 5678
+### Step 4: Activation
+1. **Set webhook URL** - copy from `Webhook` node, remember **POST** method!
+2. **Activate workflow** - toggle in top right corner
+3. **Test webhook** - should respond on port 5678
 
-## ⚙️ Konfiguracja wtyczki
+## ⚙️ Browser Extension Setup
 
-### URL webhook:
+### Download Extension:
+- **Chrome:** https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
+- **Firefox:** https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
+- **GitHub:** https://github.com/romek-rozen/ai-overview-extractor/
+
+### Webhook URL:
 ```
-http://localhost:5678/webhook/ai-overview-extractor
+http://localhost:5678/webhook/ai-overview-extractor-template-123456789
 ```
 
-### Test połączenia:
-1. W wtyczce wklej URL webhook
-2. Kliknij "🧪 Test" 
-3. Powinno pokazać: ✅ Test połączenia udany
+### Test connection:
+1. In extension paste webhook URL
+2. Click "🧪 Test" 
+3. Should show: ✅ Connection test successful
 
-## 📁 Struktura workflow
+## 📁 Workflow Structure
 
-### Triggery:
-- **Webhook** - dla danych z wtyczki
-- **Manual Trigger** - ręczne uruchomienie
-- **Schedule Trigger** - automatycznie co 15 minut
+### Triggers:
+- **Webhook** - for data from browser extension
+- **Manual Trigger** - manual execution
+- **Schedule Trigger** - automatically every 15 minutes
 
-### Główne węzły:
-1. **data** (Set) - ekstrakcja danych z webhook payload
-2. **Markdown** - konwersja HTML na markdown
-3. **updateRows** (Google Sheets) - zapis danych AI Overview
-4. **getRows** (Google Sheets) - pobieranie zadań do analizy
-5. **getPage** (HTTP Request) - pobieranie treści stron
-6. **Basic LLM Chain** - generowanie wytycznych AI
-7. **updateGuideLines** (Google Sheets) - zapis wytycznych
+### Main nodes:
+1. **Extract Webhook Data** (Set) - extracts data from webhook payload
+2. **Convert AI Overview to Markdown** - converts HTML to markdown
+3. **Save AI Overview to Sheets** (Google Sheets) - saves AI Overview data
+4. **Get URLs to Analyze** (Google Sheets) - retrieves tasks for analysis
+5. **Fetch Page Content** (HTTP Request) - fetches page content
+6. **Generate SEO Recommendations** (LLM Chain) - generates AI guidelines
+7. **Save SEO Guidelines to Sheets** (Google Sheets) - saves guidelines
 
-### Pomocnicze węzły:
-- **Limit** - ograniczenie do 10 rekordów na raz
-- **myURL Exists** (Filter) - filtrowanie rekordów z URL
-- **loopOverRows** (Split in Batches) - przetwarzanie batch'ami
-- **Wait** - opóźnienie między requests
-- **HTML** - ekstrakcja metadanych ze stron
+### Helper nodes:
+- **Limit** - limits to 10 records at a time
+- **myURL Exists** (Filter) - filters records with URLs
+- **Process URLs in Batches** (Split in Batches) - batch processing
+- **Wait** - delay between requests
+- **Extract Page Title and H1** - extracts page metadata
+- **Convert Page Content to Markdown** - converts page HTML to markdown
 
-## 🎯 Jak używać
+## 🎯 How to use
 
-### 1. Podstawowe użycie (Webhook):
-1. **Wyszukaj w Google** coś z AI Overview
-2. **Użyj wtyczki** - kliknij "📋 Ekstraktuj do Markdown"
-3. **Wyślij webhook** - kliknij "🚀 Wyślij webhook"
-4. **Sprawdź arkusz** - dane powinny się pojawić automatycznie
+### 1. Basic usage (Webhook):
+1. **Search on Google** for something with AI Overview
+2. **Use extension** - click "📋 Extract to Markdown"
+3. **Send webhook** - click "🚀 Send webhook"
+4. **Check sheet** - data should appear automatically
 
-### 2. Batch analiza (Manual/Scheduler):
-1. **W arkuszu Google dodaj:**
-   - Kolumna `myURL`: URL stron do analizy
-   - Kolumna `task`: wartość "create guidelines"
-2. **Uruchom workflow** ręcznie lub poczekaj na scheduler
-3. **Sprawdź kolumnę `guidelines`** - AI wygeneruje wytyczne SEO
+### 2. Batch analysis (Manual/Scheduler):
+1. **In Google Sheet add:**
+   - Column `myURL`: URLs of pages to analyze
+   - Column `task`: value "create guidelines"
+2. **Run workflow** manually or wait for scheduler
+3. **Check `guidelines` column** - AI will generate SEO guidelines
 
-### 3. Automatyzacja:
-- **Scheduler** działa co 15 minut
-- **Analizuje max 10 rekordów** na raz
-- **Pomija już przetworzone** (z wypełnioną kolumną `guidelines`)
+### 3. Automation:
+- **Scheduler** runs every 15 minutes
+- **Analyzes max 10 records** at a time
+- **Skips already processed** (with filled `guidelines` column)
 
-## 🔧 Dostosowanie
+## 🔧 Customization
 
-### Zmiana modelu AI:
+### Change AI model:
 ```json
-// W węźle OpenRouter Chat Model zmień:
-"model": "google/gemini-2.5-flash-preview-05-20"
-// Na inny model np.:
+// In Gemini 2.5 Pro Model node change:
+"model": "google/gemini-2.5-pro-preview"
+// To another model e.g.:
 "model": "anthropic/claude-3.5-sonnet"
 "model": "openai/gpt-4o"
 ```
 
-### Zmiana interwału schedulera:
+### Change scheduler interval:
 ```json
-// W węźle Schedule Trigger zmień:
+// In Schedule Trigger node change:
 "interval": [{"field": "minutes", "minutesInterval": 15}]
-// Na inny interwał np.:
+// To different interval e.g.:
 "interval": [{"field": "hours", "hoursInterval": 1}]
 ```
 
-### Dostosowanie promptu AI:
-W węźle `Basic LLM Chain` możesz zmienić prompt systemowy aby AI generowało inne typy analiz.
+### Customize AI prompt:
+In the `Generate SEO Recommendations` node you can modify the system prompt to have AI generate different types of analyses.
 
-## 🔍 Rozwiązywanie problemów
+## 🔍 Troubleshooting
 
-### Webhook nie działa:
-- Sprawdź czy n8n jest uruchomione na porcie 5678
-- Upewnij się że workflow jest aktywny
-- Sprawdź logi n8n w konsoli
+### Webhook not working:
+- Check if n8n is running on port 5678
+- Make sure workflow is active
+- Check n8n logs in console
 
-### Google Sheets błędy:
-- Sprawdź czy credential jest poprawnie skonfigurowany
-- Upewnij się że arkusz ma odpowiednie kolumny
-- Sprawdź uprawnienia do arkusza
+### Google Sheets errors:
+- Check if credential is properly configured
+- Make sure sheet has appropriate columns
+- Check sheet permissions
 
-### OpenRouter błędy:
-- Sprawdź czy masz wystarczające środki na koncie
-- Upewnij się że klucz API jest aktywny
-- Sprawdź czy wybrany model jest dostępny
+### OpenRouter errors:
+- Check if you have sufficient credits on account
+- Make sure API key is active
+- Check if selected model is available
 
-### Timeout błędy:
-- Zwiększ timeout w węźle `Wait` jeśli strony ładują się wolno
-- Zmniejsz liczbę w węźle `Limit` jeśli przetwarzanie jest zbyt wolne
+### Timeout errors:
+- Increase timeout in `Wait` node if pages load slowly
+- Decrease number in `Limit` node if processing is too slow
 
 ## 📊 Monitoring
 
-### Logi n8n:
-- Sprawdzaj wykonania w sekcji `Executions`
-- Analizuj błędy w poszczególnych węzłach
-- Monitoruj zużycie API calls
+### n8n logs:
+- Check executions in `Executions` section
+- Analyze errors in individual nodes
+- Monitor API call usage
 
-### Google Sheets metryki:
-- Liczba przetworzonych AI Overview
-- Czas generowania wytycznych
-- Skuteczność różnych modeli AI
+### Google Sheets metrics:
+- Number of processed AI Overviews
+- Guidelines generation time
+- Effectiveness of different AI models
 
-## 💡 Wskazówki
+## 💡 Tips
 
-### Optymalizacja:
-- Używaj `Limit` aby nie przeciążać API
-- Dodaj `Wait` między requests aby uniknąć rate limitów
-- Regularnie czyść stare dane w arkuszu
+### Optimization:
+- Use `Limit` to avoid overloading APIs
+- Add `Wait` between requests to avoid rate limits
+- Regularly clean old data in sheet
 
-### Bezpieczeństwo:
-- Chroń klucze API (nie udostępniaj workflow z kluczami)
-- Używaj HTTPS dla webhook'ów w produkcji
-- Ograniczaj dostęp do Google Sheets
+### Security:
+- Protect API keys (don't share workflow with keys)
+- Use HTTPS for webhooks in production
+- Limit access to Google Sheets
 
-### Skalowanie:
-- Uruchom n8n w chmurze dla większej niezawodności
-- Używaj baz danych zamiast Google Sheets dla większych volumenów
-- Rozważ cache'owanie wyników AI
+### Scaling:
+- Run n8n in cloud for better reliability
+- Use databases instead of Google Sheets for larger volumes
+- Consider caching AI results
 
-## 📈 Przypadki użycia
+## 📈 Use Cases
 
 ### SEO Agency:
-- Monitorowanie AI Overview dla klientów
-- Automatyczne generowanie raportów SEO
-- Śledzenie zmian w SERP
+- Monitor AI Overview for clients
+- Automatic SEO report generation
+- Track SERP changes
 
 ### Content Marketing:
-- Analiza trendów w AI Overview
-- Inspiracja do nowej treści
-- Optymalizacja istniejących artykułów
+- Analyze AI Overview trends
+- New content inspiration
+- Optimize existing articles
 
 ### E-commerce:
-- Monitoring AI Overview dla produktów
-- Analiza konkurencji
-- Optymalizacja opisów produktów
+- Monitor AI Overview for products
+- Competition analysis
+- Product description optimization
 
-## 🔄 Aktualizacje
+## 🔄 Updates
 
-Ten template jest regularnie aktualizowany. Aby otrzymać najnowszą wersję:
+This template is regularly updated. To get the latest version:
 
-1. Sprawdź GitHub repo: https://github.com/romek-rozen/ai-overview-extractor
-2. Porównaj z aktualnym workflow
-3. Zastąp stary template nowym
-4. Zrekonfiguruj credentials jeśli potrzeba
+1. Check GitHub repo: https://github.com/romek-rozen/ai-overview-extractor
+2. Compare with current workflow
+3. Replace old template with new one
+4. Reconfigure credentials if needed
 
-## 🤝 Wsparcie
+## 🤝 Support
 
-Potrzebujesz pomocy? Sprawdź:
+Need help? Check:
 - **GitHub Issues:** https://github.com/romek-rozen/ai-overview-extractor/issues
 - **n8n Community:** https://community.n8n.io/
-- **Dokumentacja n8n:** https://docs.n8n.io/
+- **n8n Documentation:** https://docs.n8n.io/
 
 ---
 
-**Stworzone z ❤️ dla automatyzacji AI Overview**
+**Created with ❤️ for AI Overview automation**
