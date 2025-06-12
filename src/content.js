@@ -3,6 +3,9 @@ class AIOverviewExtractor {
         this.webhookManager = new WebhookManager();
         this.settingsManager = new SettingsManager();
         this.settings = null;
+        this.isInitialized = false;
+        this.processedContainers = new Set(); // Track processed containers
+        this.debounceTimer = null;
         
         // Initialize new modules
         this.autoExpanderOverviews = new AutoExpanderOverviews(this.settingsManager);
@@ -13,7 +16,13 @@ class AIOverviewExtractor {
     }
 
     async init() {
+        if (this.isInitialized) {
+            console.log('[AI Overview Extractor] Already initialized, skipping...');
+            return;
+        }
+        
         console.log('[AI Overview Extractor] Initializing...');
+        this.isInitialized = true;
         
         // Load settings
         this.settings = await this.settingsManager.getSettings();
@@ -26,7 +35,7 @@ class AIOverviewExtractor {
         await this.orchestrateModules();
         
         // Check immediately if container exists
-        this.checkAndAddButton();
+        this.debouncedCheckAndAddButton();
         
         // Observe DOM changes
         this.observeDOM();
@@ -84,7 +93,7 @@ class AIOverviewExtractor {
 
     observeDOM() {
         const observer = new MutationObserver(() => {
-            this.checkAndAddButton();
+            this.debouncedCheckAndAddButton();
         });
 
         observer.observe(document.body, {
@@ -95,9 +104,38 @@ class AIOverviewExtractor {
         console.log('[AI Overview Extractor] DOM Observer started');
     }
 
+    debouncedCheckAndAddButton() {
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+        
+        this.debounceTimer = setTimeout(() => {
+            this.checkAndAddButton();
+        }, 300); // 300ms debounce
+    }
+
     async checkAndAddButton() {
-        // Check if button already exists
-        if (document.querySelector('.ai-extractor-button')) return;
+        // Look for #m-x-content
+        const container = document.querySelector('#m-x-content');
+        
+        if (!container) {
+            return;
+        }
+
+        // Create unique ID for this container based on location and content
+        const containerId = this.generateContainerId(container);
+        
+        // Check if we already processed this container
+        if (this.processedContainers.has(containerId)) {
+            return;
+        }
+
+        // Check if button already exists for this specific container
+        const existingButton = container.parentNode?.querySelector('.ai-extractor-button');
+        if (existingButton) {
+            this.processedContainers.add(containerId);
+            return;
+        }
         
         // Auto-expand AI overview if enabled
         if (this.settings && this.settings.autoExpandOverviews) {
@@ -109,13 +147,18 @@ class AIOverviewExtractor {
             }
         }
         
-        // Look for #m-x-content
-        const container = document.querySelector('#m-x-content');
-        
-        if (container) {
-            console.log('[AI Overview Extractor] Found #m-x-content, adding button');
-            this.addButton(container);
-        }
+        console.log('[AI Overview Extractor] Found #m-x-content, adding button');
+        this.addButton(container);
+        this.processedContainers.add(containerId);
+    }
+
+    generateContainerId(container) {
+        // Generate unique ID based on container position and first 100 chars of content
+        const rect = container.getBoundingClientRect();
+        const content = container.textContent.slice(0, 100);
+        const position = `${Math.round(rect.top)}-${Math.round(rect.left)}`;
+        const contentHash = btoa(content).slice(0, 10);
+        return `${position}-${contentHash}`;
     }
 
     addButton(container) {
