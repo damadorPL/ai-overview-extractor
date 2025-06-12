@@ -1,0 +1,41 @@
+Uwagi dla recenzentów - AI Overview Extractor v1.0.8
+
+CO NOWEGO W TEJ WERSJI:
+• Naprawiono krytyczny błąd z automatycznym rozwijaniem źródeł
+• Poprawiono wykrywanie przycisków z zaktualizowanymi selektorami jsaction
+• Ulepszone taktowanie i stabilność interakcji z DOM
+• Dodano ochronę circuit breaker przeciwko nieskończonym pętlom
+• Lepsze obsługiwanie błędów i mechanizmy fallback
+
+KLUCZOWE PUNKTY DO TESTOWANIA:
+1. Wyszukaj dowolne zapytanie generujące Google AI Overview (np. "cukrzyca", "zmiany klimatu")
+2. Rozszerzenie automatycznie wykrywa sekcje AI Overview
+3. Kliknij przycisk "📋 Extract to Markdown", który się pojawi
+4. Sprawdź, czy ekstrakcja treści i konwersja do markdown działa poprawnie
+5. Przetestuj panel ustawień w popup (kliknij ikonę rozszerzenia na pasku narzędzi)
+
+FUNKCJE AUTOMATYZACJI (DOMYŚLNIE WYŁĄCZONE):
+• Auto-rozwijanie AI overviews - można włączyć w ustawieniach popup
+• Auto-rozwijanie źródeł - można włączyć w ustawieniach popup
+• Auto-wysyłanie webhook - można włączyć w ustawieniach popup
+Wszystkie funkcje automatyzacji są domyślnie WYŁĄCZONE dla konserwatywnego doświadczenia użytkownika.
+
+PRYWATNOŚĆ I BEZPIECZEŃSTWO:
+• Brak zbierania danych lub zewnętrznych połączeń (poza webhook skonfigurowanymi przez użytkownika)
+• Wszystkie przetwarzanie odbywa się lokalnie w przeglądarce
+• Zgodne z Manifest V3
+• Nie żąda niepotrzebnych uprawnień
+
+SZCZEGÓŁY TECHNICZNE:
+• Działa tylko na stronach google.com/search
+• Używa content scripts z odpowiednią izolacją
+• Czysta konwersja HTML na Markdown z biblioteką TurndownJS
+• Kod źródłowy dostępny na GitHub: https://github.com/romek-rozen/ai-overview-extractor
+
+TYPOWE PRZYPADKI UŻYCIA:
+• Badania treści i ekstrakcja wiedzy
+• Analiza SEO i optymalizacja treści
+• Badania akademickie i sporządzanie notatek
+• Integracja z narzędziami automatyzacji przez webhooks
+
+Rozszerzenie zapewnia prawdziwą wartość dla użytkowników, którzy potrzebują efektywnie ekstraktować i przetwarzać treści AI Overview.

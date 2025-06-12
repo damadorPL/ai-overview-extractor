@@ -1,0 +1,41 @@
+Notes for Reviewers - AI Overview Extractor v1.0.8
+
+WHAT'S NEW IN THIS VERSION:
+• Fixed critical bug with automatic source expansion
+• Improved button detection with updated jsaction selectors
+• Enhanced timing and stability for DOM interactions
+• Added circuit breaker protection against infinite loops
+• Better error handling and fallback mechanisms
+
+KEY TESTING POINTS:
+1. Search for any query that generates Google AI Overview (e.g., "diabetes", "climate change")
+2. Extension automatically detects AI Overview sections
+3. Click the "📋 Extract to Markdown" button that appears
+4. Verify content extraction and markdown conversion works properly
+5. Test popup settings panel (click extension icon in toolbar)
+
+AUTOMATION FEATURES (DISABLED BY DEFAULT):
+• Auto-expand AI overviews - can be enabled in popup settings
+• Auto-expand sources - can be enabled in popup settings  
+• Auto-webhook sending - can be enabled in popup settings
+All automation features are OFF by default for conservative user experience.
+
+PRIVACY & SECURITY:
+• No data collection or external connections (except user-configured webhooks)
+• All processing happens locally in browser
+• Manifest V3 compliant
+• No unnecessary permissions requested
+
+TECHNICAL DETAILS:
+• Works only on google.com/search pages
+• Uses content scripts with proper isolation
+• Clean HTML to Markdown conversion with TurndownJS library
+• Source code available on GitHub: https://github.com/romek-rozen/ai-overview-extractor
+
+COMMON USE CASES:
+• Content research and knowledge extraction
+• SEO analysis and content optimization
+• Academic research and note-taking
+• Integration with automation tools via webhooks
+
+The extension provides genuine value for users who need to extract and process AI Overview content efficiently.

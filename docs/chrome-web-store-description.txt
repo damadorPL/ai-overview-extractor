@@ -1,0 +1,51 @@
+AI Overview Extractor - Extract Google AI Overviews to Markdown
+
+🔍 Automatically extract and convert Google AI Overview content to clean, readable Markdown format with one click.
+
+MAIN FEATURES:
+✅ Automatic AI Overview Detection - Instantly detects AI Overview sections on Google Search results
+✅ One-Click Markdown Export - Convert complex HTML content to clean, formatted Markdown
+✅ Smart Content Cleaning - Removes ads, scripts, and unwanted elements for pure content
+✅ Source Link Extraction - Automatically captures and cleans all source URLs
+✅ Copy & Download Options - Copy to clipboard or download as .md file with timestamp
+✅ Webhook Integration - Send extracted data to external APIs and automation tools
+✅ Auto-Expand Features - Automatically expand collapsed AI overviews and source lists
+✅ Clean Interface - Simple, intuitive popup settings panel
+
+HOW IT WORKS:
+1. Search anything on Google that generates an AI Overview
+2. Click the "📋 Extract to Markdown" button that appears
+3. Preview, edit, copy or download your clean Markdown content
+4. Optionally configure webhooks for automation workflows
+
+PERFECT FOR:
+📝 Content creators and writers
+🔬 Researchers and students  
+📊 SEO professionals and marketers
+🤖 Automation enthusiasts
+📚 Knowledge management
+
+AUTOMATION FEATURES:
+• Auto-expand collapsed AI overviews
+• Auto-expand source lists
+• Automatic webhook sending
+• Configurable via popup settings
+• Smart timing and error handling
+
+TECHNICAL HIGHLIGHTS:
+• Works on all Google Search pages
+• Advanced HTML cleaning and sanitization
+• Google URL redirect removal
+• Duplicate source filtering
+• Manifest V3 compliant
+• Privacy-focused (no data collection)
+
+The extension integrates seamlessly with n8n, Zapier, and other automation platforms through webhooks. Perfect for building SEO workflows, content research pipelines, and knowledge management systems.
+
+Clean, fast, and reliable - extract AI Overview content the smart way.
+
+---
+Privacy: This extension does not collect, store, or transmit any personal data. All processing happens locally in your browser.
+
+GitHub Repository: https://github.com/romek-rozen/ai-overview-extractor
+Source code available for transparency, contributions, and feature requests.
