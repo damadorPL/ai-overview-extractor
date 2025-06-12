@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AI Overview Extractor",
+    "name": "AI Overview Extractor - Features",
   "version": "1.0.5",
   "description": "Extract AI Overview content from Google Search to Markdown format",
   
