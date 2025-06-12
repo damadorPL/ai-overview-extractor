@@ -35,44 +35,120 @@ class AIOverviewExtractor {
         // Setup module callbacks
         this.setupModuleCallbacks();
         
-        // Start the orchestrated automation
-        await this.orchestrateModules();
+        // Remove orchestrateModules call to avoid skipping due to missing container
+        // await this.orchestrateModules();
         
-        // Check immediately if container exists
-        this.debouncedCheckAndAddButton();
-        
-        // Additional delayed checks for AI Overview that loads asynchronously
-        setTimeout(() => {
-            console.log('[AI Overview Extractor] Delayed check 1s...');
-            this.debouncedCheckAndAddButton();
-        }, 1000);
-        
-        setTimeout(() => {
-            console.log('[AI Overview Extractor] Delayed check 3s...');
-            this.debouncedCheckAndAddButton();
-        }, 3000);
-        
-        setTimeout(() => {
-            console.log('[AI Overview Extractor] Delayed check 5s...');
-            this.debouncedCheckAndAddButton();
-        }, 5000);
+        // Setup MutationObserver to detect #m-x-content and start automation immediately
+        this.observeContainerAndStartAutomation();
         
         // Setup scroll observation for late-loading AI Overviews
         this.setupScrollObserver();
     }
 
+    observeContainerAndStartAutomation() {
+        const checkAndStart = () => {
+            const container = document.querySelector('#m-x-content');
+            if (container) {
+                console.log('[AI Overview Extractor] Found #m-x-content, starting automation');
+                this.handleContainerFound(container);
+                return true;
+            }
+            return false;
+        };
+
+        if (!checkAndStart()) {
+            const observer = new MutationObserver((mutations, obs) => {
+                if (checkAndStart()) {
+                    obs.disconnect();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+            console.log('[AI Overview Extractor] MutationObserver set to watch for #m-x-content');
+        }
+    }
+
+    async handleContainerFound(container) {
+        if (this.containerProcessed) {
+            console.log('[AI Overview Extractor] Container already processed, skipping automation');
+            return;
+        }
+
+        if (this.settings.autoExpandOverviews) {
+            console.log('[AI Overview Extractor] Auto-expand overviews enabled, starting expansion');
+            const expanded = await this.autoExpanderOverviews.expandAIOverview();
+            if (expanded) {
+                console.log('[AI Overview Extractor] AI overview expanded, starting sources expansion');
+                if (this.settings.autoExpandSources) {
+                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
+                    if (sourcesExpanded) {
+                        console.log('[AI Overview Extractor] Sources expansion completed');
+                        if (this.settings.autoSendWebhook) {
+                            const webhookSent = await this.autoWebhook.autoSendWebhook();
+                            if (webhookSent) {
+                                console.log('[AI Overview Extractor] Auto webhook completed');
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Jeśli AI overview jest już rozwinięte, kontynuuj rozwijanie źródeł i wysyłanie webhooka
+                console.log('[AI Overview Extractor] AI overview already expanded, continuing sources expansion');
+                if (this.settings.autoExpandSources) {
+                    const sourcesExpanded = await this.autoExpanderSources.expandSources();
+                    if (sourcesExpanded) {
+                        console.log('[AI Overview Extractor] Sources expansion completed');
+                        if (this.settings.autoSendWebhook) {
+                            const webhookSent = await this.autoWebhook.autoSendWebhook();
+                            if (webhookSent) {
+                                console.log('[AI Overview Extractor] Auto webhook completed');
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            console.log('[AI Overview Extractor] Auto-expand overviews disabled, adding button');
+            this.addButton(container);
+        }
+
+        this.containerProcessed = true;
+        this.removeScrollObserver();
+    }
+
     // Setup callbacks between modules
     setupModuleCallbacks() {
-        // When AI Overview expansion completes, signal to sources expander
-        this.autoExpanderOverviews.onExpansionComplete(() => {
-            console.log('[AI Overview Extractor] AI Overview expanded, signaling sources expander');
+        // When AI Overview expansion completes, signal to sources expander and start sources expansion
+        this.autoExpanderOverviews.onExpansionComplete(async () => {
+            console.log('[AI Overview Extractor] AI Overview expanded, starting sources expansion');
             this.autoExpanderSources.setReady();
+            if (this.settings.autoExpandSources) {
+                const sourcesExpanded = await this.autoExpanderSources.expandSources();
+                if (sourcesExpanded) {
+                    console.log('[AI Overview Extractor] Sources expansion completed');
+                    this.autoExpanderSources.expansionCallbacks.forEach(cb => {
+                        try { cb(); } catch (e) { console.error(e); }
+                    });
+                }
+            } else {
+                console.log('[AI Overview Extractor] Auto expand sources disabled');
+            }
         });
 
-        // When sources expansion completes, signal to webhook
+        // When sources expansion completes, signal to webhook and send webhook
         this.autoExpanderSources.onExpansionComplete(() => {
             console.log('[AI Overview Extractor] Sources expanded, signaling webhook');
             this.autoWebhook.setReady();
+            if (this.settings.autoSendWebhook) {
+                this.autoWebhook.autoSendWebhook().then(sent => {
+                    if (sent) {
+                        console.log('[AI Overview Extractor] Auto webhook completed');
+                    } else {
+                        console.log('[AI Overview Extractor] Auto webhook failed or skipped');
+                    }
+                });
+            } else {
+                console.log('[AI Overview Extractor] Auto send webhook disabled');
+            }
         });
     }
 

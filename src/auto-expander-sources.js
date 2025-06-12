@@ -41,6 +41,7 @@ class AutoExpanderSources {
             // Sprawdź czy już rozwinięte
             if (this.areSourcesExpanded()) {
                 console.log('[AutoExpanderSources] Sources already expanded');
+                this.buttonClicked = true; // Ustaw flagę, aby nie próbować ponownie
                 return true;
             }
 
@@ -246,13 +247,14 @@ class AutoExpanderSources {
         
         console.log('[AutoExpanderSources] Found last <li>:', lastLi);
         
-        // Szukaj przycisku w ostatnim <li>
-        const button = lastLi.querySelector('[role="button"]');
-        if (!button) {
-            console.log('[AutoExpanderSources] No button found in last <li>');
+        // Szukaj przycisku w ostatnim <li> z role="button" i jsaction zaczynającym się od "trigger"
+        const buttons = lastLi.querySelectorAll('[role="button"][jsaction^="trigger"]');
+        if (buttons.length === 0) {
+            console.log('[AutoExpanderSources] No button with role="button" and jsaction starting with "trigger" found in last <li>');
             return null;
         }
         
+        const button = buttons[0];
         console.log('[AutoExpanderSources] Found button in last <li>:', button);
         console.log('[AutoExpanderSources] Button text:', button.textContent?.trim());
         
@@ -487,7 +489,9 @@ class AutoExpanderSources {
         const expandButtons = document.querySelectorAll('#m-x-content [role="button"][style*="cursor:pointer"]');
         const hasExpandButton = Array.from(expandButtons).some(btn => {
             const text = btn.textContent?.trim() || '';
-            return /\+\d+/.test(text); // Szuka wzorca "+liczba"
+            const isPlusNumber = /\+\d+/.test(text); // Szuka wzorca "+liczba"
+            console.log(`[AutoExpanderSources] Checking button text: "${text}", isPlusNumber: ${isPlusNumber}`);
+            return isPlusNumber;
         });
         
         if (!hasExpandButton) {
