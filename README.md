@@ -145,9 +145,21 @@ ai-overview-extractor/
 ├── .gitignore         # Files ignored by Git
 ├── AI_SUMMARY.md      # 🤖 CRITICAL: Technical documentation for AI/LLM systems - main project overview
 ├── src/              # Source files
-│   ├── content.js        # Main script with AIOverviewExtractor class
-│   ├── webhook-manager.js # Webhook management and POST requests
-│   └── turndown.js       # HTML→Markdown conversion library
+│   ├── content.js                  # Main script with AIOverviewExtractor class
+│   ├── settings-manager.js         # Extension settings management
+│   ├── auto-expander-overviews.js  # Automatic AI overview expansion
+│   ├── auto-expander-sources.js    # Automatic source list expansion
+│   ├── auto-webhook.js             # Automatic webhook dispatch
+│   ├── extraction-orchestrator.js  # Manual extraction coordination
+│   ├── content-extractor.js        # Content and source extraction
+│   ├── markdown-generator.js       # Markdown conversion
+│   ├── ui-manager.js               # In-page UI management
+│   ├── popup.js                    # Extension popup management
+│   ├── popup.html                  # Popup interface structure
+│   ├── popup.css                   # Popup interface styling
+│   ├── webhook-manager.js          # Webhook management and POST requests
+│   ├── turndown.js                 # HTML→Markdown conversion library
+│   └── README.md                   # Source code documentation
 ├── icons/            # Extension icons
 │   ├── icon-16.png
 │   ├── icon-32.png  
@@ -297,7 +309,23 @@ To update the extension:
 
 ## 📝 Changelog
 
-### v1.0.5 (current)
+### v1.0.7 (current)
+- 🔧 **Removed auto-extract functionality** - Extension no longer automatically extracts markdown content
+- ✅ **Maintained manual extraction** - Users can still extract markdown by clicking the manual button
+- 🚀 **Improved performance** - Removed unnecessary automatic extraction logic
+- 🎨 **Cleaner interface** - Simplified popup with only relevant auto-expansion settings
+- 📋 **Better user control** - Extension behavior is now more predictable and user-initiated
+- 🏗️ **Enhanced architecture** - Added comprehensive source code documentation in `src/README.md`
+
+### v1.0.6
+- ✨ **Auto-expand AI overviews** - Automatically clicks "Show more" button on collapsed AI overviews
+- 🔗 **Auto-expand sources** - Automatically expands collapsed source sections
+- 🚀 **Auto-webhook functionality** - Automatically sends extracted data to configured endpoints
+- ⚙️ **Settings management** - Persistent storage with Chrome storage API
+- 🎨 **Extension popup interface** - Modern settings panel accessible from browser toolbar
+- 🔄 **Real-time synchronization** - Changes applied immediately across all tabs
+
+### v1.0.5
 - 🔧 **Chrome Web Store compliance** - removed unnecessary `activeTab` permission
 - 📝 **Documentation update** - updated all permission justifications and descriptions
 - ✅ **Verification** - confirmed extension works with minimal permissions only

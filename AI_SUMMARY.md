@@ -12,10 +12,23 @@ ai-overview-extractor/
 ├── LICENCE                    # MIT License
 ├── .gitignore                 # Git ignored files
 ├── AI_SUMMARY.md              # 🤖 CRITICAL: Technical docs for AI/LLM systems
-├── src/                       # Source files
-│   ├── content.js             # Main AIOverviewExtractor class
+├── CHANGELOG.md               # Version history and changes
+├── src/                       # Source files (Modular Architecture)
+│   ├── content.js             # Main AIOverviewExtractor orchestrator
+│   ├── settings-manager.js    # Extension settings management
+│   ├── auto-expander-overviews.js # Automatic AI overview expansion
+│   ├── auto-expander-sources.js   # Automatic source list expansion
+│   ├── auto-webhook.js        # Automatic webhook dispatch
+│   ├── extraction-orchestrator.js # Manual extraction coordination
+│   ├── content-extractor.js   # Content and source extraction
+│   ├── markdown-generator.js  # Markdown conversion
+│   ├── ui-manager.js          # In-page UI management
+│   ├── popup.js               # Extension popup management
+│   ├── popup.html             # Popup interface structure
+│   ├── popup.css              # Popup interface styling
 │   ├── webhook-manager.js     # WebhookManager class (POST requests)
-│   └── turndown.js           # HTML→Markdown conversion library
+│   ├── turndown.js            # HTML→Markdown conversion library
+│   └── README.md              # Source code documentation (47 pages)
 ├── icons/                     # Extension icons (16-128px)
 ├── images/                    # Documentation images
 │   ├── ai-overviews-extractor.gif
@@ -37,23 +50,106 @@ ai-overview-extractor/
     └── privacy-policy.md
 ```
 
-## 🏗️ **Main Classes**
+## 🏗️ **Modular Architecture** (v1.0.7)
 
-### **AIOverviewExtractor** (`src/content.js`)
+### **Extension Core**
+- **`content.js`** - Main orchestrator (`AIOverviewExtractor`)
+- **`settings-manager.js`** - Settings persistence (`SettingsManager`)
+
+### **Auto-Expansion Layer**
+- **`auto-expander-overviews.js`** - AI Overview expansion (`AutoExpanderOverviews`)
+- **`auto-expander-sources.js`** - Source list expansion (`AutoExpanderSources`) 
+- **`auto-webhook.js`** - Automatic webhook dispatch (`AutoWebhook`)
+
+### **Extraction System**
+- **`extraction-orchestrator.js`** - Manual extraction coordination (`ExtractionOrchestrator`)
+- **`content-extractor.js`** - Content extraction (`ContentExtractor`)
+- **`markdown-generator.js`** - Markdown conversion (`MarkdownGenerator`)
+
+### **User Interface**
+- **`popup.js/.html/.css`** - Extension popup interface (`PopupManager`)
+- **`ui-manager.js`** - In-page UI management (`UIManager`)
+
+### **Utilities**
+- **`webhook-manager.js`** - HTTP webhook handling (`WebhookManager`)
+- **`turndown.js`** - HTML→Markdown library
+
+## 🎯 **Main Classes**
+
+### **AIOverviewExtractor** (`src/content.js`) - ORCHESTRATOR
 ```javascript
 class AIOverviewExtractor {
     constructor() {
+        this.settingsManager = new SettingsManager();
         this.webhookManager = new WebhookManager();
+        this.autoExpanderOverviews = new AutoExpanderOverviews();
+        this.autoExpanderSources = new AutoExpanderSources();
+        this.autoWebhook = new AutoWebhook();
+        this.extractionOrchestrator = new ExtractionOrchestrator();
         this.init();
     }
     
     // Key methods:
-    checkAndAddButton()        // Searches for #m-x-content, adds button
-    extractContent(container)  // Cleans HTML from CSS/JS
-    extractSources(container)  // Extracts source links
-    createMarkdown(content, sources) // HTML→Markdown via TurndownService
-    showPreview(markdown)      // Modal with preview and webhook UI
-    handleWebhookSend(markdown) // Integration with WebhookManager
+    async init()                        // Initialize all modules
+    setupModuleCallbacks()              // Wire module communication
+    async orchestrateModules()          // Auto-expansion workflow
+    observeDOM()                        // MutationObserver setup
+    checkAndAddButton()                 // Manual extraction button
+    addButton(container)                // Button injection
+}
+```
+
+### **SettingsManager** (`src/settings-manager.js`)
+```javascript
+class SettingsManager {
+    defaultSettings = {
+        autoExpandOverviews: true,      // Auto-expand AI overviews
+        autoExpandSources: true,        // Auto-expand source lists
+        autoSendWebhook: false          // Auto-send webhook data
+    }
+    
+    // Key methods:
+    async getSettings()                 // Get all settings
+    async saveSettings(settings)       // Save all settings
+    async saveSetting(key, value)       // Save single setting
+    async resetToDefaults()             // Reset to defaults
+    validateSettings(settings)          // Validate structure
+}
+```
+
+### **AutoExpanderOverviews** (`src/auto-expander-overviews.js`)
+```javascript
+class AutoExpanderOverviews {
+    // Key methods:
+    async expandAIOverview()            // Main expansion logic
+    async waitForExpansion()            // Animation completion wait
+    isExpanded()                        // Check expansion state
+    isPresent()                         // Check if AI overview exists
+    onExpansionComplete(callback)       // Register callback
+}
+```
+
+### **AutoExpanderSources** (`src/auto-expander-sources.js`)
+```javascript
+class AutoExpanderSources {
+    // Key methods:
+    async expandSources()               // Main expansion logic
+    async universalExpandSources()      // Universal click strategy
+    areSourcesExpanded()                // Check expansion state
+    areSourcesPresent()                 // Check if sources exist
+    setReady()                          // Signal readiness
+}
+```
+
+### **AutoWebhook** (`src/auto-webhook.js`)
+```javascript
+class AutoWebhook {
+    // Key methods:
+    async autoSendWebhook()             // Main webhook logic
+    async prepareWebhookData(container) // Data preparation
+    async waitForReady()                // Wait for expansion signals
+    showNotification(message)           // User feedback
+    setReady()                          // Signal readiness
 }
 ```
 
@@ -61,11 +157,26 @@ class AIOverviewExtractor {
 ```javascript
 class WebhookManager {
     // Key methods:
-    saveWebhookUrl(url)        // Saves URL in chrome.storage
-    getWebhookUrl()           // Gets URL from storage
-    testWebhook(url)          // Tests POST with test payload
-    sendToWebhook(data)       // Sends data POST to webhook
-    makeRequest(url, payload) // fetch() with 5s timeout
+    saveWebhookUrl(url)                 // Saves URL in chrome.storage
+    getWebhookUrl()                     // Gets URL from storage
+    testWebhook(url)                    // Tests POST with test payload
+    sendToWebhook(data)                 // Sends data POST to webhook
+    makeRequest(url, payload)           // fetch() with 5s timeout
+    isValidWebhookUrl(url)              // URL validation
+    createPayload(data)                 // Format data for sending
+}
+```
+
+### **PopupManager** (`src/popup.js`)
+```javascript
+class PopupManager {
+    // Key methods:
+    async init()                        // Initialize popup
+    async loadSettings()                // Load and display settings
+    updateUI(settings)                  // Update toggle states
+    async handleSettingChange(key, value) // Process setting changes
+    async notifyContentScripts(key, value) // Sync with content scripts
+    showStatus(icon, text, type)        // Show status messages
 }
 ```
 
@@ -96,7 +207,7 @@ Content-Type: application/json
     "googleSearchUrl": "https://google.com/search?q=...",
     "extractedAt": "2025-01-06T12:30:00Z",
     "userAgent": "Mozilla/5.0...",
-    "extensionVersion": "1.0.4"
+    "extensionVersion": "1.0.7"
   }
 }
 ```
@@ -154,20 +265,36 @@ cleanHTML.replace(/var\s+\w+\s*=\s*[^;]*;/g, '');
 ```json
 {
   "manifest_version": 3,
-  "version": "1.0.4",
-  "name": "AI Overview Extractor",
+  "version": "1.0.7",
+  "name": "AI Overview Extractor - Features",
   "permissions": ["storage"],
   "host_permissions": ["*://www.google.com/*"],
   "content_scripts": [{
     "matches": ["*://www.google.com/search*"],
-    "js": ["src/turndown.js", "src/webhook-manager.js", "src/content.js"],
+    "js": [
+      "src/turndown.js",
+      "src/settings-manager.js",
+      "src/webhook-manager.js",
+      "src/auto-expander-overviews.js",
+      "src/auto-expander-sources.js",
+      "src/auto-webhook.js",
+      "src/content-extractor.js",
+      "src/markdown-generator.js",
+      "src/ui-manager.js",
+      "src/extraction-orchestrator.js",
+      "src/content.js"
+    ],
     "css": ["styles.css"]
-  }]
+  }],
+  "action": {
+    "default_popup": "src/popup.html"
+  }
 }
 ```
 
 ### **Storage keys:**
 - `ai-overview-webhook-url` - Webhook URL (string)
+- `ai-overview-settings` - Extension settings (object)
 
 ## 🔄 **Execution Flow**
 1. **DOM Observer** - detects `#m-x-content`
@@ -273,7 +400,9 @@ testPayload: { test: true, timestamp: ISO_string, message: "Test..." }
 - **Integration:** Seamless with extension webhook functionality
 
 ## 🚀 **Version History**
-- **v1.0.5** - Current: Chrome Web Store compliance fix - removed activeTab permission
+- **v1.0.7** - Current: Removed auto-extract functionality, modular architecture, complete documentation
+- **v1.0.6** - Auto-expand AI overviews, auto-expand sources, auto-webhook, settings system
+- **v1.0.5** - Chrome Web Store compliance fix - removed activeTab permission
 - **v1.0.4** - Complete English UI translation, documentation updates
 - **v1.0.3** - Webhooks + n8n template integration
 - **v1.0.2** - Stability fixes, Manifest V3 support

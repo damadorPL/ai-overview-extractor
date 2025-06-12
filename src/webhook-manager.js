@@ -194,7 +194,7 @@ class WebhookManager {
                 googleSearchUrl: window.location.href,
                 extractedAt: now,
                 userAgent: navigator.userAgent,
-                extensionVersion: '1.0.5'
+                extensionVersion: '1.0.7'
             }
         };
     }
