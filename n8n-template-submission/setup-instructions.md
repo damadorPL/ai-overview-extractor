@@ -4,14 +4,14 @@
 
 - **n8n instance** (local or cloud) - version 1.95.3+
 - **Google account** for Sheets integration
-- **OpenRouter API account** (or other LLM provider)
+- **OpenRouter API account** for Gemini 2.5 Pro access
 - **Browser** (Chrome/Firefox) for the extension
 
 ## Step 1: Import the Workflow
 
 1. **Open n8n** and navigate to `Workflows`
 2. **Click** "Add workflow" → "Import from JSON"
-3. **Upload** the `AI_Overviews_Extractor_Plugin.json` file
+3. **Upload** the `AI_OVERVIES_EXTRACTOR_TEMPLATE.json` file
 4. **Save** the workflow
 
 ## Step 2: Configure Google Sheets
@@ -38,9 +38,9 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 ### Configure Google Sheets Nodes
 
 **Update these nodes with your Google Sheets URL:**
-- `getRows`
-- `updateRows` 
-- `updateGuideLines`
+- `Get URLs to Analyze`
+- `Save AI Overview to Sheets` 
+- `Save SEO Guidelines to Sheets`
 
 **In each node:**
 1. Set `documentId` to your Google Sheets URL
@@ -64,9 +64,9 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 
 ### Configure OpenRouter Node
 
-1. **Select the OpenRouter Chat Model node**
+1. **Select the Gemini 2.5 Pro Model node**
 2. **Choose your credential** from the dropdown
-3. **Verify the model** (default: `google/gemini-2.5-flash-preview-05-20`)
+3. **Verify the model** (default: `google/gemini-2.5-pro-preview`)
 
 ## Step 4: Install Browser Extension
 
@@ -76,7 +76,11 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 1. **Visit Firefox Add-on**: https://addons.mozilla.org/en-US/firefox/addon/ai-overview-extractor/
 2. **Click "Add to Firefox"** for automatic installation
 
-**Option 2: From GitHub Source Code**
+**Option 2: From Chrome Web Store (Recommended)**
+1. **Visit Chrome Extension**: https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
+2. **Click "Add to Chrome"** for automatic installation
+
+**Option 3: From GitHub Source Code**
 1. **Visit GitHub repository**: https://github.com/romek-rozen/ai-overview-extractor
 2. **Download the source code** or clone the repository:
    ```bash
@@ -86,6 +90,11 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 
 ### Install in Chrome
 
+**Method 1: Official Extension (Recommended)**
+1. **Visit**: https://chromewebstore.google.com/detail/ai-overview-extractor/cbkdfibgmhicgnmmdanlhnebbgonhjje
+2. **Click "Add to Chrome"**
+
+**Method 2: Developer Mode (for GitHub source)**
 1. **Open Chrome** and go to `chrome://extensions/`
 2. **Enable** "Developer mode" (toggle in top right)
 3. **Click** "Load unpacked extension"
@@ -108,7 +117,7 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 ### Get Webhook URL
 
 1. **In n8n workflow**, click on the `Webhook` node
-2. **Copy the webhook URL** (should be like: `http://localhost:5678/webhook/ai-overview-extractor`)
+2. **Copy the webhook URL** (should be like: `http://localhost:5678/webhook/ai-overview-extractor-template-123456789`)
 
 ### Configure Extension
 
@@ -153,20 +162,23 @@ Here is public google sheet template: https://docs.google.com/spreadsheets/d/15x
 - Confirm OAuth credentials are working
 - Check sheet URL format
 - Verify column names match exactly
+- Ensure nodes `Get URLs to Analyze`, `Save AI Overview to Sheets`, and `Save SEO Guidelines to Sheets` are properly configured
 
 ### OpenRouter Issues
 - Check API key validity
 - Ensure sufficient account credits
-- Try different models if one fails
+- Try different models if Gemini 2.5 Pro fails
+- Verify the `Gemini 2.5 Pro Model` node is properly connected
 
 ### Extension Problems
 - Check browser console for errors
 - Verify extension is properly installed
 - Ensure you're on google.com/search pages
+- Confirm webhook URL is correctly configured in extension
 
 ## Next Steps
 
-- **Customize AI prompts** in the LLM Chain node for your specific needs
+- **Customize AI prompts** in the `Generate SEO Recommendations` node for your specific needs
 - **Adjust scheduler frequency** (default: 15 minutes)
 - **Add more URL analysis** by populating Google Sheets
 - **Monitor usage** and API costs

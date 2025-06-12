@@ -1,5 +1,5 @@
 {
-  "name": "AI_OVERVIES_EXTRACTOR_TEMPLATE",
+  "name": "Extract and Analyze Google AI Overviews with LLM for SEO Recommendations",
   "nodes": [
     {
       "parameters": {
